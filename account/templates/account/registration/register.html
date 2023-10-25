@@ -1,0 +1,109 @@
+{% extends "account/registration/layout.html" %}
+{% block title %}FINEASE BANK | Register{% endblock %}
+{% load static %}
+{% block content %}
+ <!-- loader Start -->
+      <div id="loading" style="display: none;">
+         <div id="loading-center">
+         </div>
+      </div>
+<section class="sign-in-page">
+          <div id="container-inside">
+              <div class="cube"></div>
+              <div class="cube"></div>
+              <div class="cube"></div>
+              <div class="cube"></div>
+              <div class="cube"></div>
+          </div>
+            <div class="container p-0">
+                <div class="row no-gutters height-self-center">
+                  <div class="col-sm-12 align-self-center bg-info  rounded">
+                    <div class="row m-0">
+                      <div class="col-md-5 bg-white sign-in-page-data">
+                          <div class="sign-in-from">
+                              <h1 class="mb-0 text-center">Sign Up</h1>
+                              <p class="text-center text-dark">Register and set up your account.</p>
+                              <form method="post" class="mt-4">
+                                  {% csrf_token %}
+                                  <div class="form-group">
+                                      <label for="exampleInputEmail1">Your Full Name</label>
+                                      <input  required  {% if signup_form.is_bound %}value="{{ signup_form.name.value }}"{% endif %} name="name" type="text" class="form-control mb-0" id="exampleInputEmail1" placeholder="Your Full Name">
+                                  </div>
+                                  <div class="form-group">
+                                      <label for="exampleInputEmail1">Email</label>
+                                      {% for err in signup_form.email.errors %}
+                                        <h6 class="text-danger ml-2">{{ err }}</h6><br>
+                                      {% endfor %}
+                                      <input required {% if signup_form.is_bound %}value="{{ signup_form.email.value }}"{% endif %} name="email" type="email" class="form-control mb-0" id="exampleInputEmail1" placeholder="Email">
+                                  </div>
+                                  <div class="form-group">
+                                      <label for="exampleInputEmail1">Account type</label>
+                                      {{signup_form.account_type}}
+                                  </div>
+                                  <div class="form-group">
+                                      <label for="exampleInputEmail1">Transaction PIN</label>
+                                      {% for err in signup_form.transaction_pin.errors %}
+                                        <h6 class="text-danger ml-2">{{ err }}</h6><br>
+                                      {% endfor %}
+                                      <input {% if signup_form.is_bound %}value="{{ signup_form.transaction_pin.value }}"{% endif %} name="transaction_pin" type="number" maxlength="6" min="1" class="form-control" required>
+                                  </div>
+                                  <div class="form-group">
+                                      <label for="exampleInputEmail1">Phone Number</label>
+                                      {% for err in signup_form.mobile.errors %}
+                                        <h6 class="text-danger ml-2">{{ err }}</h6><br>
+                                      {% endfor %}
+                                      <input min="1" {% if signup_form.is_bound %}value="{{ signup_form.mobile.value }}"{% endif %} name="mobile" type="number" class="form-control mb-0" id="exampleInputEmail1" placeholder="Phone number">
+                                  </div>
+                                  <div class="form-group">
+                                      <label for="exampleInputEmail2">Country</label>
+                                      {{signup_form.country}}
+                                  </div>
+                                  <div class="form-group">
+                                      <label for="exampleInputPassword1">Password</label>
+                                      <input name="password1" type="password" class="form-control mb-0" id="exampleInputPassword1" placeholder="Password">
+                                  </div>
+                                  <div class="form-group">
+                                      <label for="exampleInputPassword1">Retype Password</label>
+                                      {% for err in signup_form.password2.errors %}
+                                        <h6 class="text-danger ml-2">{{ err }}</h6><br>
+                                      {% endfor %}
+                                      <input name="password2" type="password" class="form-control mb-0" id="exampleInputPassword1" placeholder="Password">
+                                  </div>
+                                  <div class="d-inline-block w-100">
+                                      <div class="custom-control custom-checkbox d-inline-block mt-2 pt-1">
+                                          <input required type="checkbox" class="custom-control-input" id="customCheck1">
+                                          <label class="custom-control-label" for="customCheck1">I accept <a href="{% url 'terms' %}">Terms and Conditions</a></label>
+                                      </div>
+                                  </div>
+                                  <div class="sign-info text-center">
+                                      <button type="submit" class="btn btn-primary d-block w-100 mb-2">Sign Up</button>
+                                      <span class="text-dark d-inline-block line-height-2">Already Have Account ? <a href="{% url 'account:login' %}">Log In</a></span>
+                                  </div>
+                              </form>
+                          </div>
+                      </div>
+                      <div class="col-md-7 text-center sign-in-page-image">
+                          <div class="sign-in-detail text-white">
+                            <a class="sign-in-logo mb-5" href="#"><img style="border-radius:10%;"  src="{% static 'assets/images/logo.png' %}" class="img-fluid bg-white" alt="logo"></a>
+                              <div class="owl-carousel owl-loaded owl-drag" data-autoplay="true" data-loop="true" data-nav="false" data-dots="true" data-items="1" data-items-laptop="1" data-items-tab="1" data-items-mobile="1" data-items-mobile-sm="1" data-margin="0">
+
+                              <div class="owl-stage-outer"><div class="owl-stage" style="transform: translate3d(-1186px, 0px, 0px); transition: all 0.25s ease 0s; width: 4151px;"><div class="owl-item cloned" style="width: 593px;"><div class="item">
+                                      <img src="{% static 'assets/images/business-dashboard-1.png' %}" class="img-fluid mb-4" alt="logo">
+                                      <h4 class="mb-1 text-white">Enjoy Banking with Ease</h4>
+                                      <p>Bank across different countries with ease</p>
+                                  </div></div><div class="owl-item cloned" style="width: 593px;"><div class="item">
+                                      <img src="{% static 'assets/images/app-download-img.png' %}" class="img-fluid mb-4" alt="logo">
+                                      <h4 class="mb-1 text-white">Swift Transactions</h4>
+                                 </div><div class="owl-nav disabled"><button type="button" role="presentation" class="owl-prev"><i class="fa fa-angle-left fa-2x"></i></button><button type="button" role="presentation" class="owl-next"><i class="fa fa-angle-right fa-2x"></i></button></div><div class="owl-dots"><button role="button" class="owl-dot active"><span></span></button><button role="button" class="owl-dot"><span></span></button><button role="button" class="owl-dot"><span></span></button></div></div>
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+                  </div>
+                </div>
+            </div>
+        </section>
+
+{% endblock %}

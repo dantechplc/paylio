@@ -1,0 +1,470 @@
+{% extends "frontend/layout.html" %}
+{% load static %}
+{% block content %}
+
+
+    <!-- Banner Section start -->
+    <section class="banner-section inner-banner career">
+        <div class="overlay">
+            <div class="shape-area">
+                <img src="{% static 'assets/images/banner-career.png' %}" class="shape-1" alt="image">
+            </div>
+            <div class="banner-content">
+                <div class="container wow fadeInUp">
+                    <div class="row align-items-center">
+                        <div class="col-lg-8 col-md-7">
+                            <div class="main-content">
+                                <h1>Career</h1>
+                                <div class="breadcrumb-area">
+                                    <nav aria-label="breadcrumb">
+                                        <ol class="breadcrumb d-flex align-items-center">
+                                            <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                                            <li class="breadcrumb-item"><a href="javascript:void(0)">Company</a></li>
+                                            <li class="breadcrumb-item active" aria-current="page">Career</li>
+                                        </ol>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Banner Section end -->
+
+    <!-- Current Openings start -->
+    <section class="current-openings">
+        <div class="overlay pt-120 pb-120">
+            <div class="container wow fadeInUp">
+                <div class="row justify-content-center justify-content-between">
+                    <div class="col-xl-5">
+                        <div class="position-sticky">
+                            <div class="section-header">
+                                <h5 class="sub-title">Join our team today!</h5>
+                                <h2 class="title">Current Openings</h2>
+                                <p>Even if you don’t find a suitable position, you can still send your resume to <a href="mailto:careers@paylio.com">careers@paylio.com</a></p>
+                            </div>
+                            <div class="nav-tabs-area mb-40">
+                                <ul class="nav nav-tabs" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                        <button class="cmn-btn active" id="all-jobs-tab" data-bs-toggle="tab" data-bs-target="#all-jobs" type="button"
+                                            role="tab" aria-controls="all-jobs" aria-selected="true">All jobs</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="cmn-btn" id="dessigner-tab" data-bs-toggle="tab" data-bs-target="#dessigner" type="button"
+                                            role="tab" aria-controls="dessigner" aria-selected="false">Product- Dessigner</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="cmn-btn" id="front-end-tab" data-bs-toggle="tab" data-bs-target="#front-end" type="button"
+                                            role="tab" aria-controls="front-end" aria-selected="false">Front- end developer</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="cmn-btn" id="back-end-tab" data-bs-toggle="tab" data-bs-target="#back-end" type="button"
+                                            role="tab" aria-controls="back-end" aria-selected="false">back- end developer</button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6">
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="all-jobs" role="tabpanel" aria-labelledby="all-jobs-tab">
+                                <div class="single-box d-flex align-items-center justify-content-between">
+                                    <div class="left-box">
+                                        <a href="career-details.html"><h5>UI/UX Design Intern</h5></a>
+                                        <ul>
+                                            <li>Sydney, Australia</li>
+                                            <li>Full time</li>
+                                            <li>Entry-Level</li>
+                                        </ul>
+                                        <div class="salary-limit">
+                                            <p>$30k- 50k</p>
+                                        </div>
+                                    </div>
+                                    <div class="right-box">
+                                        <a href="career-details.html"><img src="{% static 'assets/images/icon/arrow-right-5.png' %}" alt="image"></a>
+                                    </div>
+                                </div>
+                                <div class="single-box d-flex align-items-center justify-content-between">
+                                    <div class="left-box">
+                                        <a href="career-details.html"><h5>Junior Web Developer</h5></a>
+                                        <ul>
+                                            <li>Sydney, Australia</li>
+                                            <li>Full time</li>
+                                            <li>Entry-Level</li>
+                                        </ul>
+                                        <div class="salary-limit">
+                                            <p>$40k- 55k</p>
+                                        </div>
+                                    </div>
+                                    <div class="right-box">
+                                        <a href="career-details.html"><img src="{% static 'assets/images/icon/arrow-right-5.png' %}" alt="image"></a>
+                                    </div>
+                                </div>
+                                <div class="single-box d-flex align-items-center justify-content-between">
+                                    <div class="left-box">
+                                        <a href="career-details.html"><h5>Digital Designer</h5></a>
+                                        <ul>
+                                            <li>Sydney, Australia</li>
+                                            <li>Full time</li>
+                                            <li>Entry-Level</li>
+                                        </ul>
+                                        <div class="salary-limit">
+                                            <p>$30k- 50k</p>
+                                        </div>
+                                    </div>
+                                    <div class="right-box">
+                                        <a href="career-details.html"><img src="{% static 'assets/images/icon/arrow-right-5.png' %}" alt="image"></a>
+                                    </div>
+                                </div>
+                                <div class="single-box d-flex align-items-center justify-content-between">
+                                    <div class="left-box">
+                                        <a href="career-details.html"><h5>Senior Website Developer</h5></a>
+                                        <ul>
+                                            <li>Sydney, Australia</li>
+                                            <li>Full time</li>
+                                            <li>Entry-Level</li>
+                                        </ul>
+                                        <div class="salary-limit">
+                                            <p>$80k- 100k</p>
+                                        </div>
+                                    </div>
+                                    <div class="right-box">
+                                        <a href="career-details.html"><img src="{% static 'assets/images/icon/arrow-right-5.png' %}" alt="image"></a>
+                                    </div>
+                                </div>
+                                <div class="single-box d-flex align-items-center justify-content-between">
+                                    <div class="left-box">
+                                        <a href="career-details.html"><h5>Graphic Designer</h5></a>
+                                        <ul>
+                                            <li>Sydney, Australia</li>
+                                            <li>Full time</li>
+                                            <li>Entry-Level</li>
+                                        </ul>
+                                        <div class="salary-limit">
+                                            <p>$40k- 50k</p>
+                                        </div>
+                                    </div>
+                                    <div class="right-box">
+                                        <a href="career-details.html"><img src="{% static 'assets/images/icon/arrow-right-5.png' %}" alt="image"></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="dessigner" role="tabpanel" aria-labelledby="dessigner-tab">
+                                <div class="single-box d-flex align-items-center justify-content-between">
+                                    <div class="left-box">
+                                        <a href="career-details.html"><h5>UI/UX Design Intern</h5></a>
+                                        <ul>
+                                            <li>Sydney, Australia</li>
+                                            <li>Full time</li>
+                                            <li>Entry-Level</li>
+                                        </ul>
+                                        <div class="salary-limit">
+                                            <p>$30k- 50k</p>
+                                        </div>
+                                    </div>
+                                    <div class="right-box">
+                                        <a href="career-details.html"><img src="{% static 'assets/images/icon/arrow-right-5.png' %}" alt="image"></a>
+                                    </div>
+                                </div>
+                                <div class="single-box d-flex align-items-center justify-content-between">
+                                    <div class="left-box">
+                                        <a href="career-details.html"><h5>Digital Designer</h5></a>
+                                        <ul>
+                                            <li>Sydney, Australia</li>
+                                            <li>Full time</li>
+                                            <li>Entry-Level</li>
+                                        </ul>
+                                        <div class="salary-limit">
+                                            <p>$30k- 50k</p>
+                                        </div>
+                                    </div>
+                                    <div class="right-box">
+                                        <a href="career-details.html"><img src="{% static 'assets/images/icon/arrow-right-5.png' %}" alt="image"></a>
+                                    </div>
+                                </div>
+                                <div class="single-box d-flex align-items-center justify-content-between">
+                                    <div class="left-box">
+                                        <a href="career-details.html"><h5>Graphic Designer</h5></a>
+                                        <ul>
+                                            <li>Sydney, Australia</li>
+                                            <li>Full time</li>
+                                            <li>Entry-Level</li>
+                                        </ul>
+                                        <div class="salary-limit">
+                                            <p>$40k- 50k</p>
+                                        </div>
+                                    </div>
+                                    <div class="right-box">
+                                        <a href="career-details.html"><img src="{% static 'assets/images/icon/arrow-right-5.png' %}" alt="image"></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="front-end" role="tabpanel" aria-labelledby="front-end-tab">
+                                <div class="single-box d-flex align-items-center justify-content-between">
+                                    <div class="left-box">
+                                        <a href="career-details.html"><h5>Junior Web Developer</h5></a>
+                                        <ul>
+                                            <li>Sydney, Australia</li>
+                                            <li>Full time</li>
+                                            <li>Entry-Level</li>
+                                        </ul>
+                                        <div class="salary-limit">
+                                            <p>$40k- 55k</p>
+                                        </div>
+                                    </div>
+                                    <div class="right-box">
+                                        <a href="career-details.html"><img src="{% static 'assets/images/icon/arrow-right-5.png' %}" alt="image"></a>
+                                    </div>
+                                </div>
+                                <div class="single-box d-flex align-items-center justify-content-between">
+                                    <div class="left-box">
+                                        <a href="career-details.html"><h5>Senior Website Developer</h5></a>
+                                        <ul>
+                                            <li>Sydney, Australia</li>
+                                            <li>Full time</li>
+                                            <li>Entry-Level</li>
+                                        </ul>
+                                        <div class="salary-limit">
+                                            <p>$80k- 100k</p>
+                                        </div>
+                                    </div>
+                                    <div class="right-box">
+                                        <a href="career-details.html"><img src="{% static 'assets/images/icon/arrow-right-5.png' %}" alt="image"></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="back-end" role="tabpanel" aria-labelledby="back-end-tab">
+                                <div class="single-box d-flex align-items-center justify-content-between">
+                                    <div class="left-box">
+                                        <a href="career-details.html"><h5>Senior Website Developer</h5></a>
+                                        <ul>
+                                            <li>Sydney, Australia</li>
+                                            <li>Full time</li>
+                                            <li>Entry-Level</li>
+                                        </ul>
+                                        <div class="salary-limit">
+                                            <p>$80k- 100k</p>
+                                        </div>
+                                    </div>
+                                    <div class="right-box">
+                                        <a href="career-details.html"><img src="{% static 'assets/images/icon/arrow-right-5.png' %}" alt="image"></a>
+                                    </div>
+                                </div>
+                                <div class="single-box d-flex align-items-center justify-content-between">
+                                    <div class="left-box">
+                                        <a href="career-details.html"><h5>Junior Web Developer</h5></a>
+                                        <ul>
+                                            <li>Sydney, Australia</li>
+                                            <li>Full time</li>
+                                            <li>Entry-Level</li>
+                                        </ul>
+                                        <div class="salary-limit">
+                                            <p>$40k- 55k</p>
+                                        </div>
+                                    </div>
+                                    <div class="right-box">
+                                        <a href="career-details.html"><img src="{% static 'assets/images/icon/arrow-right-5.png' %}" alt="image"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Current Openings end -->
+
+    <!-- Our Perks start -->
+    <section class="our-values perks">
+        <div class="overlay pt-120 pb-120">
+            <div class="container wow fadeInUp">
+                <div class="row align-items-center justify-content-center">
+                    <div class="col-xl-5">
+                        <div class="section-header text-center">
+                            <h5 class="sub-title">Our Perks</h5>
+                            <h2 class="title">Great Perks of working at Paylio</h2>
+                            <p>Lorem ipsum dolor sit amet consectetur adipiscing elit interdum ullamcorper sed pharetra senectus donec nunc.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row align-items-center justify-content-center">
+                    <div class="col-lg-4 col-sm-6 col-8">
+                        <div class="single-box">
+                            <div class="img-box">
+                                <img src="{% static 'assets/images/icon/perks-icon-1.png' %}" alt="icon">
+                            </div>
+                            <div class="text-box">
+                                <h4>Remote</h4>
+                                <p>Lorem ipsum dolor sit amet consectetur adipiscing elit interdum ullamcorper sed pharetra senectus donec nunc.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-6 col-8">
+                        <div class="single-box">
+                            <div class="img-box">
+                                <img src="{% static 'assets/images/icon/perks-icon-2.png' %}" alt="icon">
+                            </div>
+                            <div class="text-box">
+                                <h4>Flexible hours</h4>
+                                <p>Lorem ipsum dolor sit amet consectetur adipiscing elit interdum ullamcorper sed pharetra senectus donec nunc.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-6 col-8">
+                        <div class="single-box">
+                            <div class="img-box">
+                                <img src="{% static 'assets/images/icon/perks-icon-3.png' %}" alt="icon">
+                            </div>
+                            <div class="text-box">
+                                <h4>Unlimited PTO</h4>
+                                <p>Lorem ipsum dolor sit amet consectetur adipiscing elit interdum ullamcorper sed pharetra senectus donec nunc.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-6 col-8">
+                        <div class="single-box">
+                            <div class="img-box">
+                                <img src="{% static 'assets/images/icon/perks-icon-4.png' %}" alt="icon">
+                            </div>
+                            <div class="text-box">
+                                <h4>Medical insurance</h4>
+                                <p>Lorem ipsum dolor sit amet consectetur adipiscing elit interdum ullamcorper sed pharetra senectus donec nunc.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-6 col-8">
+                        <div class="single-box">
+                            <div class="img-box">
+                                <img src="{% static 'assets/images/icon/perks-icon-5.png' %}" alt="icon">
+                            </div>
+                            <div class="text-box">
+                                <h4>Career growth</h4>
+                                <p>Lorem ipsum dolor sit amet consectetur adipiscing elit interdum ullamcorper sed pharetra senectus donec nunc.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-6 col-8">
+                        <div class="single-box">
+                            <div class="img-box">
+                                <img src="{% static 'assets/images/icon/perks-icon-6.png' %}" alt="icon">
+                            </div>
+                            <div class="text-box">
+                                <h4>Great culture</h4>
+                                <p>Lorem ipsum dolor sit amet consectetur adipiscing elit interdum ullamcorper sed pharetra senectus donec nunc.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-12 mt-30 text-center">
+                        <a href="javascript:void(0)" class="cmn-btn">Join Our Team
+                            <i class="icon-d-right-arrow-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Our Perks end -->
+
+    <!-- FAQs In start -->
+    <section class="faqs-section">
+        <div class="overlay pt-120">
+            <div class="container">
+                <div class="row d-flex justify-content-center">
+                    <div class="col-lg-5">
+                        <div class="section-header text-center">
+                            <h5 class="sub-title">Frequently Asked Questions</h5>
+                            <h2 class="title">If you got questions we have answer</h2>
+                            <p>We have a list of frequently asked questions about us</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-xl-6">
+                        <div class="accordion" id="accordionLeft">
+                            <div class="accordion-item">
+                                <h6 class="accordion-header" id="headingLeftOne">
+                                    <button class="accordion-button collapsed" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#collapseLeftOne"
+                                        aria-expanded="false" aria-controls="collapseLeftOne">
+                                        How do I know if you have received my application?
+                                    </button>
+                                </h6>
+                                <div id="collapseLeftOne" class="accordion-collapse collapse"
+                                    aria-labelledby="headingLeftOne" data-bs-parent="#accordionLeft">
+                                    <div class="accordion-body">
+                                        <p>Lorem ipsum dolor sit amet consectetur adipiscing elit posuere vel venenatis, eu sit massa. Volutpat massa rhoncus odio feugiat tellus elit massa sed ullamcorper a in.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h6 class="accordion-header" id="headingLeftTwo">
+                                    <button class="accordion-button collapsed" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#collapseLeftTwo"
+                                        aria-expanded="false" aria-controls="collapseLeftTwo">
+                                        What's Paylio's interview process and how do I get started?
+                                    </button>
+                                </h6>
+                                <div id="collapseLeftTwo" class="accordion-collapse collapse"
+                                    aria-labelledby="headingLeftTwo" data-bs-parent="#accordionLeft">
+                                    <div class="accordion-body">
+                                        <p>Lorem ipsum dolor sit amet consectetur adipiscing elit posuere vel venenatis, eu sit massa. Volutpat massa rhoncus odio feugiat tellus elit massa sed ullamcorper a in.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h6 class="accordion-header" id="headingLeftThree">
+                                    <button class="accordion-button collapsed" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#collapseLeftThree"
+                                        aria-expanded="false" aria-controls="collapseLeftThree">
+                                        What's the culture like at Paylio?
+                                    </button>
+                                </h6>
+                                <div id="collapseLeftThree" class="accordion-collapse collapse"
+                                    aria-labelledby="headingLeftThree" data-bs-parent="#accordionLeft">
+                                    <div class="accordion-body">
+                                        <p>Lorem ipsum dolor sit amet consectetur adipiscing elit posuere vel venenatis, eu sit massa. Volutpat massa rhoncus odio feugiat tellus elit massa sed ullamcorper a in.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h6 class="accordion-header" id="headingLeftFour">
+                                    <button class="accordion-button collapsed" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#collapseLeftFour"
+                                        aria-expanded="false" aria-controls="collapseLeftFour">
+                                        Cancel transaction
+                                    </button>
+                                </h6>
+                                <div id="collapseLeftFour" class="accordion-collapse collapse"
+                                    aria-labelledby="headingLeftFour" data-bs-parent="#accordionLeft">
+                                    <div class="accordion-body">
+                                        <p>Lorem ipsum dolor sit amet consectetur adipiscing elit posuere vel venenatis, eu sit massa. Volutpat massa rhoncus odio feugiat tellus elit massa sed ullamcorper a in.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h6 class="accordion-header" id="headingLeftFive">
+                                    <button class="accordion-button collapsed" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#collapseLeftFive"
+                                        aria-expanded="false" aria-controls="collapseLeftFive">
+                                        Can I send multiple payments?
+                                    </button>
+                                </h6>
+                                <div id="collapseLeftFive" class="accordion-collapse collapse"
+                                    aria-labelledby="headingLeftFive" data-bs-parent="#accordionLeft">
+                                    <div class="accordion-body">
+                                        <p>Lorem ipsum dolor sit amet consectetur adipiscing elit posuere vel venenatis, eu sit massa. Volutpat massa rhoncus odio feugiat tellus elit massa sed ullamcorper a in.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- FAQs In end -->
+
+{% endblock %}

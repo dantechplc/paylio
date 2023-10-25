@@ -1,0 +1,156 @@
+{% extends "transaction/dsh/base.html" %}
+{% block content %}
+
+  <!-- Page Content  -->
+         <div id="content-page" class="content-page">
+            <div class="container-fluid">
+                  {% if request.user.client.verification_status == "Unverified" %}
+           <div class="col-lg-12 alert alert-danger alert-dismissible fade show">
+                              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span style="color:black;" aria-hidden="true">&times;</span>
+                              </button> <strong>Verify your Identity click <a href="{% url 'account:kyc' %}"> Here </a> </strong>  <span></span> </div>
+          {% endif %}
+          {% if  request.user.client.verification_status == "Under Review" %}
+               <div class="col-lg-12 alert alert-warning alert-dismissible fade show">
+                              <button type="button " class="close " data-dismiss="alert" aria-label="Close"><span style="color:black;" aria-hidden="true">&times;</span>
+                              </button> <strong> Account Under Review !</strong></div>
+          {% endif %}
+               <div class="row">
+                  {% for currency in balance %}
+                  <div class="col-md-6 col-lg-4">
+                     <div class="iq-card iq-card-block iq-card-stretch iq-card-height bg-primary rounded">
+                        <div class="iq-card-body">
+                           <div class="d-flex align-items-center justify-content-between">
+                              <div class="icon iq-icon-box rounded iq-bg-info rounded shadow" data-wow-delay="0.2s">
+                                <img src="{{currency.currency.image.url}}">
+                              </div>
+                              <div class="iq-text">
+                                 <h6 class="text-white">{{currency.currency.name}}</h6>
+                                 <h3 class="text-white">{{currency.balance}}</h3>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  {% endfor %}
+               </div>
+
+               <div class="row">
+                     <div class="col-md-12 col-lg-4">
+                        <a href="{% url 'transaction:deposit-money' %}">
+                        <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
+                           <div class="iq-card-body p-0">
+                              <div class="social-media-block d-flex w-100">
+                                 <div class="iq-card-icon bg-primary mr-3"> <i class="fa fa-university"></i></div>
+                                 <div class="data-block d-flex align-items-center justify-content-between">
+                                    <h6 class="line-height">Deposit</h6>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                           </a>
+                     </div>
+                  <div class="col-md-12 col-lg-4">
+                     <a href="{% url 'transaction:transfer-funds' %}">
+                        <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
+                           <div class="iq-card-body p-0">
+                              <div class="social-media-block d-flex w-100">
+                                 <div class="iq-card-icon bg-primary mr-3"> <i class="ri-send-plane-line"></i></div>
+                                 <div class="data-block d-flex align-items-center justify-content-between">
+                                    <h6 class="line-height">Transfer</h6>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </a>
+                  </div>
+                  <div class="col-md-12 col-lg-4">
+                     <a href="{% url 'transaction:withdraw-money' %}">
+                        <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
+                           <div class="iq-card-body p-0">
+                              <div class="social-media-block d-flex w-100">
+                                 <div class="iq-card-icon bg-primary mr-3"> <i class="fa fa-money"></i></div>
+                                 <div class="data-block d-flex align-items-center justify-content-between">
+                                    <h6 class="line-height">Withdraw</h6>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </a>
+                  </div>
+               </div>
+               <div class="row" >
+                  <div class="col-lg-6">
+                     <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
+                        <div class="iq-card-body">
+                           <div class="row">
+                              <div class="col-sm-12">
+                                   <!-- TradingView Widget BEGIN -->
+                                 <div class="tradingview-widget-container">
+                                    <div class="tradingview-widget-container__widget"></div>
+                                    <div class="tradingview-widget-copyright"><a href="#" rel="noopener" target="_blank"><span class="blue-text">Exchange Rates</span></a> by FINEASE BANK</div>
+                                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-forex-cross-rates.js" async>
+                                    {
+                                    "width": "100%",
+                                    "height": "400",
+                                    "currencies": [
+                                    "EUR",
+                                    "USD",
+                                    "GBP"
+                                    ],
+                                    "isTransparent": false,
+                                    "colorTheme": "light",
+                                    "locale": "en"
+                                 }
+                                    </script>
+                                 </div>
+                                 <!-- TradingView Widget END -->
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+
+                  <div class="col-md-6">
+                     <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
+                        <div class="iq-card-header d-flex justify-content-between">
+                           <div class="iq-header-title">
+                              <h4 class="card-title">Latest Transactions</h4>
+                           </div>
+
+                        </div>
+                        <div class="iq-card-body">
+                           <ul class="suggestions-lists m-0 p-0">
+                                 {% for transaction in transactions %}
+                              <li class="d-flex mb-4 align-items-center" data-toggle="modal" data-target="#transactionModal{{transaction.id}}">
+                                 {% if transaction.status == 'Successful' %}
+                                 <div class="profile-icon bg-white alert-success"><span><i class="ri-check-fill"></i></span></div>
+                                 {% elif transaction.status == 'pending' %}
+                                  <div class="profile-icon bg-white alert-warning"><span><i class="ri-alert-line"></i></span></div>
+                                 {% elif transaction.status == 'failed' %}
+                                 <div class="profile-icon bg-white alert-danger"><span><i class="ri-information-line"></i></span></div>
+                                 {% else %}
+                                 <div class="profile-icon bg-white alert-info"><span><i class="ri-information-line"></i></span></div>
+                                 {% endif %}
+                                 <div class="media-support-info ml-3" >
+                                    <h6>{{ transaction.get_transaction_type_display }}</h6>
+                                    <p class="mb-0"><span class="text-primary"></span> {{ transaction.date|date }}</p>
+                                 </div>
+                                 <div class="media-support-amount ml-3">
+                                    <h6><span class="text-primary"></span><b>{{transaction.amount}}</b></h6>
+                                    <p class="mb-0 ">{{transaction.status}}</p>
+                                 </div>
+                              </li>
+                              {% endfor %}
+                           </ul>
+                        </div>
+                     </div>
+                  </div>
+
+                  </div>
+               </div>
+            </div>
+</div>
+
+{% include 'transaction/dsh/dashboard/transaction_details.html' %}
+
+{% endblock %}

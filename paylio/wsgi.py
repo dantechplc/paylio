@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'paylio.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'paylio.settings_pro' if os.environ.get('DJANGO_ENVIRONMENT') == 'production' else 'paylio.settings_dev')
 
 application = get_wsgi_application()

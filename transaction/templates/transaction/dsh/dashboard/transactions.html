@@ -1,0 +1,94 @@
+{% extends 'transaction/dsh/base.html' %} {% block title %}
+  FINEASE | Transactions
+{% endblock %}
+
+{% block content %}
+
+<div id="content-page" class="content-page">
+    <div class="container-fluid">
+       <div class="row">
+          <div class="col-lg-12">
+                {% for message in messages %} {% if message.tags == 'warning' %}
+
+              <div class="col-lg-12 alert alert-danger alert-dismissible fade show">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true" style="color: black">&times;</span>
+                </button>
+                <strong>{{message}}</strong>
+              </div>
+
+              {% elif message.tags == 'success' %}
+              <div class="col-lg-12 alert alert-success alert-dismissible fade show">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true" style="color: black">&times;</span>
+                </button>
+                <strong class="text-dark">{{message}}</strong>
+              </div>
+              {% endif %} {% endfor %}
+            <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
+               <div class="iq-card-header d-flex justify-content-between">
+                  <div class="iq-header-title">
+                     <h4 class="card-title"> Transactions </h4>
+                  </div>
+               </div>
+               <div class="iq-card-body">
+                   <div id="user_list_datatable_info" class="dataTables_filter">
+                                    <form  class="mr-3 position-relative">
+                                        {% csrf_token %}
+                                       <div class="form-group mb-0">
+                                          <input name="q" type="search" class="form-control form-control-md"
+											   placeholder="search for transaction ID or Status" aria-controls="example"
+										hx-get="{% url 'transaction:hx-search' %}" hx-trigger="keyup changedelay:500ms" hx-target="#transaction">
+                                       </div>
+                                    </form>
+                                 </div>
+                  <div class="table-responsive">
+                     {% include "transaction/dsh/dashboard/partials/transactions.html" %}
+                  </div>
+               </div>
+
+            <!--Pagination-->
+
+           <div class="col-6 dataTables_paginate paging_simple_numbers">
+										<ul class="pagination">
+											{% if transactions.has_previous %}
+											<li class="paginate_button page-item previous active " id="example2_previous"><a  aria-controls="example2" data-dt-idx="0" tabindex="0" class="page-link"  href="?page={{ transactions.previous_page_number }}" >Previous</a></li>
+											{% else %}
+											<li class="paginate_button page-item previous disabled" ><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0" class="page-link">Previous</a></li>
+											{% endif %}
+
+											{% if transactions.number|add:'-3' > 1 %}
+											<li class="paginate_button page-item " ><a  href="?page={{ transactions.number|add:'-3' }}"  aria-controls="example2" data-dt-idx="0" tabindex="0" class="page-link">&hellip;</a></li>
+											{% endif %}
+
+											 {% for i in transactions.paginator.page_range %}
+                      							{% if transactions.number == i %}
+											<li class="paginate_button page-item active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0" class="page-link">  {{ i }}</a></li>
+											{% elif i > transactions.number|add:'-3' and i < transactions.number|add:'3' %}
+											<li class="paginate_button page-item "><a href="?page={{ i }}"  aria-controls="example2" data-dt-idx="2" tabindex="0" class="page-link">{{ i }}</a></li>
+											 {% endif %}
+											{% endfor %}
+
+											{% if transactions.paginator.num_pages > transactions.number|add:'-3' %}
+											<li class="paginate_button page-item" ><a href="?page={{ transactions.number|add:'-3' }}"  aria-controls="example2" data-dt-idx="0" tabindex="0" class="page-link">&hellip;</a></li>
+											<li class=" paginate_button page-item" ><a href="?page={{ transactions.paginator.num_pages }}" aria-controls="example2" data-dt-idx="0" tabindex="0" class="page-link">{{transactions.paginator.num_pages}}</a></li>
+											{% endif %}
+
+											{% if transactions.has_next %}
+											<li class="paginate_button page-item next active" id="example2_next"><a href="?page={{ transactions.next_page_number }}"  aria-controls="example2" data-dt-idx="3" tabindex="0" class="page-link">Next</a></li>
+											{% else %}
+											<li class="paginate_button page-item disabled" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="3" tabindex="0" class="page-link">Next</a></li>
+											{% endif %}
+										</ul>
+									</div>
+
+        </div>
+       </div>
+    </div>
+    </div>
+</div>
+
+
+{% include 'transaction/dsh/dashboard/transaction_details.html' %}
+
+{% endblock content %}

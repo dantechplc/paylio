@@ -1,0 +1,18 @@
+{% extends 'transaction/dsh/base.html' %}
+{% block title %}
+  FINEASE | Withdraw | {{method.name}}
+{% endblock %}
+{% block content %}
+
+
+{% if method.name == 'Bitcoin(BTC)' %}
+{% include 'transaction/dsh/dashboard/crypto_withdrawal.html' %}
+{% elif method.name == 'Ethereum(ETH)' %}
+{% include 'transaction/dsh/dashboard/crypto_withdrawal.html' %}
+{% elif method.name == 'Bank Transfer' %}
+{% include 'transaction/dsh/dashboard/bank_withdrawal.html' %}
+{% endif %}
+
+
+
+{% endblock %}

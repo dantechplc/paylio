@@ -1,0 +1,55 @@
+{% extends 'transaction/dsh/base.html' %} {% block title %}
+  FINEASE | Withdraw
+{% endblock %}
+{% block content %}
+
+ <div id="content-page" class="content-page">
+            <div class="container-fluid">
+               <div class="row">
+                  <div class="col-md-6 col-lg-12">
+                     <div class="iq-card iq-card-block iq-card-stretch iq-card-height bg-primary rounded">
+                        <div class="iq-card-body">
+                           <div class="d-flex align-items-center justify-content-between">
+                              <div class="icon iq-icon-box rounded iq-bg-primary rounded shadow" data-wow-delay="0.2s">
+                                 <img src="{{currency.image.url}}">
+                              </div>
+                              <div class="iq-text">
+                                 <h6 class="text-white">Available Balance</h6>
+                                 <h3 class="text-white">{{balance}}</h3>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-sm-12 col-lg-12">
+                    <div class="iq-card">
+                       <div class="iq-card-header d-flex justify-content-between">
+                          <div class="iq-header-title">
+                             <h4 class="card-title">Withdrawal </h4>
+                          </div>
+                       </div>
+                       <div class="iq-card-body">
+                          <p>Select your preferred method of withdrawal</p>
+                          <form   method="post">
+                              {% csrf_token %}
+                             <div class="form-group">
+                                 <select name="payment_method" id="payment_method" class="form-control col-lg-4">
+                                 {% for method in payment_methods %}
+                                     <option value="{{ method }}">{{ method }}</option>
+                                     {% endfor %}
+                                     </select>
+                             </div>
+
+                             <button type="submit" class="btn btn-primary">Proceed</button>
+
+                          </form>
+                       </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+
+
+
+{% endblock %}

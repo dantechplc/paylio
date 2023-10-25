@@ -1,0 +1,73 @@
+<style>
+.payment-details li {
+  padding: 10px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+}
+.payment-details li:last-child {
+  border-top: 1px solid #E6E6FF;
+  border-bottom: 1px solid #E6E6FF;
+}
+.payment-info li {
+  margin-top: 15px;
+}
+
+.transactions-popup .modal-dialog .modal-content .right-area .payment-info li p {
+  color: #000000;
+}
+
+.transactions-popup .modal-dialog .modal-content .right-area .payment-info li span {
+  color: #696D8D;
+}
+ul,
+ol {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+</style>
+
+{% for transaction in transactions %}
+<div class="modal fade" id="transactionModal{{transaction.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                              <div class="modal-dialog  modal-dialog-centered" role="document">
+                                 <div class="modal-content">
+                                    <div class="modal-header">
+                                       <h5 class="modal-title font-weight-bold" id="exampleModalLabel">{{transaction.transaction_type}} Transaction Details</h5>
+                                       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                       <span aria-hidden="true">&times;</span>
+                                       </button>
+                                    </div>
+                                    <div class="modal-body">
+                                      <div class="right-area">
+                                                <ul class="payment-details">
+                                                    <li>
+                                                        <span class="text-primary font-weight-bold">Payment Amount</span>
+                                                        <span class="text-primary font-weight-bold">{{transaction.amount}}</span>
+                                                    </li>
+                                                    <li>
+                                                        <span class="text-primary font-weight-bold">Fee Deducted</span>
+                                                        <span class="text-primary font-weight-bold">{{transaction.fees}}</span>
+                                                    </li>
+
+                                                </ul>
+                                                <ul class="payment-info">
+
+                                                    <li>
+                                                        <p class="text-primary font-weight-bold">Payment Date</p>
+                                                        <span class="text-dark">{{transaction.date}}</span>
+                                                    </li>
+                                                    <li>
+                                                        <p class="text-primary font-weight-bold">Transaction  ID:</p>
+                                                        <span class="text-dark">{{transaction.trx_id}}</span>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                    </div>
+
+                                 </div>
+                              </div>
+                           </div>
+{% endfor %}

@@ -1,0 +1,231 @@
+{% extends "frontend/layout.html" %}
+{% load static %}
+{% block content %}
+
+<!-- Banner Section start -->
+<section class="banner-section help-center">
+    <div class="overlay">
+        <div class="banner-content">
+            <div class="container wow fadeInUp">
+                <div class="row justify-content-center align-items-center">
+                    <div class="col-lg-8 col-md-7">
+                        <div class="main-content text-center">
+                            <div class="top-area section-text dark-sec">
+                                <h3 class="title">How can we help you today?</h3>
+                            </div>
+                            <form action="#">
+                                <div class="form-group mb-40 d-flex align-items-center">
+                                    <img src="{% static 'assets/images/icon/search-icon.png' %}" alt="icon">
+                                    <input type="text" placeholder="Search Knowledge base">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Banner Section end -->
+
+
+<!-- FAQs In start -->
+<section class="faqs-section help-center">
+    <div class="overlay pt-120 pb-120">
+        <div class="container">
+            <div class="row d-flex justify-content-center">
+                <div class="col-lg-7">
+                    <div class="section-header text-center">
+                        <h5 class="sub-title">Frequently Asked Questions</h5>
+                        <h2 class="title">If you got questions we have answer</h2>
+                        <p>We have a list of frequently asked questions about us</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row cus-mar">
+                <div class="col-lg-6">
+                    <div class="accordion" id="accordionLeft">
+                        <div class="accordion-item">
+                            <h6 class="accordion-header" id="headingLeftOne">
+                                <button class="accordion-button collapsed" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#collapseLeftOne"
+                                    aria-expanded="false" aria-controls="collapseLeftOne">
+                                    How to send money online?
+                                </button>
+                            </h6>
+                            <div id="collapseLeftOne" class="accordion-collapse collapse"
+                                aria-labelledby="headingLeftOne" data-bs-parent="#accordionLeft">
+                                <div class="accordion-body">
+                                    <p>Lorem ipsum dolor sit amet consectetur adipiscing elit posuere vel venenatis, eu sit massa. Volutpat massa rhoncus odio feugiat tellus elit massa sed ullamcorper a in.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h6 class="accordion-header" id="headingLeftTwo">
+                                <button class="accordion-button collapsed" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#collapseLeftTwo"
+                                    aria-expanded="false" aria-controls="collapseLeftTwo">
+                                    How much are money transfer fees?
+                                </button>
+                            </h6>
+                            <div id="collapseLeftTwo" class="accordion-collapse collapse"
+                                aria-labelledby="headingLeftTwo" data-bs-parent="#accordionLeft">
+                                <div class="accordion-body">
+                                    <p>Lorem ipsum dolor sit amet consectetur adipiscing elit posuere vel venenatis, eu sit massa. Volutpat massa rhoncus odio feugiat tellus elit massa sed ullamcorper a in.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h6 class="accordion-header" id="headingLeftThree">
+                                <button class="accordion-button collapsed" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#collapseLeftThree"
+                                    aria-expanded="false" aria-controls="collapseLeftThree">
+                                    What is the fastest way to send money abroad?
+                                </button>
+                            </h6>
+                            <div id="collapseLeftThree" class="accordion-collapse collapse"
+                                aria-labelledby="headingLeftThree" data-bs-parent="#accordionLeft">
+                                <div class="accordion-body">
+                                    <p>Lorem ipsum dolor sit amet consectetur adipiscing elit posuere vel venenatis, eu sit massa. Volutpat massa rhoncus odio feugiat tellus elit massa sed ullamcorper a in.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h6 class="accordion-header" id="headingLeftFour">
+                                <button class="accordion-button collapsed" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#collapseLeftFour"
+                                    aria-expanded="false" aria-controls="collapseLeftFour">
+                                    How to use Paylio?
+                                </button>
+                            </h6>
+                            <div id="collapseLeftFour" class="accordion-collapse collapse"
+                                aria-labelledby="headingLeftFour" data-bs-parent="#accordionLeft">
+                                <div class="accordion-body">
+                                    <p>Lorem ipsum dolor sit amet consectetur adipiscing elit posuere vel venenatis, eu sit massa. Volutpat massa rhoncus odio feugiat tellus elit massa sed ullamcorper a in.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h6 class="accordion-header" id="headingLeftFive">
+                                <button class="accordion-button collapsed" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#collapseLeftFive"
+                                    aria-expanded="false" aria-controls="collapseLeftFive">
+                                    How does Paylio protect your money?
+                                </button>
+                            </h6>
+                            <div id="collapseLeftFive" class="accordion-collapse collapse"
+                                aria-labelledby="headingLeftFive" data-bs-parent="#accordionLeft">
+                                <div class="accordion-body">
+                                    <p>Lorem ipsum dolor sit amet consectetur adipiscing elit posuere vel venenatis, eu sit massa. Volutpat massa rhoncus odio feugiat tellus elit massa sed ullamcorper a in.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="accordion" id="accordionRight">
+                        <div class="accordion-item">
+                            <h6 class="accordion-header" id="headingRightOne">
+                                <button class="accordion-button collapsed" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#collapseRightOne"
+                                    aria-expanded="false" aria-controls="collapseRightOne">
+                                    Are money transfer apps safe?
+                                </button>
+                            </h6>
+                            <div id="collapseRightOne" class="accordion-collapse collapse"
+                                aria-labelledby="headingRightOne" data-bs-parent="#accordionRight">
+                                <div class="accordion-body">
+                                    <p>Lorem ipsum dolor sit amet consectetur adipiscing elit posuere vel venenatis, eu sit massa. Volutpat massa rhoncus odio feugiat tellus elit massa sed ullamcorper a in.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h6 class="accordion-header" id="headingRightTwo">
+                                <button class="accordion-button collapsed" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#collapseRightTwo"
+                                    aria-expanded="false" aria-controls="collapseRightTwo">
+                                    How much money can I send?
+                                </button>
+                            </h6>
+                            <div id="collapseRightTwo" class="accordion-collapse collapse"
+                                aria-labelledby="headingRightTwo" data-bs-parent="#accordionRight">
+                                <div class="accordion-body">
+                                    <p>Lorem ipsum dolor sit amet consectetur adipiscing elit posuere vel venenatis, eu sit massa. Volutpat massa rhoncus odio feugiat tellus elit massa sed ullamcorper a in.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h6 class="accordion-header" id="headingRightThree">
+                                <button class="accordion-button collapsed" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#collapseRightThree"
+                                    aria-expanded="false" aria-controls="collapseRightThree">
+                                    Which currency can I send?
+                                </button>
+                            </h6>
+                            <div id="collapseRightThree" class="accordion-collapse collapse"
+                                aria-labelledby="headingRightThree" data-bs-parent="#accordionRight">
+                                <div class="accordion-body">
+                                    <p>Lorem ipsum dolor sit amet consectetur adipiscing elit posuere vel venenatis, eu sit massa. Volutpat massa rhoncus odio feugiat tellus elit massa sed ullamcorper a in.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h6 class="accordion-header" id="headingRightFour">
+                                <button class="accordion-button collapsed" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#collapseRightFour"
+                                    aria-expanded="false" aria-controls="collapseRightFour">
+                                    Cancel transaction
+                                </button>
+                            </h6>
+                            <div id="collapseRightFour" class="accordion-collapse collapse"
+                                aria-labelledby="headingRightFour" data-bs-parent="#accordionRight">
+                                <div class="accordion-body">
+                                    <p>Lorem ipsum dolor sit amet consectetur adipiscing elit posuere vel venenatis, eu sit massa. Volutpat massa rhoncus odio feugiat tellus elit massa sed ullamcorper a in.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h6 class="accordion-header" id="headingRightFive">
+                                <button class="accordion-button collapsed" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#collapseRightFive"
+                                    aria-expanded="false" aria-controls="collapseRightFive">
+                                    Can I send multiple payments?
+                                </button>
+                            </h6>
+                            <div id="collapseRightFive" class="accordion-collapse collapse"
+                                aria-labelledby="headingRightFive" data-bs-parent="#accordionRight">
+                                <div class="accordion-body">
+                                    <p>Lorem ipsum dolor sit amet consectetur adipiscing elit posuere vel venenatis, eu sit massa. Volutpat massa rhoncus odio feugiat tellus elit massa sed ullamcorper a in.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- FAQs In end -->
+
+<!-- Call Action start -->
+<section class="call-action">
+    <div class="overlay pt-120">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-xl-6 text-center">
+                    <div class="section-text">
+                        <h5 class="sub-title">Let us help you!</h5>
+                        <h2 class="title">Didn’t find what you were looking for?</h2>
+                    </div>
+                    <div class="btn-area">
+                        <a href="help-center.html" class="cmn-btn">Submit a request</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Call Action end -->
+
+
+{% endblock %}

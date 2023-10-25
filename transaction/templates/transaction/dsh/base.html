@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+      <!-- Required meta tags -->
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <title>{% block title %}FINEASE | dashboard{% endblock %}</title>
+      <!-- Favicon -->
+       <link rel="shortcut icon" href="{% static 'assets/images/fav.png' %}" type="image/x-icon">
+      <!-- Bootstrap CSS -->
+      <link rel="stylesheet" href="{% static 'dsh/css/bootstrap.min.css' %}">
+
+      <!-- Typography CSS -->
+      <link rel="stylesheet" href="{% static 'dsh/css/typography.css' %}">
+      <!-- Style CSS -->
+      <link rel="stylesheet" href="{% static 'dsh/css/style.css' %}">
+      <link rel="stylesheet" href="{% static 'dsh/css/bootstrap-select.css' %}">
+      <!-- Responsive CSS -->
+      <link rel="stylesheet" href="{% static 'dsh/css/responsive.css' %}">
+      <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+</head>
+
+
+<body  class="sidebar-main-active right-column-fixed">
+      <!-- Wrapper Start -->
+      <div class="wrapper">
+         <!-- Sidebar  -->
+         <div class="iq-sidebar">
+            {% include "transaction/dsh/header.html" %}
+            {% include "transaction/dsh/sidebar.html" %}
+            {% block content %}
+            {% endblock content %}
+            {% include "transaction/dsh/footer.html" %}
+            {% include "transaction/dsh/js.html" %}
+
+
+</body>
+</html>

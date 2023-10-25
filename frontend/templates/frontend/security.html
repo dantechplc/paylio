@@ -1,0 +1,98 @@
+{% extends "frontend/layout.html" %}
+{% load static %}
+{% block content %}
+
+ <!-- Banner Section start -->
+ <section class="banner-section invoice-management security">
+    <div class="overlay">
+        <div class="shape-area">
+            <img src="{% static 'assets/images/security-shape-1.png' %}" class="shape-1" alt="icon">
+            <img src="{% static 'assets/images/security-shape-2.png' %}" class="shape-2" alt="icon">
+            <img src="{% static 'assets/images/security-shape-3.png' %}" class="shape-3" alt="icon">
+        </div>
+        <div class="banner-content">
+            <div class="container wow fadeInUp">
+                <div class="row justify-content-center align-items-center">
+                    <div class="col-lg-8 col-md-7">
+                        <div class="main-content text-center">
+                            <div class="top-area section-text dark-sec">
+                                <h5 class="sub-title">Security</h5>
+                                <h1 class="title">Spend With Confidence</h1>
+                                <p>Keep your money and payments secure with our high quality tech and card protections</p>
+                            </div>
+                            <div class="btn-area">
+                                <a href="sign-up.html" class="cmn-btn">Get Started</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Banner Section end -->
+
+<!-- Features start -->
+<section class="earn-cashback features">
+    <div class="overlay pt-120 pb-120">
+        <div class="container wow fadeInUp">
+            <div class="row pb-120 align-items-center justify-content-between">
+                <div class="col-md-6">
+                    <div class="section-area">
+                        <h5 class="sub-title">Stay safe with our anti-fraud system</h5>
+                        <h2 class="title">Your money is safeguarded by licensed banks</h2>
+                        <p>We keep your card details safe, flag suspicious transactions, and ask for extra verification to protect you. Our cards are 3D Secure and our contactless card limits help fight fraud</p>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="sec-image">
+                        <img src="{% static 'assets/images/security-features-1.png' %}" alt="image" class="w-100">
+                    </div>
+                </div>
+            </div>
+            <div class="row align-items-center justify-content-between">
+                <div class="col-md-5 order-md-0 order-1">
+                    <div class="sec-image">
+                        <img src="{% static 'assets/images/security-features-2.png' %}" alt="image" class="w-100">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="section-text">
+                        <h5 class="sub-title">Stay in line with company policies</h5>
+                        <h2 class="title">Set and change team permissions with a tap</h2>
+                        <p>Stay in total control of your team’s spending by managing their permissions and levels of access. Create custom roles and choose the combination of apps and features you want them to use</p>
+                    </div>
+                    <div class="btn-area">
+                        <a href="sign-up.html" class="cmn-btn">Get Started</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Features end -->
+
+<!-- Call Action start -->
+<section class="call-action security">
+    <div class="overlay">
+        <div class="container">
+            <div class="main-content">
+                <div class="row">
+                    <div class="col-xl-5">
+                        <div class="section-text dark-sec">
+                            <h5 class="sub-title">What are you waiting for?</h5>
+                            <h2 class="title">Get top tier security for your business today</h2>
+                        </div>
+                        <div class="btn-area">
+                            <a href="sign-up.html" class="cmn-btn active">Sign up in minutes</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Call Action end -->
+
+
+{% endblock %}

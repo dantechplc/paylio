@@ -1,0 +1,48 @@
+{% extends 'transaction/dsh/base.html' %} {% block title %}
+  FINEASE | Exchange
+{% endblock %}
+
+
+
+{% block content %}
+<div id="content-page" class="content-page">
+    <div class="container-fluid">
+       <div class="row">
+           <div class="col-lg-12">
+			   <div class="iq-card">
+                        <div class="iq-card-header d-flex justify-content-between">
+                           <div class="iq-header-title">
+                              <h4 class="card-title">Exchange</h4>
+                           </div>
+                        </div>
+                        <div class="iq-card-body">
+                           <p>Exchange your currencies</p>
+                           <form method="post">
+                               {% csrf_token %}
+                              <div class="form-group">
+                                 <label >Select Currency</label>
+                                 <select required name="fiat_from" class="form-control"
+												hx-get="{% url 'transaction:swap_fiat' %}"
+												hx-trigger="change"
+												hx-target="#fiat">
+											<option value="" selected>Open this select menu</option>
+											{% for fiat in fiat %}
+											<option value="{{fiat.name}}" >{{fiat.name}}</option>
+											{% endfor %}
+                                 </select>
+                              </div>
+                              <div class="form-group mb-0">
+                                 <label  class="pb-0">To Receive</label>
+                                  <div id="fiat">
+                                       {% include "transaction/dsh/dashboard/partials/swap_fiat.html" %}
+                                  </div>
+                              </div>
+							   <button type="submit" class="btn btn-primary mt-3">Proceed to exchange</button>
+                           </form>
+                        </div>
+                     </div>
+		      </div>
+	      </div>
+	   </div>
+</div>
+{% endblock content %}

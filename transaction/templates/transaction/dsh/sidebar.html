@@ -1,0 +1,131 @@
+{% load static %}
+
+<script>
+    function copyAccountNumber() {
+      const accountNumber = document.getElementById('accountNumber').innerText;
+      const dummyInput = document.createElement('textarea');
+      document.body.appendChild(dummyInput);
+      dummyInput.value = accountNumber;
+      dummyInput.select();
+      document.execCommand('copy');
+      document.body.removeChild(dummyInput);
+      alert(accountNumber);
+    }
+  </script>
+<div id="sidebar-scrollbar">
+               <nav class="iq-sidebar-menu">
+                  <ul id="iq-sidebar-toggle" class="iq-menu">
+                     <li class="{% if navbar == 'home' %} active {% endif %}">
+                        <a href="#dashboard" class="iq-waves-effect" data-toggle="collapse" aria-expanded="false"><span class="ripple rippleEffect"></span><i class="las la-home iq-arrow-left"></i><span>Dashboard</span><i class="ri-arrow-right-s-line iq-arrow-right"></i></a>
+                        <ul id="dashboard" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                           <li><a href="{% url 'transaction:dashboard' %}"><i class="las la-laptop-code"></i>Account Dashboard</a></li>
+
+                        </ul>
+                     </li>
+                     <li class="{% if navbar == 'deposit' %} active {% endif %}">
+                        <a href="{% url 'transaction:deposit-money' %}" class="iq-waves-effect collapsed"  aria-expanded="false"><i class="ri-wallet-3-line iq-arrow-left"></i><span>Deposit</span><i class="ri-arrow-right-s-line iq-arrow-right"></i></a>
+                     </li>
+                     <li class="{% if navbar == 'withdrawal' %} active {% endif %}">
+                        <a href="{% url 'transaction:withdraw-money' %}" class="iq-waves-effect collapsed"  aria-expanded="false"><i class="ri-wallet-3-line iq-arrow-left"></i><span>Withdrawal</span><i class="ri-arrow-right-s-line iq-arrow-right"></i></a>
+                     </li>
+                     <li class="{% if navbar == 'transfer' %} active {% endif %}">
+                        <a href="{% url 'transaction:transfer-funds' %}" class="iq-waves-effect collapsed"  aria-expanded="false"><i class="ri-send-plane-fill iq-arrow-left"></i><span>Transfer Funds</span><i class="ri-arrow-right-s-line iq-arrow-right"></i></a>
+
+                     </li>
+                     <li class="{% if navbar == 'exchange' %} active {% endif %}">
+                        <a href="{% url 'transaction:exchange' %}" class="iq-waves-effect collapsed"  aria-expanded="false"><i class="ion-loop iq-arrow-left"></i><span>Exchange</span><i class="ri-arrow-right-s-line iq-arrow-right"></i></a>
+
+                     </li>
+                     <li class="{% if navbar == 'transactions' %} active {% endif %}">
+                        <a href="{% url 'transaction:transactions' %}" class="iq-waves-effect collapsed"  aria-expanded="false"><i class="ri-exchange-dollar-fill iq-arrow-left"></i><span>Transactions</span><i class="ri-arrow-right-s-line iq-arrow-right"></i></a>
+                     </li>
+                     <hr>
+                     <li class="{% if navbar == 'profile' %} active {% endif %}">
+                        <a href="{% url 'account:account_profile' %}" class="iq-waves-effect collapsed"  aria-expanded="false"><i class="fa fa-user-o iq-arrow-left"></i><span>Account</span><i class="ri-arrow-right-s-line iq-arrow-right"></i></a>
+                     </li>
+                     <li class="{% if navbar == 'customer' %} active {% endif %}">
+                        <a href="{% url 'account:customer-support' %}" class="iq-waves-effect collapsed"  aria-expanded="false"><i class="ri-customer-service-2-fill iq-arrow-left"></i><span>Customer Care</span><i class="ri-arrow-right-s-line iq-arrow-right"></i></a>
+
+                     </li>
+                       <li>
+                        <a href="{% url 'account:logout' %}" class="iq-waves-effect collapsed"  aria-expanded="false"><i class="ri-shut-down-line iq-arrow-left"></i><span>Logout</span><i class="ri-arrow-right-s-line iq-arrow-right"></i></a>
+
+                     </li>
+                  </ul>
+               </nav>
+               <div class="p-3"></div>
+            </div>
+         </div>
+         <!-- TOP Nav Bar -->
+         <div class="iq-top-navbar">
+            <div class="iq-navbar-custom">
+               <nav class="navbar navbar-expand-lg navbar-light p-0">
+                  <div class="iq-menu-bt d-flex align-items-center">
+                     <div class="wrapper-menu">
+                        <div class="main-circle"><i class="ri-menu-line"></i></div>
+                        <div class="hover-circle"><i class="ri-close-fill"></i></div>
+                     </div>
+                     <div class="iq-navbar-logo d-flex justify-content-between ml-3">
+                        <a href="{% url 'transaction:dashboard' %}" class="header-logo">
+                        <img  src="{% static 'dsh/assets/images/logo.png' %}" class="img-fluid rounded" alt="">
+                        <span></span>
+                        </a>
+                     </div>
+                  </div>
+                  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                  </div>
+                  <ul class="navbar-list">
+                     <li class="line-height">
+                        <a href="#" class="search-toggle iq-waves-effect d-flex align-items-center">
+                           <img style="width:50px; border-radius:5px;" src="{{request.user.client.profile_pic.url}}" class="img-fluid rounded mr-3" alt="profile_pic">
+                           <div class="caption">
+                              <h6 class="mb-0 line-height" style="text-transform:uppercase;">{{request.user.client.name}} </h6>
+                              <p class="mb-0">Account</p>
+                           </div>
+                        </a>
+                        <div class="iq-sub-dropdown iq-user-dropdown">
+                           <div class="iq-card shadow-none m-0">
+                              <div class="iq-card-body p-0 ">
+
+                                 <div class="bg-primary p-3">
+                                    <h5 class="mb-0 text-white line-height" style="text-transform:uppercase;">{{request.user.client.name}}</h5>
+                                    <p class="font-size-15" id="accountNumber">Account Number: {{request.user.client.account.account_number}}
+                                         <span onclick="copyAccountNumber()"><i class="pl-2 fa fa-solid fa-copy"></i></span>
+                                    </p>
+
+                                    <span class="text-white font-size-12">
+                                       {% if request.user.client.verification_status == 'Verified' %}
+                                       Account Status: {{request.user.client.verification_status}}<span class="pl-2"><i style="color:#90EE90;" class="fa fa-check-circle " aria-hidden="true"></i></span>
+                                       {% elif request.user.client.verification_status == 'Under Review' %}
+                                        Account Status: {{request.user.client.verification_status}}<span class="pl-2"><i style="color:#FFA500;" class="fa fa-exclamation-triangle " aria-hidden="true"></i></span>
+                                        {% elif request.user.client.verification_status == 'Unverified' %}
+                                        Account Status: {{request.user.client.verification_status}}<span class="pl-2"><i style="color:#ff0000;" class="fa fa-times-circle-o " aria-hidden="true"></i></span>
+                                       {% endif %}
+                                    </span>
+                                 </div>
+                                 <a href="{% url 'account:account_profile' %}" class="iq-sub-card iq-bg-primary-hover">
+                                    <div class="media align-items-center">
+                                       <div class="rounded iq-card-icon iq-bg-primary">
+                                          <i class="ri-account-box-line"></i>
+                                       </div>
+                                       <div class="media-body ml-3">
+                                          <h6 class="mb-0 ">Account settings</h6>
+                                          <p class="mb-0 font-size-12">Manage your account.</p>
+                                       </div>
+                                    </div>
+                                 </a>
+
+                                 <div class="d-inline-block w-100 text-center p-3">
+                                    <a class="bg-primary iq-sign-btn" href="{% url 'account:logout' %}" role="button">Sign out<i class="ri-login-box-line ml-2"></i></a>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </li>
+                  </ul>
+               </nav>
+            </div>
+         </div>
+    
+         
+         <!-- TOP Nav Bar END -->

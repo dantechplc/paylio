@@ -1,0 +1,141 @@
+{% extends "transaction/dsh/base.html" %}
+{% block content %}
+
+ <div class="content-page">
+     <div class="container-fluid">
+            <div class="col-lg-12 col-12 iq-card ">
+					  <div class="box">
+						<div class="box-header with-border">
+						  <h4 class="box-title pt-3">Identify Verification Form</h4>
+						</div>
+						<!-- /.box-header -->
+						<form class="form" method="post"  enctype="multipart/form-data">
+							{% csrf_token %}
+							<div class="box-body">
+{% for err in form.errors %}
+										   <small style="color:red;" class="text-danger ml-2">{{ err }}</small>
+										{% endfor %}
+								<h4 class="box-title text-primary mb-0 pt-3"><i class="fa fa-user me-15"></i> Personal Info</h4>
+								<hr class="my-15">
+								<div class="row">
+								  <div class="col-md-6">
+									<div class="form-group">
+									  <label class="form-label">First Name</label>
+										{% for err in form.first_name.errors %}
+										   <small style="color:red;" class="text-danger ml-2">{{ err }}</small>
+										{% endfor %}
+									  <input required {% if form.is_bound %} value="{{ form.first_name.value }}"{% endif %} name="first_name" required type="text" class="form-control">
+									</div>
+								  </div>
+								  <div class="col-md-6">
+									<div class="form-group">
+									  <label class="form-label">Last Name</label>
+										{% for err in form.last_name.errors %}
+										   <small style="color:red;" class="text-danger ml-2">{{ err }}</small>
+										{% endfor %}
+									  <input required {% if form.is_bound %} value="{{ form.last_name.value }}"{% endif %} name="last_name" required type="text" class="form-control">
+									</div>
+								  </div>
+								</div>
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group">
+										  <label class="form-label">Date of Birth</label>
+											{% for err in form.dob.errors %}
+										   <small style="color:red;" class="text-danger ml-2">{{ err }}</small>
+										{% endfor %}
+										  <input required name="dob" type="date" class="form-control">
+										</div>
+									  </div>
+									<div class="col-md-6">
+										<div class="form-group">
+										  <label class="form-label">Gender</label>
+											{% for err in form.gender.errors %}
+										   <small style="color:red;" class="text-danger ml-2">{{ err }}</small>
+											{% endfor %}
+											{{form.gender}}
+										</div>
+									  </div>
+								</div>
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group">
+										<label for="city">Town/City</label>
+											{% for err in form.town_city.errors %}
+										   <small style="color:red;" class="text-danger ml-2">{{ err }}</small>
+											{% endfor %}
+										<input {% if form.is_bound %} value="{{ form.town_city.value }}"{% endif %}  required type="text" id="city" placeholder="Enter town/city name" name="town_city" class="form-control">
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+										<label for="state">State</label>
+											{% for err in form.state.errors %}
+										   <small style="color:red;" class="text-danger ml-2">{{ err }}</small>
+											{% endfor %}
+										<input {% if form.is_bound %} value="{{ form.state.value }}"{% endif %}  required type="text" id="state" placeholder="Enter state name" name="state"  class="form-control">
+										</div>
+									</div>
+								</div>
+								<div class="row">
+								  <div class="col-md-6">
+									<div class="form-group">
+									  <label class="form-label">Address</label>
+										{% for err in form.address.errors %}
+										   <small style="color:red;" class="text-danger ml-2">{{ err }}</small>
+										{% endfor %}
+										<textarea required {% if form.is_bound %} value="{{ form.address.value }}"{% endif %} required name="address" class="form-control"></textarea>
+									</div>
+                                  </div>
+                                  <div class="col-md-6">
+                                      <div class="form-group">
+                                          <label class="form-label">Postcode/Zipcode</label>
+                                                    {% for err in form.postcode.errors %}
+                                                       <small style="color:red;" class="text-danger ml-2">{{ err }}</small>
+                                                    {% endfor %}
+                                                    <input required {% if form.is_bound %} value="{{ form.postcode.value }}"{% endif %} required name="postcode" class="form-control">
+                                      </div>
+                                  </div>
+								</div>
+
+								<h4 class="box-title text-primary mb-0 mt-20"><i class="fa fa-id-card me-15"></i> Valid ID Card</h4>
+								<hr class="my-15">
+
+								<div class="row">
+								  <div class="col-md-6">
+									<div class="form-group my-3">
+									  <label class="form-label">Select ID type</label>
+										{% for err in form.document_type.errors %}
+										   <small style="color:red;" class="text-danger ml-2">{{ err }}</small>
+										{% endfor %}
+										{{form.document_type}}
+									</div>
+								  </div>
+								</div>
+								<div class="form-group my-3">
+								  <label class="form-label">Upload ID</label>
+									{% for err in form.id_front_view.errors %}
+										   <small style="color:red;" class="text-danger ml-2">{{ err }}</small>
+										{% endfor %}
+								  <label class="file">
+								  </label>
+									<br>{{form.id_front_view}}
+								</div>
+
+							</div>
+
+							<!-- /.box-body -->
+							<div class="box-footer">
+								<button type="submit" class="btn btn-primary mb-3">
+								  <i class="fa fa-save"></i> Submit
+								</button>
+							</div>
+						</form>
+					  </div>
+					  <!-- /.box -->
+				</div>
+
+     </div>
+ </div>
+
+{% endblock content %}

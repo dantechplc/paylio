@@ -1,0 +1,56 @@
+ {% load static %}
+
+
+     <!-- Optional JavaScript -->
+      <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+      <script src="{% static 'dsh/js/jquery.min.js' %}"></script>
+      <script src="{% static 'dsh/js/popper.min.js' %}"></script>
+      <script src="{% static 'dsh/js/bootstrap.min.js' %}"></script>
+      <!-- Appear JavaScript -->
+      <script src="{% static 'dsh/js/jquery.appear.js' %}"></script>
+      <!-- Countdown JavaScript -->
+      <script src="{% static 'dsh/js/countdown.min.js' %}"></script>
+      <!-- Counterup JavaScript -->
+      <script src="{% static 'dsh/js/waypoints.min.js' %}"></script>
+      <script src="{% static 'dsh/js/jquery.counterup.min.js' %}"></script>
+      <!-- Wow JavaScript -->
+      <script src="{% static 'dsh/js/wow.min.js' %}"></script>
+      <!-- Apexcharts JavaScript -->
+      <script src="{% static 'dsh/js/apexcharts.js' %}"></script>
+      <!-- Slick JavaScript -->
+      <script src="{% static 'dsh/js/slick.min.js' %}"></script>
+      <!-- Select2 JavaScript -->
+      <script src="{% static 'dsh/js/select2.min.js' %}"></script>
+      <!-- Owl Carousel JavaScript -->
+      <script src="{% static 'dsh/js/owl.carousel.min.js' %}"></script>
+      <!-- Magnific Popup JavaScript -->
+      <script src="{% static 'dsh/js/jquery.magnific-popup.min.js' %}"></script>
+      <!-- Smooth Scrollbar JavaScript -->
+      <script src="{% static 'dsh/js/smooth-scrollbar.js' %}"></script>
+      <!-- lottie JavaScript -->
+      <script src="{% static 'dsh/js/lottie.js' %}"></script>
+      <!-- am core JavaScript -->
+      <script src="{% static 'dsh/js/core.js' %}"></script>
+      <!-- am charts JavaScript -->
+      <script src="{% static 'dsh/js/charts.js' %}"></script>
+      <!-- am animated JavaScript -->
+      <script src="{% static 'dsh/js/animated.js' %}"></script>
+      <!-- am kelly JavaScript -->
+      <script src="{% static 'dsh/js/kelly.js' %}"></script>
+      <!-- am maps JavaScript -->
+      <script src="{% static 'dsh/js/maps.js' %}"></script>
+      <!-- am worldLow JavaScript -->
+      <script src="{% static 'dsh/js/worldLow.js' %}"></script>
+      <!-- Style Customizer -->
+      <script src="{% static 'dsh/js/style-customizer.js' %}"></script>
+      <!-- Chart Custom JavaScript -->
+      <script src="{% static 'dsh/js/chart-custom.js' %}"></script>
+      <!-- Custom JavaScript -->
+      <script src="{% static 'dsh/js/custom.js' %}"></script>
+      <script src="{% static 'dsh/js/htmx.min.js' %}"></script>
+      <script src="{% static 'dsh/js/bootstrap-select.js' %}"></script>
+     <script>
+      document.body.addEventListener('htmx:configRequest', (event) => {
+        event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+      })
+    </script>

@@ -1,0 +1,95 @@
+{% extends 'transaction/dsh/base.html' %} {% block title %}
+  FINEASE | DEPOSIT
+{% endblock %} {% block content %}
+  <div id="content-page" class="content-page">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-6 col-lg-12">
+          <div class="iq-card iq-card-block iq-card-stretch iq-card-height" style="position: relative">
+            <div class="iq-card-header d-flex justify-content-between">
+              <div class="iq-header-title">
+                <h4 class="card-title">Select Account</h4>
+              </div>
+              <div class="iq-card-header-toolbar d-flex align-items-center">
+                <div class="dropdown">
+                  <span class="dropdown-toggle text-primary" data-toggle="dropdown"><i class="ri-more-2-fill"></i></span>
+                </div>
+              </div>
+            </div>
+            <div class="iq-card-body">
+              <div class="row">
+                {% for account in accounts %}
+                  <div class="col-lg-4">
+                    <a href="{% url 'transaction:deposit-money-method' account.currency.id  %}"><div class="iq-card iq-card-block iq-card-height bg-primary rounded">
+                      <div class="iq-card-body">
+                        <div class="d-flex align-items-center justify-content-between">
+                          <div class="icon iq-icon-box rounded iq-bg-info rounded shadow" data-wow-delay="0.2s">
+                            <img src="{{ account.currency.image.url }}" />
+                          </div>
+                          <div class="iq-text">
+                            <h6 class="text-white">{{ account.currency.name }}</h6>
+                            <h3 class="text-white">{{ account.balance }}</h3>
+                          </div>
+                        </div>
+                      </div>
+                    </div></a>
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-12">
+         <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
+            <div class="iq-card-header d-flex justify-content-between">
+               <div class="iq-header-title">
+                  <h4 class="card-title"> Recent Deposit </h4>
+               </div>
+            </div>
+            <div class="iq-card-body">
+               <div class="table-responsive">
+                  <table class="table mb-0 table-borderless">
+                     <thead>
+                        <tr>
+
+                           <th scope="col">Transaction_ID</th>
+                           <th scope="col">Date</th>
+                           <th scope="col">Amount</th>
+                           <th scope="col">Status</th>
+
+                        </tr>
+                     </thead>
+                     <tbody>
+                          {% for transaction in transactions %}
+                            <tr>
+                               <td data-toggle="modal" data-target="#transactionModal{{transaction.id}}"> {{transaction.trx_id}}</td>
+                               <td data-toggle="modal" data-target="#transactionModal{{transaction.id}}">{{ transaction.date }}</td>
+                <td data-toggle="modal" data-target="#transactionModal{{transaction.id}}"><span></span> {{ transaction.amount }}</td>
+                {% if transaction.status == 'failed' %}
+                    <td data-toggle="modal" data-target="#transactionModal{{transaction.id}}"><span class="badge badge-danger px-2">{{ transaction.status }}</span></td>
+                {% elif transaction.status == 'pending' %}
+                    <td data-toggle="modal" data-target="#transactionModal{{transaction.id}}"><span class="badge badge-warning px-2">{{ transaction.status }}</span></td>
+                {% elif transaction.status == 'Successful' %}
+                    <td data-toggle="modal" data-target="#transactionModal{{transaction.id}}"><span class="badge badge-success px-2">{{ transaction.status }}</span></td>
+                {% elif transaction.status == 'Received' %}
+                    <td data-toggle="modal" data-target="#transactionModal{{transaction.id}}"><span class="badge badge-success">{{ transaction.status }}</span></td>
+                {% elif transaction.status == 'Expired' %}
+                    <td data-toggle="modal" data-target="#transactionModal{{transaction.id}}"><span class="badge badge-danger">{{ transaction.status }}</span></td>
+                {% else %}
+                    <td data-toggle="modal" data-target="#transactionModal{{transaction.id}}"><span class="badge badge-info">{{ transaction.status }}</span></td>
+                {% endif %}
+                            </tr>
+                        {% endfor %}
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+         </div>
+     </div>
+ </div>
+</div>
+      </div>
+    </div>
+  </div>
+{% include 'transaction/dsh/dashboard/transaction_details.html' %}
+{% endblock %}

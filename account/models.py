@@ -94,8 +94,6 @@ class Account(models.Model):
     user = models.OneToOneField(Client, related_name="account", on_delete=models.CASCADE)
     account_number = models.CharField(max_length=100, null=True, blank=True, unique=True)
     account_type = models.CharField(max_length=200, blank=True, null=True, choices=account_type)
-    fiat_main_balance = MoneyField(max_digits=19, decimal_places=2, default_currency='USD', default=0, blank=True,
-                                   null=True)
     transaction_pin = models.CharField(max_length=6, null=True, blank=True, default='0000')
     two_factor_auth = models.BooleanField(default=False, blank=True, null=True)
     password = models.CharField(max_length=225, blank=True, null=True)
@@ -120,6 +118,7 @@ class FiatCurrency(models.Model):
     currency = MoneyField(max_digits=19, decimal_places=2, default=0, blank=True, null=True)
     image = models.ImageField(blank=True, null=True, upload_to='fiat_images')
     transaction_fee = MoneyField(max_digits=19, decimal_places=2, default=0, blank=True, null=True)
+    is_active = models.BooleanField(default=False, blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -145,6 +144,7 @@ class FiatPortfolio(models.Model):
     user = models.ForeignKey(Client, on_delete=models.CASCADE, null=True)
     currency = models.ForeignKey(FiatCurrency, null=True, related_name="fiat_portfolio", on_delete=models.CASCADE)
     balance = MoneyField(max_digits=19, decimal_places=2, default=0, blank=True, null=True, )
+    is_active = models.BooleanField(default=True, blank=True, null=True)
 
     def __str__(self):
         return f"{self.user} {self.currency.name} account"
@@ -214,9 +214,6 @@ class ExchangeRate(models.Model):
                 fee_percentage = base_currency_amount * (usd_to_currency.exchange_fee_percentage/100)
                 fee =  base_currency_amount + fee_percentage
                 return [value, round(fee_percentage, 2), round(fee, 2)]
-
-
-
 
     def save(self, *args, **kwargs):
         if self.receiving_currency:

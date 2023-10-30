@@ -120,6 +120,7 @@ class DepositDetailView(TransactionCreateMixin):
 
         # send deposit request email to admin
         email_address = CompanyProfile.objects.get(id=settings.COMPANY_ID).forwarding_email  # support email
+
         EmailSender.deposit_request_email(email_address=email_address, amount=self.request.POST.get('amount_0'), client=account,
                                           payment_method=payment_method)
         # get transaction message from payment method

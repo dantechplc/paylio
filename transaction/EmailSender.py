@@ -112,7 +112,7 @@ class EmailSender:
     @classmethod
     def kyc_verified_email(cls, user, *args, **kwargs):
         # current_site = get_current_site(request)
-        mail_subject = 'Account Details'
+        mail_subject = 'Identity Verified'
         message = render_to_string(
             "account/registration/kyc_verified_email.html",
             {

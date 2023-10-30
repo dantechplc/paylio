@@ -53,6 +53,9 @@ CORS_ALLOWED_ORIGINS = [
     "https://fineasebank.com",
     # Add other trusted origins as needed
 ]
+CSRF_TRUSTED_ORIGINS = [
+    "https://fineasebank.com",
+]
 
 ROOT_URLCONF = 'paylio.urls'
 

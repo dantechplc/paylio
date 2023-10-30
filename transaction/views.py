@@ -29,11 +29,11 @@ from transaction.models import Transactions
 def dashboard(request):
     currencies = FiatCurrency.objects.all()
     fiat = FiatCurrency.objects.get(id=1)
-    default_currency = FiatPortfolio.objects.filter(user=request.user.client)
+    default_currency = FiatPortfolio.objects.filter(user=request.user.client, is_active=True)
     latest_transactions = Transactions.objects.filter(user=request.user.client)[::-1]
     context = {
         'fiat_currency': currencies,
-        'balance': default_currency,
+        'balance': default_currency[:3],
         'navbar': "home",
         'transactions': latest_transactions[:5]
     }
@@ -45,7 +45,7 @@ def dashboard(request):
 @allowed_users(allowed_roles=['clients'])
 @never_cache
 def deposit_money_view(request):
-    accounts = FiatPortfolio.objects.filter(user=request.user.client)
+    accounts = FiatPortfolio.objects.filter(user=request.user.client, is_active=True)
     latest_transactions = Transactions.objects.filter(user=request.user.client, transaction_type="DEPOSIT")[
                           ::-1]  # reverse transaction base on latest
     context = {
@@ -62,7 +62,7 @@ def deposit_money_view(request):
 def deposit_money_method(request, *args, **kwargs):
     currency = kwargs.get('key')
     fiat = get_object_or_404(FiatCurrency, id=currency)
-    balance = FiatPortfolio.objects.get(currency=fiat, user=request.user.client)
+    balance = FiatPortfolio.objects.get(currency=fiat, user=request.user.client, is_active=True, )
     payment_methods = PaymentMethods.objects.filter(is_active=True, for_deposit=True)
     if request.method == 'POST':
         payment_method = request.POST.get('payment_method')
@@ -76,11 +76,7 @@ def deposit_money_method(request, *args, **kwargs):
 
 
 class TransactionCreateMixin(LoginRequiredMixin, CreateView):
-    # template_name = 'transactions/deposit_preview.html'
-
     model = Transactions
-
-    # success_url = reverse_lazy('transactions:transactions')
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -147,7 +143,7 @@ class DepositDetailView(TransactionCreateMixin):
 @allowed_users(allowed_roles=['clients'])
 @never_cache
 def fiat_withdrawal(request):
-    accounts = FiatPortfolio.objects.filter(user=request.user.client)
+    accounts = FiatPortfolio.objects.filter(user=request.user.client, is_active=True)
     latest_transactions = Transactions.objects.filter(user=request.user.client, transaction_type="WITHDRAWAL")[
                           ::-1]  # reverse transaction base on latest
     context = {
@@ -164,7 +160,7 @@ def fiat_withdrawal(request):
 def withdraw_money_method(request, *args, **kwargs):
     currency = kwargs.get('key')
     fiat = get_object_or_404(FiatCurrency, id=currency)
-    balance = FiatPortfolio.objects.get(currency=fiat, user=request.user.client)
+    balance = FiatPortfolio.objects.get(currency=fiat, user=request.user.client, is_active=True)
     payment_methods = PaymentMethods.objects.filter(is_active=True, for_withdrawal=True)
     if request.method == 'POST':
         payment_method = request.POST.get('payment_method')
@@ -218,7 +214,6 @@ class WithdrawMoneyView(TransactionCreateMixin):
         email_address = CompanyProfile.objects.get(id=settings.COMPANY_ID).forwarding_email  # support email
         EmailSender.withdrawal_request_email(email_address=email_address, amount=amount, client=account,
                                              payment_method=payment_method)
-
         messages.success(self.request, f' Your withdrawal is being processed!')
         form.save(commit=True)
 
@@ -240,7 +235,7 @@ class WithdrawMoneyView(TransactionCreateMixin):
 @allowed_users(allowed_roles=['clients'])
 @never_cache
 def transfer_funds(request):
-    accounts = FiatPortfolio.objects.filter(user=request.user.client)
+    accounts = FiatPortfolio.objects.filter(user=request.user.client, is_active=True)
     latest_transactions = Transactions.objects.filter(user=request.user.client, transaction_type="TRANSFER")[
                           ::-1]  # reverse transaction base on latest
     context = {
@@ -269,7 +264,6 @@ def transfer_money_method(request, *args, **kwargs):
                'navbar': "transfer",
                }
     return render(request, 'transaction/dsh/dashboard/transfer_account.html', context)
-
 
 
 class Transfer_funds(TransactionCreateMixin):
@@ -356,11 +350,12 @@ class Transfer_funds(TransactionCreateMixin):
         })
         return context
 
+
 @login_required(login_url='account:login')
 @allowed_users(allowed_roles=['clients'])
 @never_cache
 def exchange_view(request):
-    fiat = FiatCurrency.objects.all()
+    currency = FiatPortfolio.objects.filter(user=request.user.client, is_active=True)
     if request.method == 'POST':
         fiat_from = request.POST.get('fiat_from')
         fiat_to = request.POST.get('fiat_to')
@@ -368,7 +363,7 @@ def exchange_view(request):
 
     context = {
         'navbar': 'exchange',
-        'fiat': fiat,
+        'fiat': currency,
     }
     return render(request, 'transaction/dsh/dashboard/exchange_view.html', context)
 
@@ -379,7 +374,8 @@ def exchange_view(request):
 def htmx_swap(request):
     fiat_name = request.GET.get('fiat_from')
     fiat = get_object_or_404(FiatCurrency, name=fiat_name)
-    currency = FiatCurrency.objects.exclude(id=fiat.id)
+    currency = FiatPortfolio.objects.filter(user=request.user.client, is_active=True).exclude(currency=fiat)
+    print('currency', currency)
     context = {'currency': currency}
     return render(request, "transaction/dsh/dashboard/partials/swap_fiat.html", context)
 
@@ -423,7 +419,6 @@ class ExchangeFunds(TransactionCreateMixin):
         fiat_wallet = FiatPortfolio.objects.get(user=self.request.user.client, currency=currency)
         exchange_fiat = FiatCurrency.objects.get(name=self.fiat_to)
         exchange_fiat_wallet = FiatPortfolio.objects.get(user=self.request.user.client, currency=exchange_fiat)
-
         fiat_wallet.balance -= base_amount
         fiat_wallet.save(update_fields=['balance'])
         exchange_fiat_balance = ExchangeRate.exchange_currency(
@@ -444,7 +439,7 @@ class ExchangeFunds(TransactionCreateMixin):
         amount = djmoney.money.Money(1, str(fiat.currency.currency))
         exchange = ExchangeRate.exchange_currency(base_currency=amount, receiving_currency=self.fiat_to,
                                                   currency=self.fiat_from)
-        fiat_wallet = get_object_or_404(FiatPortfolio, user=self.request.user.client, currency=fiat)
+        fiat_wallet = get_object_or_404(FiatPortfolio, user=self.request.user.client, currency=fiat, is_active=True)
         swap_wallet = get_object_or_404(FiatCurrency, name=self.fiat_to)
         context = super().get_context_data(**kwargs)
         context.update({
@@ -457,6 +452,7 @@ class ExchangeFunds(TransactionCreateMixin):
 
         })
         return context
+
 
 @login_required(login_url='account:login')
 @allowed_users(allowed_roles=['clients'])
@@ -492,7 +488,7 @@ def transactions(request):
         trans_list.append(x)
 
     transaction = trans_list
-    default_currency = FiatPortfolio.objects.filter(user=request.user.client)
+    default_currency = FiatPortfolio.objects.filter(user=request.user.client, is_active=True)
     context = {'transaction': transaction,
                'transactions': users,
                'navbar': "transactions",
@@ -561,3 +557,28 @@ def hx_search(request):
 
     return render(request, 'transaction/dsh/dashboard/partials/transactions.html',
                   {'transactions': results, 'navbar': 'transactions'})
+
+
+@login_required(login_url='account:login')
+@allowed_users(allowed_roles=['clients'])
+@never_cache
+def view_all_balance(request):
+    currencies = FiatPortfolio.objects.filter(user=request.user.client, is_active=True,)
+    context = {'currency': currencies, 'navbar':'home'}
+    return render(request, 'transaction/dsh/dashboard/all_balance.html',context )
+
+
+@login_required(login_url='account:login')
+@allowed_users(allowed_roles=['clients'])
+@never_cache
+def add_new_account(request):
+    client_account = FiatPortfolio.objects.filter(user=request.user.client).exclude(is_active=True)
+    context = {'client_account': client_account, 'navbar':'home'}
+    if request.method == 'POST':
+        account = request.POST.get('account')
+        currency = FiatCurrency.objects.get(name=account)
+        fiat_account = FiatPortfolio.objects.filter(user=request.user.client, currency=currency)
+        fiat_account.update(is_active=True)
+        messages.success(request, 'Fiat account created successfully!')
+        return redirect('transaction:account-balances')
+    return render(request, 'transaction/dsh/dashboard/add_new_account.html', context)

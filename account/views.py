@@ -56,7 +56,7 @@ def register_view(request):
             fiats = FiatCurrency.objects.all()
             for fiat in fiats:
                 portfolio = FiatPortfolio.objects.create(
-                    user=client, currency=fiat
+                    user=client, currency=fiat, is_active=False
                 )
 
             # Sending customer verification email

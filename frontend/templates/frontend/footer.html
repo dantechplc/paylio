@@ -14,18 +14,9 @@
                         <div class="col-sm-6 d-flex justify-content-center justify-content-sm-start">
                             <div class="menu-item">
                                 <ul class="footer-link d-flex align-items-center">
-                                    <li><a href="about-us.html">About Us</a></li>
-                                    <li><a href="help-center.html">Support</a></li>
-                                    <li><a href="fees.html">Fees</a></li>
+                                    <li><a href="{% url 'about' %}">About Us</a></li>
+                                    <li><a href="{% url 'help_center' %}">Support</a></li>
                                 </ul>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="social-link d-flex justify-content-sm-end justify-content-center align-items-center">
-                                <a href="javascript:void(0)"><img src="{% static 'assets/images/icon/facebook.png' %}" alt="icon"></a>
-                                <a href="javascript:void(0)"><img src="{% static 'assets/images/icon/linkedin.png' %}" alt="icon"></a>
-                                <a href="javascript:void(0)"><img src="{% static 'assets/images/icon/instagram.png' %}" alt="icon"></a>
-                                <a href="javascript:void(0)"><img src="{% static 'assets/images/icon/twitter.png' %}" alt="icon"></a>
                             </div>
                         </div>
                     </div>
@@ -34,14 +25,14 @@
                     <div class="row justify-content-between align-items-center">
                         <div class="col-md-6 col-sm-8 d-flex justify-content-center justify-content-sm-start order-sm-0 order-1">
                             <div class="copyright text-center text-sm-start">
-                                <p> Copyright © 2022 <a href="index.html">Paylio.</a> All Rights Reserved.</p>
+                                <p> Copyright © 2023 <a href="{% url 'home' %}">FINEASE BANK.</a> All Rights Reserved.</p>
                             </div>
                         </div>
                         <div class="col-md-6 col-sm-4">
                             <div class="menu-item">
                                 <ul class="footer-link d-flex justify-content-sm-end justify-content-center align-items-center">
-                                    <li><a href="terms-conditions.html">Terms</a></li>
-                                    <li><a href="privacy-policy.html">Privacy</a></li>
+                                    <li><a href="{% url 'terms' %}">Terms</a></li>
+
                                 </ul>
                             </div>
                         </div>

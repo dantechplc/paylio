@@ -1,0 +1,67 @@
+{% extends 'transaction/dsh/base.html' %}
+{% block title %}
+  FINEASE | Account Balance
+{% endblock %}
+{% block content %}
+  <div id="content-page" class="content-page">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-12">
+                {% for message in messages %} {% if message.tags == 'warning' %}
+
+              <div class="col-lg-12 alert alert-danger alert-dismissible fade show">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true" style="color: black">&times;</span>
+                </button>
+                <strong>{{message}}</strong>
+              </div>
+
+              {% elif message.tags == 'success' %}
+              <div class="col-lg-12 alert alert-success alert-dismissible fade show">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true" style="color: black">&times;</span>
+                </button>
+                <strong class="text-dark">{{message}}</strong>
+              </div>
+              {% endif %} {% endfor %}
+                  <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
+                     <div class="iq-card-header d-flex justify-content-between">
+                        <div class="iq-header-title">
+                           <h4 class="card-title"> Account Balances </h4>
+                        </div>
+                     </div>
+                     <div class="iq-card-body">
+                        <div class="table-responsive">
+                           <table class="table mb-0 table-borderless">
+                              <thead>
+                                 <tr>
+
+                                    <th scope="col">Currencies</th>
+                                    <th scope="col">Balance</th>
+                                 </tr>
+                              </thead>
+                              <tbody>
+                              {% for currency in currency %}
+                                 <tr>
+                                     <td><img style="width:60px;" src="{{currency.currency.image.url}}" alt="currency" class="img-fluid rounded avatar-40 text-center"><span class="pl-2 small">{{currency.currency}}</span></td>
+                                     <td>{{currency.balance}}</td>
+                                    <td>
+                                       <div class="flex align-items-center list-user-action">
+                                          <a class="" href="{% url 'transaction:deposit-money-method' currency.currency.id %}"><i class="fa fa-plus badge badge-pill badge-primary small"><span class="small pl-2">Add Money</span></i></a>
+
+                                       </div>
+                                    </td>
+                                 </tr>
+                              {% endfor %}
+                              </tbody>
+                           </table>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+      </div>
+    </div>
+  </div>
+
+
+{% endblock content %}

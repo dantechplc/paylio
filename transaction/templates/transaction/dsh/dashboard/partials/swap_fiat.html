@@ -2,6 +2,6 @@
 <select required name="fiat_to" class="form-control select2">
 	<option  value="" selected>Choose your Currency</option>
 	{% for fiat in currency %}
-		<option value="{{fiat.name}}" >{{fiat.name}}</option>
+		<option value="{{fiat.currency.name}}" >{{fiat.currency.name}}</option>
 	{% endfor %}
 </select>

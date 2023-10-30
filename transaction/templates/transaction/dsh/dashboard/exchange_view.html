@@ -5,6 +5,7 @@
 
 
 {% block content %}
+
 <div id="content-page" class="content-page">
     <div class="container-fluid">
        <div class="row">
@@ -27,7 +28,7 @@
 												hx-target="#fiat">
 											<option value="" selected>Open this select menu</option>
 											{% for fiat in fiat %}
-											<option value="{{fiat.name}}" >{{fiat.name}}</option>
+											<option value="{{fiat.currency.name}}" >{{fiat.currency.name}}</option>
 											{% endfor %}
                                  </select>
                               </div>

@@ -1,0 +1,42 @@
+{% extends 'transaction/dsh/base.html' %} {% block title %}
+  FINEASE | Add Fiat Account
+{% endblock %}
+{% block content %}
+
+
+<div id="content-page" class="content-page">
+    <div class="container-fluid">
+       <div class="row">
+           <div class="col-lg-12">
+			   <div class="iq-card">
+                        <div class="iq-card-header d-flex justify-content-between">
+                           <div class="iq-header-title">
+                              <h4 class="card-title">Add New Fiat Wallet</h4>
+                           </div>
+                        </div>
+                        <div class="iq-card-body">
+                           <p>Add account</p>
+                           <form method="post">
+                               {% csrf_token %}
+                              <div class="form-group">
+                                 <label >Select Currency</label>
+                                 <select required name="account" class="form-control">
+
+											{% for fiat in client_account %}
+											<option value="{{fiat.currency.name}}" >{{fiat.currency}}</option>
+                                            {% empty %}
+                                            	<option value="" selected        >You have all the available account</option>
+											{% endfor %}
+
+                                 </select>
+                              </div>
+							   <button type="submit" class="btn btn-primary mt-3">Proceed to create account</button>
+                           </form>
+                        </div>
+                     </div>
+		      </div>
+	      </div>
+	   </div>
+</div>
+
+{% endblock content %}

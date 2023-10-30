@@ -22,4 +22,6 @@ urlpatterns = [
     path("transactions", transactions, name="transactions"),
     path("hx-get-acct-name", hx_act_name, name="hx-act-name"),
     path('hx-search/', hx_search, name="hx-search"),
+    path('account-balances', view_all_balance, name="account-balances"),
+    path('add-fiat-account', add_new_account, name="add-fiat-account"),
 ]

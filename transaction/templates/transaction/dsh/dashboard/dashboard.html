@@ -15,13 +15,22 @@
                               </button> <strong> Account Under Review !</strong></div>
           {% endif %}
                <div class="row">
+                  <div class="col-md-6 col-lg-3">
+                     <a href="{% url 'transaction:add-fiat-account' %}">
+                     <div class="iq-card dash-hover-blank d-flex align-items-center iq-card-block iq-card-stretch iq-card-height">
+                        <div class="iq-card-body text-center">
+                           <h5 class="fa fa-plus"><span class="pl-2"></span> Add New Account</h5>
+                        </div>
+                     </div>
+                     </a>
+                  </div>
                   {% for currency in balance %}
-                  <div class="col-md-6 col-lg-4">
+                  <div class="col-md-6 col-lg-3">
                      <div class="iq-card iq-card-block iq-card-stretch iq-card-height bg-primary rounded">
                         <div class="iq-card-body">
                            <div class="d-flex align-items-center justify-content-between">
                               <div class="icon iq-icon-box rounded iq-bg-info rounded shadow" data-wow-delay="0.2s">
-                                <img src="{{currency.currency.image.url}}">
+                                <img src="{{currency.currency.image_thumbnail.url}}">
                               </div>
                               <div class="iq-text">
                                  <h6 class="text-white">{{currency.currency.name}}</h6>
@@ -32,6 +41,13 @@
                      </div>
                   </div>
                   {% endfor %}
+                  <div class="col-lg-4"></div>
+                  <div class="col-lg-4">
+                     <li class="d-flex align-items-center justify-content-between">
+                                 <a href="{% url 'transaction:account-balances' %}" class="btn btn-primary w-100 mb-3">View all account balances</a>
+                     </li>
+                  </div>
+                  <div class="col-lg-4"></div>
                </div>
 
                <div class="row">

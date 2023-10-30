@@ -6,7 +6,7 @@ from django import forms
 #
 #
 #
-from account.models import FiatCurrency, FiatPortfolio, Account, ExchangeRate
+from account.models import FiatCurrency, FiatPortfolio, Account, ExchangeRate, Client
 from transaction.models import Transactions
 
 
@@ -98,6 +98,13 @@ class WithdrawalForm(TransactionForm):
         min_withdraw_amount = djmoney.money.Money(10, str(currency.currency.currency))
         transaction_amount = amount - fees
 
+        if FiatPortfolio.objects.get(user=account, currency=currency).freeze_account:
+            raise forms.ValidationError(
+                f'Your {currency} account is frozen. kindly contact our support team.  '
+
+            )
+
+
         if amount > balance:
             raise forms.ValidationError(
                 f'You have {balance}  in your {currency.currency.currency} account. '
@@ -164,10 +171,17 @@ class TransferForm(TransactionForm):
         min_withdraw_amount = djmoney.money.Money(10, str(currency.currency.currency))
         transaction_amount = amount - fees
 
+        if FiatPortfolio.objects.get(user=account, currency=currency).freeze_account:
+            raise forms.ValidationError(
+                f'Your {currency} account is frozen. kindly contact our support team.  '
+
+            )
+
+
         if amount > balance:
             raise forms.ValidationError(
                 f'You have {balance}  in your {currency.currency.currency} account. '
-                'You can not withdraw more than your account balance'
+                'You can not transfer more than your account balance'
             )
 
         if transaction_amount > balance:
@@ -204,8 +218,21 @@ class TransferForm(TransactionForm):
     def clean_account_number(self):
         if self.payment_method == "Finease Bank Account Holder":
             account = self.account
+            currency = FiatCurrency.objects.get(name=self.currency.name)
             account_number = self.cleaned_data.get('account_number')
             user_acct = Account.objects.get(user=account)
+            try:
+                recipient = Account.objects.get(account_number=account_number)
+                try:
+                    recipient_acct =  FiatPortfolio.objects.get(user=recipient.user, currency=currency)
+                except FiatPortfolio.DoesNotExist:
+                    raise forms.ValidationError(
+                        f'{recipient.user.name} {currency} account hasn\'t been created.'
+                    )
+            except Account.DoesNotExist:
+                raise forms.ValidationError(
+                    f'Incorrect account number!'
+                )
 
             if not Account.objects.filter(account_number=account_number).exists():
                 raise forms.ValidationError(
@@ -246,6 +273,12 @@ class ExchangeForm(TransactionForm):
         fees = exchange[1]
 
         transaction_amount = amount + fees
+
+        if FiatPortfolio.objects.get(user=account, currency=currency).freeze_account:
+            raise forms.ValidationError(
+                f'Your {currency} account is frozen. kindly contact our support team.  '
+
+            )
 
         if amount > balance:
             raise forms.ValidationError(

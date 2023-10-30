@@ -19,6 +19,8 @@
                         <a href="#dashboard" class="iq-waves-effect" data-toggle="collapse" aria-expanded="false"><span class="ripple rippleEffect"></span><i class="las la-home iq-arrow-left"></i><span>Dashboard</span><i class="ri-arrow-right-s-line iq-arrow-right"></i></a>
                         <ul id="dashboard" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
                            <li><a href="{% url 'transaction:dashboard' %}"><i class="las la-laptop-code"></i>Account Dashboard</a></li>
+                            <li><a href="{% url 'transaction:account-balances' %}"><i class="las la-laptop-code"></i>Account Balances</a></li>
+                           <li><a href="{% url 'transaction:add-fiat-account' %}"><i class="fa fa-plus"></i>Add New Fiat Account</a></li>
 
                         </ul>
                      </li>

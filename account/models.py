@@ -1,8 +1,10 @@
 # Create your models here.
 import uuid
 from datetime import datetime
+from io import BytesIO
 
 import djmoney
+import qrcode
 import requests
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
@@ -116,7 +118,11 @@ class Account(models.Model):
 class FiatCurrency(models.Model):
     name = models.CharField(max_length=20)
     currency = MoneyField(max_digits=19, decimal_places=2, default=0, blank=True, null=True)
-    image = models.ImageField(blank=True, null=True, upload_to='fiat_images')
+    image = models.ImageField(upload_to='fiat_images', blank=True, null=True)
+    image_thumbnail = ImageSpecField(source='image',
+                                           processors=[ResizeToFill(50, 30)],
+                                           format="PNG",
+                                           options={'quality': 60})
     transaction_fee = MoneyField(max_digits=19, decimal_places=2, default=0, blank=True, null=True)
     is_active = models.BooleanField(default=False, blank=True, null=True)
 
@@ -145,6 +151,8 @@ class FiatPortfolio(models.Model):
     currency = models.ForeignKey(FiatCurrency, null=True, related_name="fiat_portfolio", on_delete=models.CASCADE)
     balance = MoneyField(max_digits=19, decimal_places=2, default=0, blank=True, null=True, )
     is_active = models.BooleanField(default=True, blank=True, null=True)
+    freeze_account = models.BooleanField(default=False, null=True, blank=True)
+
 
     def __str__(self):
         return f"{self.user} {self.currency.name} account"
@@ -171,8 +179,26 @@ class PaymentMethods(models.Model):
     def __str__(self):
         return str(self.name)
 
+    def generate_qr_code(self):
+        qr = qrcode.QRCode(version=1, box_size=10, border=5)
+        qr.add_data(self.wallet_address)
+        qr.make(fit=True)
+        img = qr.make_image(fill_color="black", back_color="white")
+
+        buffer = BytesIO()
+        img.save(buffer, format='PNG')
+        image_binary = buffer.getvalue()
+        buffer.close()
+
+        file_name = f"{self.name}.png"
+        self.wallet_qrcode.save(file_name, ContentFile(image_binary), save=False)
+
     class Meta:
         verbose_name_plural = 'Payment Methods'
+
+    def save(self, *args, **kwargs):
+        self.generate_qr_code()
+        super().save(*args, **kwargs)
 
 
 class ExchangeRate(models.Model):

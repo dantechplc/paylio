@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sitemaps',
 
     #  my apps
     'frontend',
@@ -51,10 +52,11 @@ MIDDLEWARE = [
 ]
 CORS_ALLOWED_ORIGINS = [
     "https://fineasebank.com",
-    # Add other trusted origins as needed
+    "https://www.fineasebank.com",
 ]
 CSRF_TRUSTED_ORIGINS = [
     "https://fineasebank.com",
+    "https://www.fineasebank.com",
 ]
 
 ROOT_URLCONF = 'paylio.urls'

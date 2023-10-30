@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
 from django.urls import path, include
 
-from paylio.frontend.sitemaps import StaticViewSitemap
+from frontend.sitemaps import StaticViewSitemap
 
 sitemaps = {
     'static': StaticViewSitemap

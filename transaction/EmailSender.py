@@ -83,7 +83,7 @@ class EmailSender:
         email.send()
 
     @classmethod
-    def exchange_detail(cls, email_address, name, amount, fiat_from, fiat_to, fee, balance, ex_amt, ex_bal):
+    def exchange_detail(cls, email_address, name, amount, fiat_from, fiat_to, fee, balance, ex_amt, ex_bal, date):
         email_subject = 'Exchange Successful'
         message = render_to_string(
             "transaction/dsh/emails/exchange_email.html",
@@ -97,6 +97,7 @@ class EmailSender:
                 'ex_bal': ex_bal,
                 'balance': balance,
                 "domain": 'fineasebank.com',
+                'date': date,
                 "company": CompanyProfile.objects.get(id=settings.COMPANY_ID)
             },
         )

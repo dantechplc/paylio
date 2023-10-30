@@ -431,7 +431,7 @@ class ExchangeFunds(TransactionCreateMixin):
         amount = djmoney.money.Money(self.request.POST.get('amount_0'), str(currency.currency.currency))
         EmailSender.exchange_detail(email_address=account, name=account.name, amount=amount, fiat_from=self.fiat_from,
                                     fiat_to=self.fiat_to, ex_bal=exchange_fiat_wallet.balance,
-                                    fee=exchange[1], balance=fiat_wallet.balance, ex_amt=exchange[0])
+                                    fee=exchange[1], balance=fiat_wallet.balance, ex_amt=exchange[0], date=timezone.now())
 
         return super().form_valid(form)
 

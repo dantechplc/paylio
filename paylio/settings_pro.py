@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     #  third party
     'imagekit',
     'djmoney',
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
@@ -41,10 +42,16 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django_session_timeout.middleware.SessionTimeoutMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+CORS_ALLOWED_ORIGINS = [
+    "https://fineasebank.com",
+    # Add other trusted origins as needed
 ]
 
 ROOT_URLCONF = 'paylio.urls'

@@ -49,8 +49,4 @@
       <script src="{% static 'dsh/js/custom.js' %}"></script>
       <script src="{% static 'dsh/js/htmx.min.js' %}"></script>
       <script src="{% static 'dsh/js/bootstrap-select.js' %}"></script>
-     <script>
-      document.body.addEventListener('htmx:configRequest', (event) => {
-        event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
-      })
-    </script>
+      <script src="{% static 'dsh/js/copy_acct.js' %}"></script>

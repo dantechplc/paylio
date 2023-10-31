@@ -1,17 +1,6 @@
 {% load static %}
 
-<script>
-    function copyAccountNumber() {
-      const accountNumber = document.getElementById('accountNumber').innerText;
-      const dummyInput = document.createElement('textarea');
-      document.body.appendChild(dummyInput);
-      dummyInput.value = accountNumber;
-      dummyInput.select();
-      document.execCommand('copy');
-      document.body.removeChild(dummyInput);
-      alert(accountNumber);
-    }
-  </script>
+
 <div id="sidebar-scrollbar">
                <nav class="iq-sidebar-menu">
                   <ul id="iq-sidebar-toggle" class="iq-menu">

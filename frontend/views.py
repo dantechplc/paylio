@@ -68,3 +68,16 @@ def career(request):
 @unauthenticated_user
 def help_center(request):
     return render(request, 'frontend/help_center.html')
+
+
+
+def error_404_view(request, exception):
+    return render(request, 'frontend/404.html')
+
+
+def error_500_view(request):
+    return render(request, 'frontend/500.html')
+
+
+def error_403_view(request, exception):
+    return render(request, 'frontend/403.html')

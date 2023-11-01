@@ -23,3 +23,8 @@ admin.site.site_header = "Finease Bank"
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
+handler404 = 'frontend.views.error_404_view'
+handler500 = 'frontend.views.error_500_view'
+handler403 = 'frontend.views.error_403_view'

@@ -85,8 +85,6 @@ class Transactions(models.Model):
         if self.status == "Successful" and self.transaction_type == 'TRANSFER' and self.payment_methods != 'Finease Bank Account Holder':
             currency = FiatCurrency.objects.get(currency_currency=self.amount.currency)
             account = FiatPortfolio.objects.get(user=self.user, currency=currency)
-            account.balance -= self.amount
-            account.save(update_fields=['balance'])
             balance = account.balance
             EmailSender.transfer_success_email(user=self.user, amount=self.amount, trx_id=self.trx_id,
                                                payment_methods=self.payment_methods, currency=currency,

@@ -306,7 +306,10 @@ class Transfer_funds(TransactionCreateMixin):
         fees = method.transaction_fee
 
         # deduct the amount from the account
-
+        client_account = FiatPortfolio.objects.get(user=account, currency=currency)
+        client_account.balance -= amount
+        client_account.balance -= djmoney.money.Money(fees.amount, str(currency.currency.currency))
+        client_account.save(update_fields=['balance'])
 
         if method.name == 'Finease Bank Account Holder':
             #  transfer out for finease account holder

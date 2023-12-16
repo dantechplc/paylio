@@ -1,0 +1,106 @@
+<style>
+.payment-details li {
+  padding: 10px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+}
+.payment-details li:last-child {
+  border-top: 1px solid #E6E6FF;
+  border-bottom: 1px solid #E6E6FF;
+}
+.payment-info li {
+  margin-top: 15px;
+}
+
+.transactions-popup .modal-dialog .modal-content .right-area .payment-info li p {
+  color: #000000;
+}
+
+.transactions-popup .modal-dialog .modal-content .right-area .payment-info li span {
+  color: #696D8D;
+}
+ul,
+ol {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+</style>
+
+<script type="text/javascript" >
+    function myFunction() {
+    let amount = document.getElementById("usd").value;
+    let currency = '{{currency.currency.currency}}';
+    let fee = '{{method.transaction_fee.amount}}';
+    let total_amount = Number(amount) - Number(fee) ;
+    let bnk_name = document.getElementById("bank_name").value;
+    let acct_name = document.getElementById("account_name").value;
+
+    document.getElementById("amount").innerHTML = amount + " " + currency ;
+    document.getElementById("fee").innerHTML = fee + " " + currency ;
+    document.getElementById("total_amount").innerHTML = total_amount.toFixed(2) + " " + currency;
+    document.getElementById("bnk_name").innerHTML = bnk_name ;
+    document.getElementById("acct_name").innerHTML = acct_name ;
+
+    };
+    function submitFunction() {
+    document.getElementById("frm1").submit();
+    };
+
+</script>
+
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" style="display: none;" aria-hidden="true">
+                              <div class="modal-dialog" role="document">
+                                 <div class="modal-content">
+                                    <div class="modal-header">
+                                       <h5 class="modal-title" id="exampleModalLabel">Confirm Payment Details</h5>
+                                       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                       <span aria-hidden="true">×</span>
+                                       </button>
+                                    </div>
+                                    <div class="modal-body">
+                                       <ul class="payment-details">
+                                                    <li>
+                                                        <span class="text-primary font-weight-bold">Payment Amount </span>
+                                                        <span id="amount" class="text-primary font-weight-bold"></span>
+                                                    </li>
+                                                    <li>
+                                                        <span class="text-primary font-weight-bold">Our Fee</span>
+                                                        <span id="fee" class="text-primary font-weight-bold"></span>
+                                                    </li>
+                                                    <li>
+                                                        <span class="text-primary font-weight-bold">{% if navbar == 'withdrawal' %} Recipient gets
+                                                            {% elif navbar == 'deposit' %} You Receive
+                                                            {% elif navbar == 'transfer' %} Recipient gets
+                                                            {% endif %}</span>
+                                                        <span id="total_amount" class="text-primary font-weight-bold"></span>
+                                                    </li>
+                                                </ul>
+                                                <ul class="payment-info">
+
+                                                    <li>
+                                                        <p class="text-primary font-weight-bold">Bank Name</p>
+                                                        <span id="bnk_name" class="text-dark"></span>
+                                                    </li>
+                                                    <li>
+                                                        <p class="text-primary font-weight-bold">Account Name:</p>
+                                                        <span id="acct_name" class="text-dark"></span>
+                                                    </li>
+                                                    {% if navbar == 'withdrawal' %}
+                                                    <li>
+                                                        <p class="text-primary font-weight-bold">Routing Number:</p>
+                                                        <span id="rout_no" class="text-dark"></span>
+                                                    </li>
+                                                    {% endif %}
+                                                </ul>
+                                    </div>
+                                    <div class="modal-footer">
+                                       <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                       <button type="button" class="btn btn-primary" onclick="submitFunction()" value="Submit">Submit</button>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>

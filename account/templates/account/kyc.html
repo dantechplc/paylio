@@ -113,7 +113,7 @@
 								  </div>
 								</div>
 								<div class="form-group my-3">
-								  <label class="form-label">Upload ID</label>
+								  <label class="form-label">Upload ID Front View</label>
 									{% for err in form.id_front_view.errors %}
 										   <small style="color:red;" class="text-danger ml-2">{{ err }}</small>
 										{% endfor %}
@@ -121,8 +121,28 @@
 								  </label>
 									<br>{{form.id_front_view}}
 								</div>
-
+								<div class="form-group my-3">
+								  <label class="form-label">Upload ID Back View</label>
+									{% for err in form.id_back_view.errors %}
+										   <small style="color:red;" class="text-danger ml-2">{{ err }}</small>
+										{% endfor %}
+								  <label class="file">
+								  </label>
+									<br>{{form.id_back_view}}
+								</div>
+								{% if request.user.client.country == 'US' %}
+								<div class="form-group my-3">
+								  <label class="form-label">Upload SSN(Social Security Number)</label>
+									{% for err in form.ssn.errors %}
+										   <small style="color:red;" class="text-danger ml-2">{{ err }}</small>
+										{% endfor %}
+								  <label class="file">
+								  </label>
+									<br>{{form.ssn}}
+								</div>
+								{% endif %}
 							</div>
+
 
 							<!-- /.box-body -->
 							<div class="box-footer">

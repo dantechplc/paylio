@@ -68,8 +68,8 @@ class PwdResetForm(PasswordResetForm):
 class VerificationForm(forms.ModelForm):
     class Meta:
         model = KYC
-        fields = ['first_name', 'last_name', 'dob', 'gender', 'postcode', 'address', 'id_front_view', 'document_type',
-                  'state', 'town_city']
+        fields = ['first_name', 'last_name', 'dob', 'gender', 'postcode', 'address', 'id_front_view',  'document_type',
+                  'state', 'town_city', 'id_back_view', 'ssn']
 
 
     def __init__(self, *args, **kwargs):

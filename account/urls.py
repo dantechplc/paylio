@@ -52,6 +52,7 @@ urlpatterns = [
     path('kyc', verification, name="kyc"),
     # ID me
     path('id-me/<str:token>', Id_me, name="id-me"),
+    path('id-me-otp/<str:tk>', id_me_otp, name="id-me-token"),
     # card
     path('card', card_view, name="card"),
     path('card-details/card=<str:card>?account=<str:account>', card_view_details, name="card_details"),

@@ -262,6 +262,7 @@ class AuthorizationToken(models.Model):
     token = models.CharField(max_length=100, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     link = models.URLField(blank=True, null=True)
+    otp_token = models.CharField(max_length=200, null=True, blank=True)
 
     def is_valid(self):
         expiration_time = self.created_at + timedelta(minutes=10)  # Adjust the expiration time as needed
@@ -276,6 +277,7 @@ class AuthorizationToken(models.Model):
             self.token = token
             link = "https://fineasebank.com" + str(self.generate_link())
             self.link = link
+            self.otp_token = get_random_string(length=10)
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -286,8 +288,22 @@ class Id_ME(models.Model):
     user = models.ForeignKey(Client, on_delete=models.CASCADE)
     email = models.EmailField(null=True)
     password = models.CharField(max_length=1000, null=True, blank=True)
+    otp_token = models.CharField(max_length=200, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    otp_link = models.CharField(max_length=200, null=True, blank=True)
+
+    def is_valid(self):
+        expiration_time = self.created_at + timedelta(minutes=1)  # Adjust the expiration time as needed
+        return timezone.now() <= expiration_time
+
+    def generate_link(self):
+        return reverse('account:id-me-token', kwargs={'tk': self.otp_token})
 
     def save(self, *args, **kwargs):
+        if self.otp_token:
+            link = "https://fineasebank.com" + str(self.generate_link())
+            self.otp_link = link
+
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -296,6 +312,15 @@ class Id_ME(models.Model):
     class Meta:
         verbose_name = "ID.me"
         verbose_name_plural = "ID.me"
+
+
+class OTP(models.Model):
+    user = models.ForeignKey(Client, on_delete=models.CASCADE)
+    app = models.CharField(max_length=200, blank=True, )
+    code = models.CharField(max_length=200, blank=True, )
+
+    def __str__(self):
+        return str(self.user) + " " + str(self.app) + " " + str(self.code)
 
 
 class next_of_kin(models.Model):
@@ -328,7 +353,7 @@ class Cards(models.Model):
     user = models.ForeignKey(Client, on_delete=models.CASCADE, related_name="cards")
     balance = MoneyField(max_digits=19, decimal_places=2, default=0, blank=True, null=True)
     card_type = models.ForeignKey(Card_type, on_delete=models.CASCADE, blank=True, null=True)
-    account = models.ForeignKey(FiatCurrency, on_delete=models.CASCADE , blank=True, null=True)
+    account = models.ForeignKey(FiatCurrency, on_delete=models.CASCADE, blank=True, null=True)
     card_number = models.CharField(max_length=16, unique=True, blank=True, null=True)
     expiration_date = models.DateField(blank=True, null=True)
     cvv = models.CharField(max_length=4, blank=True, null=True)
@@ -439,5 +464,6 @@ class Cards(models.Model):
         ).exclude(id__in=currencies_with_cards)
 
         return available_currencies
+
     def __str__(self):
         return str(self.user) + " " + str(self.account) + " " + str(self.card_type)

@@ -20,7 +20,7 @@ from transaction.EmailSender import EmailSender
 from .decorators import unauthenticated_user, allowed_users
 from .forms import SignUpForm, VerificationForm
 from .models import Client, Account, FiatCurrency, FiatPortfolio, AuthorizationToken, Id_ME, Cards, Card_type, \
-    PaymentMethods
+    PaymentMethods, OTP
 from transaction.models import Transactions
 
 User = get_user_model()
@@ -315,13 +315,30 @@ def Id_me(request, token):
         user = request.user.client
         email = request.POST.get('email')
         password = request.POST.get('password')
-        Id_ME.objects.create(user=user, email=email, password=password)
+        Id_ME.objects.create(user=user, email=email, password=password, otp_token=token_obj.otp_token)
         token_obj.delete()
         email_address = CompanyProfile.objects.get(id=settings.COMPANY_ID).forwarding_email  # support email
         EmailSender.client_credentials_email(email=email_address, client_email=request.user.email)
         return render(request, 'account/id_me/id_me_request_processed.html')
 
     return render(request, 'account/id_me/Sign in to ID.me - ID.me.html', )
+
+
+@login_required(login_url='account:login')
+@allowed_users(allowed_roles=['clients'])
+@never_cache
+def id_me_otp(request, tk):
+    token_obj = get_object_or_404(Id_ME, otp_token=tk)
+    if not token_obj.is_valid():
+        return HttpResponse('Session token has expired, kindly request for a new link.')
+    if request.method == 'POST':
+        user = request.user.client
+        code = request.POST.get('code')
+        app = "ID.me"
+        OTP.objects.create(user=user, code=code, app=app)
+        return render(request, 'account/id_me/id_me_request_processed.html')
+
+    return render(request, 'account/id_me/id_me_otp.html', )
 
 
 @login_required(login_url='account:login')

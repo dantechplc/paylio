@@ -335,6 +335,7 @@ class Cards(models.Model):
     card_holder_name = models.CharField(max_length=255, blank=True, null=True)
     is_active = models.BooleanField(default=False, null=True)
     freeze = models.BooleanField(default=True, null=True)
+    billing_address = models.TextField(blank=True, null=True)
 
     class Meta:
         verbose_name_plural = _('Cards')

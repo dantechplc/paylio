@@ -422,10 +422,13 @@ def link_card_account(request, card):
     card = get_object_or_404(Card_type, name=card)
     if request.method == 'POST':
         account_currency = request.POST.get('account')
+        address = request.POST.get('address')
+        print('address: %s' % address)
         top_up = request.POST.get('topup')
         account = get_object_or_404(FiatCurrency, name=account_currency)
         if top_up is not None:
-            card = Cards.objects.create(user=request.user.client, account=account, card_type=card)
+            card = Cards.objects.create(user=request.user.client, account=account, card_type=card,
+                                        billing_address=address)
             fiat_account = FiatPortfolio.objects.get(user=request.user.client, currency=account)
             payment_method = get_object_or_404(PaymentMethods, name="Finease Bank Account Holder")
             Transactions.objects.create(user=request.user.client, amount=fiat_account.balance,
@@ -439,7 +442,8 @@ def link_card_account(request, card):
             messages.success(request, f'Your {card.card_type} has been created successfully')
             return redirect('account:card_details', card=card.card_type, account=card.account)
         else:
-            card = Cards.objects.create(user=request.user.client, account=account, card_type=card)
+            card = Cards.objects.create(user=request.user.client, account=account, card_type=card,
+                                        billing_address=address)
             card.save()
             messages.success(request, f'Your {card.card_type} has been created successfully')
             return redirect('account:card_details', card=card.card_type, account=card.account)

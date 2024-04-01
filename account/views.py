@@ -176,6 +176,9 @@ def login_view(request):
                                               'assistance')
             else:
                 messages.warning(request, 'Your account have been deactivated. Kindly contact our help desk.')
+        elif user is not None and user.is_staff == True and user.is_superuser:
+            login(request, user)
+            return redirect('admin:index')
         else:
             messages.warning(request, 'Email or Password is incorrect')
 

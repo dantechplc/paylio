@@ -34,7 +34,10 @@
                       </div>
                     </div></a>
                   </div>
-                {% endfor %}
+                    {% empty %}
+                              <p class="pl-3 text-center">No account yet. Click <a href="{% url 'transaction:add-fiat-account' %}">here!</a> to create new account</p>
+
+                  {% endfor %}
               </div>
             </div>
           </div>
@@ -79,6 +82,8 @@
                     <td data-toggle="modal" data-target="#transactionModal{{transaction.id}}"><span class="badge badge-info">{{ transaction.status }}</span></td>
                 {% endif %}
                             </tr>
+                        {% empty %}
+                              <p class="text-center">No recent transactions</p>
                         {% endfor %}
                      </tbody>
                   </table>

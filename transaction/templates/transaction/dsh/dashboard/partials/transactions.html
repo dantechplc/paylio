@@ -11,6 +11,8 @@
                            </tr>
                         </thead>
                         <tbody>
+
+
                             {% for transaction in transactions %}
                             <tr>
                                <td data-toggle="modal" data-target="#transactionModal{{transaction.id}}"> {{transaction.trx_id}}</td>
@@ -30,6 +32,7 @@
                     <td data-toggle="modal" data-target="#transactionModal{{transaction.id}}"><span class="badge badge-info">{{ transaction.status }}</span></td>
                 {% endif %}
                             </tr>
+
                         {% endfor %}
                         </tbody>
                      </table>

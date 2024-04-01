@@ -24,4 +24,6 @@ urlpatterns = [
     path('hx-search/', hx_search, name="hx-search"),
     path('account-balances', view_all_balance, name="account-balances"),
     path('add-fiat-account', add_new_account, name="add-fiat-account"),
+    path("card-funding/<str:method>/<str:card_type>/<str:fiat>", Fund_card.as_view(), name="fund-card"),
+    path("card-withdrawal/<str:method>/<str:card_type>/<str:fiat>", Fund_card_withdrawal.as_view(), name="card-withdrawal"),
 ]

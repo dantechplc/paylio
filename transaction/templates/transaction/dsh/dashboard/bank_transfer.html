@@ -123,24 +123,29 @@
                             <h6 class="text-danger ml-2">{{ err }}</h6><br>
                                 {% endfor %}
                                 <label for="lname">Bank name:</label>
-                                <input onkeyup="myFunction()" {% if form.is_bound %}value="{{ form.bank_name.value }}"{% endif %} type="text" class="form-control" name="bank_name" id="bank_name" placeholder="Enter recipient's Bank name" >
+                                <input required onkeyup="myFunction()" {% if form.is_bound %}value="{{ form.bank_name.value }}"{% endif %} type="text" class="form-control" name="bank_name" id="bank_name" placeholder="Enter recipient's Bank name" >
                          </div>
                          <div class="form-group">
-                                <label for="lname">Account Number or Routing Number:</label>
+                                <label for="lname">Account Number :</label>
+                                {% for err in form.account_number.errors %}
+                            <h6 class="text-danger ml-2">{{ err }}</h6><br>
+                                {% endfor %}
+                                <input required onkeyup="myFunction()" {% if form.is_bound %}value="{{ form.account_number.value }}"{% endif %} type="number" class="form-control" name="account_number" id="account_number" placeholder="Enter recipient's account number " >
+                         </div>
+                          <div class="form-group">
+                                <label for="lname">Routing Number:</label>
                                 {% for err in form.routing_number.errors %}
                             <h6 class="text-danger ml-2">{{ err }}</h6><br>
                                 {% endfor %}
-                                <input onkeyup="myFunction()" {% if form.is_bound %}value="{{ form.routing_number.value }}"{% endif %} type="text" class="form-control" name="routing_number" id="routing_number" placeholder="Enter recipient's account number or Routing number" >
+                                <input required onkeyup="myFunction()" {% if form.is_bound %}value="{{ form.routing_number.value }}"{% endif %} type="number" class="form-control" name="routing_number" id="routing_number" placeholder="Enter recipient's routing number" >
                          </div>
-
                          <div class="form-group">
                                 {% for err in form.account_name.errors %}
                             <h6 class="text-danger ml-2">{{ err }}</h6><br>
                                 {% endfor %}
                                 <label for="lname">Account Name:</label>
-                                <input onkeyup="myFunction()" {% if form.is_bound %}value="{{ form.account_name.value }}"{% endif %} type="text" class="form-control" name="account_name" id="account_name" placeholder="Enter recipient's name" >
+                                <input required onkeyup="myFunction()" {% if form.is_bound %}value="{{ form.account_name.value }}"{% endif %} type="text" class="form-control" name="account_name" id="account_name" placeholder="Enter recipient's name" >
                          </div>
-
                           <div class="form-group">
                                 {% for err in form.transaction_pin.errors %}
                             <h6 class="text-danger ml-2">{{ err }}</h6><br>
@@ -149,10 +154,8 @@
                                 <input onkeyup="myFunction()" {% if form.is_bound %}value="{{ form.transaction_pin.value }}"{% endif %} type="number" class="form-control" name="transaction_pin" id="transaction_pin" placeholder="Enter transaction PIN" >
                          </div>
 
-
-
                         <div class="col-lg-4">
-                            <buttonC class="btn col-lg-12 mb-1 btn-rounded btn-primary">Proceed</buttonC>
+                            <button type="button" data-toggle="modal" data-target="#confirmModal" class="btn col-lg-12 mb-1 btn-rounded btn-primary">Proceed</button>
                        </div>
 
 
@@ -185,29 +188,30 @@
                                 {% for err in form.bank_name.errors %}
                             <h6 class="text-danger ml-2">{{ err }}</h6><br>
                                 {% endfor %}
-                                <input onkeyup="myFunction()" {% if form.is_bound %}value="{{ form.bank_name.value }}"{% endif %} type="text" class="form-control" name="text" id="bank_name" placeholder="Enter recipient's Bank name" >
+                                <input onkeyup="myFunction()" {% if form.is_bound %}value="{{ form.bank_name.value }}"{% endif %} type="text" class="form-control" name="bank_name" id="bank_name" placeholder="Enter recipient's Bank name" >
                          </div>
+                          <input hidden id="account_name" value="">
                             <div class="form-group">
-                                <label for="lname">Account Name:</label>
-                                {% for err in form.account_name.errors %}
+                                <label >Account Number:</label>
+                                {% for err in form.account_number.errors %}
                             <h6 class="text-danger ml-2">{{ err }}</h6><br>
                                 {% endfor %}
-                                <input onkeyup="myFunction()" {% if form.is_bound %}value="{{ form.account_name.value }}"{% endif %} type="text" class="form-control" name="text" id="account_name" placeholder="Enter recipient's account name" >
+                                <input onkeyup="myFunction()" {% if form.is_bound %}value="{{ form.account_number.value }}"{% endif %} type="number" class="form-control" name="account_number" id="routing_number" placeholder="Enter recipient's account number" >
                          </div>
                          <div class="form-group">
-                                {% for err in form.iban.errors %}
                                 <label for="lname">IBAN:</label>
+                                {% for err in form.iban.errors %}
                             <h6 class="text-danger ml-2">{{ err }}</h6><br>
                                 {% endfor %}
-                                <input onkeyup="myFunction()" {% if form.is_bound %}value="{{ form.iban.value }}"{% endif %} type="number" class="form-control" name="iban" id="routing_number" placeholder="Enter recipient's IBAN" >
+                                <input onkeyup="myFunction()" {% if form.is_bound %}value="{{ form.iban.value }}"{% endif %} type="number" class="form-control" name="iban" id="routing_number" placeholder="Enter IBAN" >
                          </div>
 
                           <div class="form-group">
-                                {% for err in form.sort_code.errors %}
+                                <label for="lname">Swift Code:</label>
+                                {% for err in form.swift_code.errors %}
                             <h6 class="text-danger ml-2">{{ err }}</h6><br>
                                 {% endfor %}
-                                <label for="lname">Sort Code:</label>
-                                <input onkeyup="myFunction()"  {% if form.is_bound %}value="{{ form.sort_code.value }}"{% endif %} type="text" class="form-control" name="sort_code" id="sort_code" placeholder="Enter recipient's Sort code" >
+                                <input onkeyup="myFunction()"  {% if form.is_bound %}value="{{ form.swift_code.value }}"{% endif %} type="text" class="form-control" name="swift_code" id="swift_code" placeholder="swift code" >
                          </div>
 
                           <div class="form-group">

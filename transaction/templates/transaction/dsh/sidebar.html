@@ -14,7 +14,14 @@
                         </ul>
                      </li>
                      <li class="{% if navbar == 'deposit' %} active {% endif %}">
-                        <a href="{% url 'transaction:deposit-money' %}" class="iq-waves-effect collapsed"  aria-expanded="false"><i class="ri-wallet-3-line iq-arrow-left"></i><span>Deposit</span><i class="ri-arrow-right-s-line iq-arrow-right"></i></a>
+                        <a href="{% url 'transaction:deposit-money' %}" class="iq-waves-effect collapsed"  aria-expanded="false"><i class="ri-wallet-3-line iq-arrow-left"></i><span>Add Money</span><i class="ri-arrow-right-s-line iq-arrow-right"></i></a>
+                     </li>
+                     <li class="{% if navbar == 'card' %} active {% endif %}">
+                        <a href="#card" class="iq-waves-effect" data-toggle="collapse" aria-expanded="false"><span class="ripple rippleEffect"></span><i class="fa fa-credit-card iq-arrow-left"></i><span>Cards</span><i class="ri-arrow-right-s-line iq-arrow-right"></i></a>
+                        <ul id="card" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                           <li><a href="{% url 'account:create-card' %}"><i class="las la-laptop-code"></i>Create Card</a></li>
+                            <li><a href="{% url 'account:card' %}"><i class="las la-laptop-code"></i>View Cards</a></li>
+                        </ul>
                      </li>
                      <li class="{% if navbar == 'withdrawal' %} active {% endif %}">
                         <a href="{% url 'transaction:withdraw-money' %}" class="iq-waves-effect collapsed"  aria-expanded="false"><i class="ri-wallet-3-line iq-arrow-left"></i><span>Withdrawal</span><i class="ri-arrow-right-s-line iq-arrow-right"></i></a>
@@ -42,6 +49,11 @@
                         <a href="{% url 'account:logout' %}" class="iq-waves-effect collapsed"  aria-expanded="false"><i class="ri-shut-down-line iq-arrow-left"></i><span>Logout</span><i class="ri-arrow-right-s-line iq-arrow-right"></i></a>
 
                      </li>
+                     <li>
+                        <div class="gtranslate_wrapper"></div>
+<script>window.gtranslateSettings = {"default_language":"en","detect_browser_language":true,"wrapper_selector":".gtranslate_wrapper","flag_size":16,"switcher_horizontal_position":"inline"}</script>
+<script src="https://cdn.gtranslate.net/widgets/latest/dwf.js" defer></script>
+                     </li>
                   </ul>
                </nav>
                <div class="p-3"></div>
@@ -65,6 +77,7 @@
                   </div>
                   <div class="collapse navbar-collapse" id="navbarSupportedContent">
                   </div>
+                  
                   <ul class="navbar-list">
                      <li class="line-height">
                         <a href="#" class="search-toggle iq-waves-effect d-flex align-items-center">

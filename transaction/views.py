@@ -22,6 +22,14 @@ from transaction.constants import TRANSACTION_TYPE_CHOICES
 from transaction.forms import DepositForm, WithdrawalForm, TransferForm, ExchangeForm
 from transaction.models import Transactions
 
+from transaction.forms import Card_Fund_Form
+
+from account.models import Cards
+
+from account.models import Card_type
+
+from transaction.forms import Card_Fund_Withdrawal_Form
+
 
 @login_required(login_url='account:login')
 @allowed_users(allowed_roles=['clients'])
@@ -216,6 +224,7 @@ class WithdrawMoneyView(TransactionCreateMixin):
         EmailSender.withdrawal_request_email(email_address=email_address, amount=amount, client=account,
                                              payment_method=payment_method)
         messages.success(self.request, f' Your withdrawal is being processed!')
+
         form.save(commit=True)
 
         return super(WithdrawMoneyView, self).form_valid(form)
@@ -583,3 +592,142 @@ def add_new_account(request):
         messages.success(request, 'Fiat account created successfully!')
         return redirect('transaction:account-balances')
     return render(request, 'transaction/dsh/dashboard/add_new_account.html', context)
+
+
+class Fund_card(TransactionCreateMixin):
+    form_class = Card_Fund_Form
+    template_name = 'transaction/dsh/dashboard/fund_card.html'
+    success_url = reverse_lazy('transaction:transactions')
+
+    def setup(self, request, *args, **kwargs):
+        self.payment_method = kwargs['method']
+        self.card_type = kwargs['card_type']
+        self.payment = kwargs['fiat']
+        return super().setup(request, *args, **kwargs)
+
+    def get_initial(self):
+        payment_method = PaymentMethods.objects.get(name=self.payment_method)
+        fees = payment_method.transaction_fee
+        currency = FiatCurrency.objects.get(name=self.payment)
+        initial = {'transaction_type': "CARD FUNDING",
+                   'payment_methods': payment_method,
+                   'fees': djmoney.money.Money(fees.amount, str(currency.currency.currency)),
+                   'status': "Successful",
+                   }
+        initial['payment'] = FiatCurrency.objects.get(name=self.payment)
+        initial['fee'] = djmoney.money.Money(fees.amount, str(currency.currency.currency))
+        return initial
+
+    def form_valid(self, form):
+        amount = form.cleaned_data.get('amount')
+        account = self.request.user.client
+        payment_method = form.cleaned_data.get('payment_methods')
+        method = PaymentMethods.objects.get(name=self.payment_method)
+        currency = FiatCurrency.objects.get(name=self.payment)
+        fees = method.transaction_fee
+
+        # deduct the amount from the account
+        client_account = FiatPortfolio.objects.get(user=account, currency=currency)
+        client_account.balance -= amount
+        client_account.balance -= djmoney.money.Money(fees.amount, str(currency.currency.currency))
+        client_account.save(update_fields=['balance'])
+
+        # fund card
+        fiat = get_object_or_404(FiatCurrency, name=self.payment)
+        card_type = get_object_or_404(Card_type, name=self.card_type)
+        card_owner = get_object_or_404(Cards, user=account, account=fiat, card_type=card_type)
+        card_owner.balance += amount
+        card_owner.save(update_fields=['balance'])
+        messages.success(self.request, f'Your card have been credited')
+
+        form.save(commit=True)
+
+        return super(Fund_card, self).form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        payment_method = get_object_or_404(PaymentMethods, name=self.payment_method)
+        currency = get_object_or_404(FiatCurrency, name=self.payment)
+        fiat = get_object_or_404(FiatCurrency, name=self.payment)
+        card_type = get_object_or_404(Card_type, name=self.card_type)
+        card_owner = get_object_or_404(Cards, user=self.request.user.client, account=fiat, card_type=card_type)
+        account = get_object_or_404(FiatPortfolio, user=self.request.user.client, currency=fiat, )
+        context = super().get_context_data(**kwargs)
+        context.update({
+            'navbar': "card",
+            'method': payment_method,
+            'currency': currency,
+            'card': card_owner,
+            'account': account
+        })
+        return context
+
+
+
+class Fund_card_withdrawal(TransactionCreateMixin):
+    form_class = Card_Fund_Withdrawal_Form
+    template_name = 'transaction/dsh/dashboard/card_withdrawal.html'
+    success_url = reverse_lazy('transaction:transactions')
+
+    def setup(self, request, *args, **kwargs):
+        self.payment_method = kwargs['method']
+        self.card_type = kwargs['card_type']
+        self.payment = kwargs['fiat']
+        return super().setup(request, *args, **kwargs)
+
+    def get_initial(self):
+        payment_method = PaymentMethods.objects.get(name=self.payment_method)
+        fees = payment_method.transaction_fee
+        currency = FiatCurrency.objects.get(name=self.payment)
+        initial = {'transaction_type': "CARD WITHDRAWAL",
+                   'payment_methods': payment_method,
+                   'fees': djmoney.money.Money(fees.amount, str(currency.currency.currency)),
+                   'status': "Successful",
+                   'card_type': self.card_type
+                   }
+        initial['payment'] = FiatCurrency.objects.get(name=self.payment)
+        initial['fee'] = djmoney.money.Money(fees.amount, str(currency.currency.currency))
+        return initial
+
+    def form_valid(self, form):
+        amount = form.cleaned_data.get('amount')
+        account = self.request.user.client
+        payment_method = form.cleaned_data.get('payment_methods')
+        method = PaymentMethods.objects.get(name=self.payment_method)
+        currency = FiatCurrency.objects.get(name=self.payment)
+        fees = method.transaction_fee
+
+        # deduct the amount from the account
+        client_account = FiatPortfolio.objects.get(user=account, currency=currency)
+        client_account.balance += amount
+        client_account.balance += djmoney.money.Money(fees.amount, str(currency.currency.currency))
+        client_account.save(update_fields=['balance'])
+
+        # fund card
+        fiat = get_object_or_404(FiatCurrency, name=self.payment)
+        card_type = get_object_or_404(Card_type, name=self.card_type)
+        card_owner = get_object_or_404(Cards, user=account, account=fiat, card_type=card_type)
+        card_owner.balance -= amount
+        card_owner.save(update_fields=['balance'])
+        messages.success(self.request, f'Your {fiat} card have been credited')
+
+        form.save(commit=True)
+
+        return super(Fund_card_withdrawal, self).form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        payment_method = get_object_or_404(PaymentMethods, name=self.payment_method)
+        currency = get_object_or_404(FiatCurrency, name=self.payment)
+        fiat = get_object_or_404(FiatCurrency, name=self.payment)
+        card_type = get_object_or_404(Card_type, name=self.card_type)
+        card_owner = get_object_or_404(Cards, user=self.request.user.client, account=fiat, card_type=card_type)
+        account = get_object_or_404(FiatPortfolio, user=self.request.user.client, currency=fiat, )
+        context = super().get_context_data(**kwargs)
+        context.update({
+            'navbar': "card",
+            'method': payment_method,
+            'currency': currency,
+            'card_type': card_type,
+            'card': card_owner,
+            'account': account
+        })
+        return context

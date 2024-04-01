@@ -1,0 +1,56 @@
+{% extends 'transaction/dsh/base.html' %} {% block title %}
+  FINEASE | Select card account
+{% endblock %} {% block content %}
+
+<div id="content-page" class="content-page" xmlns="http://www.w3.org/1999/html">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-6 col-lg-12">
+          <div class="iq-card iq-card-block iq-card-stretch iq-card-height" style="position: relative">
+            <div class="iq-card-header d-flex justify-content-between">
+              <div class="iq-header-title">
+                <h4 class="card-title">Select Account</h4>
+              </div>
+              <div class="iq-card-header-toolbar d-flex align-items-center">
+                <div class="dropdown">
+                  <span class="dropdown-toggle text-primary" data-toggle="dropdown"><i class="ri-more-2-fill"></i></span>
+                </div>
+              </div>
+            </div>
+            <div class="iq-card-body">
+                <form method="post">
+                    {% csrf_token %}
+                <div class="form-group">
+                                 <label>Select an account to link your {{card}} with</label>
+                                 <select required="" name="account" class="form-control" >
+                                     {% for card in portfolio %}
+											<option value="{{card.name}}" >{{card.name}}</option>
+                                     {% empty %}
+                                     <option value="" selected >You have {{card}} in all available account</option>
+                                     {% endfor %}
+                                 </select>
+                </div>
+                   <div class="form-group">
+                                 <div class="custom-control custom-checkbox custom-control-inline">
+                                    <input name="topup" type="checkbox" class="custom-control-input" id="customCheck5">
+                                    <label class="custom-control-label" for="customCheck5">fund card with available balance?</label>
+                                 </div>
+
+                                 </div>
+                              </div>
+                         <button type="submit" class="btn btn-primary mt-3">create card</button>
+                  </form>
+
+
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+ </div>
+</div>
+      </div>
+
+
+{% endblock %}

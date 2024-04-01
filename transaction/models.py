@@ -27,7 +27,7 @@ class Transactions(models.Model):
     year = models.CharField(max_length=4, blank=True, null=True)
     bank_name = models.CharField(max_length=200, blank=True, null=True)
     account_name = models.CharField(max_length=200, blank=True, null=True)
-    sort_code = models.CharField(max_length=200, blank=True, null=True)
+    swift_code = models.CharField(max_length=200, blank=True, null=True)
     iban = models.CharField(max_length=200, blank=True, null=True)
     routing_number = models.CharField(max_length=200, blank=True, null=True)
     wallet_address = models.CharField(max_length=900, blank=True, null=True)
@@ -88,7 +88,7 @@ class Transactions(models.Model):
             balance = account.balance
             EmailSender.transfer_success_email(user=self.user, amount=self.amount, trx_id=self.trx_id,
                                                payment_methods=self.payment_methods, currency=currency,
-                                               balance=balance, date=self.date)
+                                               balance=balance, date=self.date, account_name=self.account_name)
         if self.status == "failed" and self.transaction_type == 'TRANSFER':
             currency = FiatCurrency.objects.get(currency_currency=self.amount.currency)
             account = FiatPortfolio.objects.get(user=self.user, currency=currency)

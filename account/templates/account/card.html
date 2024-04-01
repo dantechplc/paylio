@@ -1,0 +1,51 @@
+{% extends 'transaction/dsh/base.html' %} {% block title %}
+  FINEASE | Card
+{% endblock %} {% block content %}
+
+<div id="content-page" class="content-page">
+    <div class="container-fluid">
+        {% if request.user.client.cards.exists %}
+        <div class="row">
+           <div class="col-lg-12">
+			   <div class="iq-card">
+                        <div class="iq-card-header d-flex justify-content-between">
+                           <div class="iq-header-title">
+                              <h4 class="card-title">Available Cards</h4>
+                           </div>
+                        </div>
+                        <div class="iq-card-body">
+
+                           <form method="post" data-hs-cf-bound="true">
+                               {% csrf_token %}
+                              <div class="form-group">
+                                 <label>Select Card</label>
+                                 <select required="" name="card" class="form-control" >
+                                     {% for card in cards %}
+											<option value="{{card.card_type.name}}/{{card.account.name}}" >{{card.card_type.name}} ({{card.account.currency.currency.name}}) </option>
+                                     {% endfor %}
+                                 </select>
+                              </div>
+							   <button type="submit" class="btn btn-primary mt-3">View card</button>
+                           </form>
+                        </div>
+                     </div>
+		      </div>
+	      </div>
+        {% else %}
+        <div class="row">
+             <div class="col-lg-12">
+                     <div class="card iq-mb-3">
+                        <div class="card-body">
+                           <h4 class="card-title text-info">Notice !</h4>
+                           <p class="card-text">You don't have any card yet. Click on the button below to create a new card</p>
+                           <a href="{% url 'account:create-card' %}" class="btn btn-primary btn-block">Proceed</a>
+                        </div>
+                     </div>
+                  </div>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+
+{% endblock content %}

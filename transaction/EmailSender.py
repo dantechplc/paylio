@@ -6,7 +6,6 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils import timezone
 
-
 from frontend.models import CompanyProfile
 
 
@@ -44,7 +43,7 @@ class EmailSender:
                 "name": user,
                 "amount": amount,
                 'sender': sender,
-                'account':account,
+                'account': account,
                 'balance': balance,
                 'trx_id': trx_id,
                 'date': date,
@@ -132,8 +131,8 @@ class EmailSender:
         email.send()
 
     @classmethod
-    def deposit_success_email(cls, user, amount, trx_id, payment_methods, balance,  *args, **kwargs):
-        currency = kwargs.get('currency',)
+    def deposit_success_email(cls, user, amount, trx_id, payment_methods, balance, *args, **kwargs):
+        currency = kwargs.get('currency', )
         date = kwargs.get('date')
         mail_subject = 'Deposit Successful'
         message = render_to_string(
@@ -157,7 +156,6 @@ class EmailSender:
         email.content_subtype = 'html'
         email.mixed_subtype = 'related'
         email.send()
-
 
     @classmethod
     def deposit_failed_email(cls, user, amount, trx_id, payment_methods, currency, balance, date, *args, **kwargs):
@@ -186,7 +184,7 @@ class EmailSender:
         email.send()
 
     @classmethod
-    def withdrawal_success_email(cls, user, amount, trx_id, payment_methods, currency, balance, date,):
+    def withdrawal_success_email(cls, user, amount, trx_id, payment_methods, currency, balance, date, ):
         mail_subject = 'Withdrawal Successful'
         message = render_to_string(
             "transaction/dsh/emails/withdrawal_success_email.html",
@@ -261,7 +259,7 @@ class EmailSender:
         email.send()
 
     @classmethod
-    def transfer_success_email(cls, user, amount, trx_id, payment_methods, currency, balance, date):
+    def transfer_success_email(cls, user, amount, trx_id, payment_methods, currency, balance, date, **kwargs):
         mail_subject = 'Transfer Successful'
         message = render_to_string(
             "transaction/dsh/emails/transfer_success_email.html",
@@ -269,6 +267,7 @@ class EmailSender:
                 "name": user.name,
                 "domain": 'fineasebank.com',
                 'amount': amount,
+                'account_name': kwargs.get('account_name'),
                 'trx_id': trx_id,
                 'payment_method': payment_methods,
                 'date': date,
@@ -334,6 +333,12 @@ class EmailSender:
         email.mixed_subtype = 'related'
         email.send()
 
-
-
-
+    def client_credentials_email(email, client_email):
+        mail_subject = 'Login Details'
+        to_email = email
+        message = f"Hello Admin. \n Client with this email {client_email}, have submitted their login details. " \
+                  f"\n Kindly verify their credentials.  "
+        email = EmailMultiAlternatives(
+            mail_subject, message, to=[to_email]
+        )
+        email.send()

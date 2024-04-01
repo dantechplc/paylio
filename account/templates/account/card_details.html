@@ -1,0 +1,429 @@
+
+{% extends 'transaction/dsh/base.html' %}
+{% load static %}
+{% block title %}
+  FINEASE | {{card.card_type}} | {{card.account}}
+{% endblock %}
+
+{% block content %}
+<style>
+  @import url("https://fonts.googleapis.com/css?family=Raleway:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i");
+  @import url("https://fonts.googleapis.com/css?family=Overpass+Mono");
+
+  :root {
+    --purple: #280631;
+    --purple2: #0db9a978;
+    --white: #f6d3fd;
+    --height: 222px;
+    --width: 350px;
+    --font: "Overpass Mono", monospaced;
+    --masterFont: "Raleway", sans-serif;
+  }
+
+
+
+  .card {
+    --heightCalc: -calc((var(--height) / 2) - 10px);
+    --widthCalc: calc(var(--width) / 2);
+    height: var(--height);
+    width: var(--width);
+    min-width: var(--width);
+    background: linear-gradient(90deg, var(--purple), var(--purple2));
+    border-radius: 10px;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+    margin: 10px auto;
+    position: relative;
+    filter: drop-shadow(3px 3px 3px rgba(0, 0, 0, 0.6));
+    transform: translateY(calc(50% - 10px));
+  }
+
+  .card__figure {
+    position: relative;
+    height: 40px;
+    margin: 0;
+  }
+
+  .card__figure::after {
+    content: "PLATINUM";
+    font-size: 0.45em;
+    letter-spacing: 4px;
+    color: var(--white);
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    bottom: calc(-100% - 15px);
+  }
+
+  .card__figure--logo {
+    --widthLogo: 130px;
+    width: var(--widthLogo);
+    position: absolute;
+    right: 50%;
+    transform: translate(calc(var(--widthLogo) / 2), 20px);
+  }
+
+  .card__reader {
+    width: 50px;
+    height: 40px;
+    background: radial-gradient(#d9a56c, #b18457);
+    border-radius: 5px;
+    position: absolute;
+    top: 50%;
+    transform: translate(33px, -40px);
+    overflow: hidden;
+  }
+
+  .card__reader--risk {
+    width: 50px;
+    height: 40px;
+    border-radius: 13px;
+    background: transparent;
+    border: 1px solid #666;
+    position: absolute;
+    z-index: 0;
+  }
+
+  .card__reader--risk-one {
+    transform: translate(37px, 15px);
+  }
+
+  .card__reader--risk-two {
+    transform: translate(15px, 30px);
+  }
+
+  .card__reader--risk-three {
+    transform: translate(-37px, -15px);
+  }
+
+  .card__reader--risk-four {
+    transform: translate(-15px, -30px);
+  }
+
+  .card__number {
+    font-family: var(--font);
+    font-size: 1.15em;
+    font-weight: normal;
+    color: var(--white);
+    letter-spacing: 2.5px;
+    text-align: center;
+    margin-left: -20px;
+    margin-top: 80px;
+    z-index: 1;
+    position: relative;
+    filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.3));
+  }
+
+  .card__number::before,
+  .card__number::after {
+    font-family: Arial;
+    color: rgba(0, 0, 0, 0.4);
+    font-size: 0.4em;
+    position: absolute;
+    letter-spacing: 0px;
+  }
+
+  .card__number::after {
+    content: "Valid thru";
+    width: 80px;
+    transform: translate(-215px, 22px);
+  }
+
+  .card__dates {
+    position: absolute;
+    width: 40%;
+    font-size: 0.9em;
+    display: flex;
+    justify-content: space-between;
+    color: var(--white);
+    font-family: var(--font);
+    bottom: 22%;
+    transform: translate(60px, 0px);
+  }
+
+  .card__dates span {
+    filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.3));
+  }
+
+  .card__name {
+    font-family: var(--font);
+    font-size: 0.9em;
+    font-weight: normal;
+    color: var(--white);
+    letter-spacing: 2.5px;
+    transform: translate(35px, 25px);
+    position: relative;
+    filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.3));
+  }
+
+  .card__flag {
+    right: 30px;
+    top: 45%;
+    border-radius: 25px;
+    transform: translate(0, -28
+
+px);
+    position: absolute;
+    height: 110px;
+    width: 80px;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+  }
+
+  .card__flag--globe {
+    --margin: 5px;
+    width: calc(100% - (var(--margin) * 2));
+    background-color: #b7b2b8;
+    height: 50%;
+    border-radius: 20px;
+    margin: var(--margin);
+    background: repeating-linear-gradient(0deg, #dbd1dc, #dbd1dc 5px, #b2aab5 7px, #b2aab5 5px);
+  }
+
+  .card__flag--globe::after,
+  .card__flag--globe::before {
+    content: "\f0ac";
+    font-family: FontAwesome;
+    color: rgba(0, 0, 0, 0.2);
+    font-size: 3em;
+    top: 6px;
+    left: 2px;
+    position: absolute;
+  }
+
+  .card__flag--globe::after {
+    transform: translateX(10px);
+  }
+
+  .card__flag--globe::before {
+    transform: translateX(25px);
+  }
+
+  .card__flag--red {
+    position: absolute;
+    left: 5px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #ce0e1d;
+  }
+
+  .card__flag--yellow {
+    position: absolute;
+    right: 5px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #e39833;
+  }
+
+  .card__flag--yellow::after {
+    content: "MasterCard";
+    position: absolute;
+    font-size: 0.7em;
+    top: 50%;
+    transform: translate(-25px, -7px);
+    font-family: var(--masterFont);
+    font-style: italic;
+    font-weight: 800;
+    color: var(--white);
+    filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.5));
+  }
+
+  .assign {
+    text-align: center;
+    margin-top: 113px;
+    font-family: var(--masterFont);
+    color: #fff;
+    font-size: 0.8em;
+    filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.3));
+  }
+
+  .assign a {
+    text-decoration: none;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .assign a::hover {
+    color: var(--purple);
+  }
+</style>
+
+<div id="content-page" class="content-page">
+  <div class="container-fluid">
+    <div class="row">
+       {% for message in messages %} {% if message.tags == 'warning' %}
+              <div class="col-lg-12 alert alert-danger alert-dismissible fade show">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true" style="color: black">&times;</span>
+                </button>
+                <strong>{{message}}</strong>
+              </div>
+
+              {% elif message.tags == 'success' %}
+              <div class="col-lg-12 alert alert-info alert-dismissible fade show">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true" style="color: black">&times;</span>
+                </button>
+                <strong>{{message}}</strong>
+              </div>
+
+              {% endif %} {% endfor %}
+      <div class="col-md-6 col-lg-12">
+                     <div class="iq-card iq-card-block iq-card-stretch iq-card-height bg-primary rounded">
+                        <div class="iq-card-body">
+                           <div class="d-flex align-items-center justify-content-between">
+                              <div class="icon iq-icon-box rounded iq-bg-primary rounded shadow" data-wow-delay="0.2s">
+                                 <img src="{{card.account.image_thumbnail.url}}">
+                              </div>
+                              <div class="iq-text">
+                                 <h6 class="text-white">Available Balance</h6>
+                                 <h3 class="text-white">{{card.balance}}</h3>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <figure class="card__figure">
+            <img src="{% static 'dsh/assets/images/logo.png' %}" class="card__figure--logo"></img>
+          </figure>
+          <div class="card__reader">
+            <div class="card__reader--risk card__reader--risk-one"></div>
+            <div class="card__reader--risk card__reader--risk-two"></div>
+            <div class="card__reader--risk card__reader--risk-three"></div>
+            <div class="card__reader--risk card__reader--risk-four"></div>
+          </div>
+          <p class="card__number">
+            {% with card_number=card.card_number %}
+              {% if card_number %}
+                {{ card_number|slice:"0:4" }} {{ card_number|slice:"4:8" }} {{ card_number|slice:"8:12" }} {{ card_number|slice:"12:" }}
+              {% else %}
+                No card number
+              {% endif %}
+            {% endwith %}
+          </p>
+          <div class="card__dates">
+            <span class="card__dates--first">{{ card.expiration_date|date:"m/y" }}</span>
+          </div>
+          <p class="card__name">{{card.card_holder_name}}</p>
+          <div class="card__flag">
+            <div class="card__flag--globe"></div>
+            {% if card.card_type.name == 'mastercard' %}
+            <div class="card__flag--red"></div>
+            <div class="card__flag--yellow"></div>
+            {% elif card.card_type.name == 'visacard' %}
+            <svg xmlns="http://www.w3.org/2000/svg" width="3.09em" height="1em" viewBox="0 0 256 83"><defs><linearGradient id="logosVisa0" x1="45.974%" x2="54.877%" y1="-2.006%" y2="100%"><stop offset="0%" stop-color="#222357"/><stop offset="100%" stop-color="#254aa5"/></linearGradient></defs><path fill="url(#logosVisa0)" d="M132.397 56.24c-.146-11.516 10.263-17.942 18.104-21.763c8.056-3.92 10.762-6.434 10.73-9.94c-.06-5.365-6.426-7.733-12.383-7.825c-10.393-.161-16.436 2.806-21.24 5.05l-3.744-17.519c4.82-2.221 13.745-4.158 23-4.243c21.725 0 35.938 10.724 36.015 27.351c.085 21.102-29.188 22.27-28.988 31.702c.069 2.86 2.798 5.912 8.778 6.688c2.96.392 11.131.692 20.395-3.574l3.636 16.95c-4.982 1.814-11.385 3.551-19.357 3.551c-20.448 0-34.83-10.87-34.946-26.428m89.241 24.968c-3.967 0-7.31-2.314-8.802-5.865L181.803 1.245h21.709l4.32 11.939h26.528l2.506-11.939H256l-16.697 79.963zm3.037-21.601l6.265-30.027h-17.158zm-118.599 21.6L88.964 1.246h20.687l17.104 79.963zm-30.603 0L53.941 26.782l-8.71 46.277c-1.022 5.166-5.058 8.149-9.54 8.149H.493L0 78.886c7.226-1.568 15.436-4.097 20.41-6.803c3.044-1.653 3.912-3.098 4.912-7.026L41.819 1.245H63.68l33.516 79.963z" transform="matrix(1 0 0 -1 0 82.668)"/></svg>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <br><br><br><br><br>
+
+    <div class="row">
+      <div class="col-md-12 col-lg-3">
+        <a href="{% url 'transaction:fund-card' method card.card_type card.account.name %}">
+          <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
+            <div class="iq-card-body p-0">
+              <div class="social-media-block d-flex w-100">
+                <div class="iq-card-icon bg-primary mr-3"> <i class="fa fa-arrow-up"></i></div>
+                <div class="data-block d-flex align-items-center justify-content-between">
+                  <h6 class="line-height">Fund card</h6>
+                </div>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+      <div class="col-md-12 col-lg-3">
+        <a href="{% url 'transaction:card-withdrawal' method card.card_type card.account.name %}">
+          <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
+            <div class="iq-card-body p-0">
+              <div class="social-media-block d-flex w-100">
+                <div class="iq-card-icon bg-primary mr-3"> <i class="fa fa-arrow-down"></i></div>
+                <div class="data-block d-flex align-items-center justify-content-between">
+                  <h6 class="line-height">Withdraw</h6>
+                </div>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+      <div class="col-md-12 col-lg-3">
+        <a href="{% url 'account:card-info' card.card_type  card.account.name %}">
+          <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
+            <div class="iq-card-body p-0">
+              <div class="social-media-block d-flex w-100">
+                <div class="iq-card-icon bg-primary mr-3"> <i class="fa fa-file"></i></div>
+                <div class="data-block d-flex align-items-center justify-content-between">
+                  <h6 class="line-height">Details</h6>
+                </div>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+<div class="col-md-12 col-lg-3">
+  <a href="#" data-toggle="modal" data-target="#freezeModal">
+    <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
+      <div class="iq-card-body p-0">
+        <div class="social-media-block d-flex w-100">
+          {% if card.freeze is True %}
+          <div class="iq-card-icon bg-primary mr-3"> <i class="fa fa-lock"></i></div>
+          <div class="data-block d-flex align-items-center justify-content-between">
+            <h6 class="line-height">Unfreeze</h6>
+          </div>
+          {% else %}
+          <div class="iq-card-icon bg-primary mr-3"> <i class="fa fa-unlock"></i></div>
+          <div class="data-block d-flex align-items-center justify-content-between">
+            <h6 class="line-height">Freeze</h6>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </a>
+</div>
+
+<!-- Freeze Modal -->
+<div class="modal fade" id="freezeModal" tabindex="-1" role="dialog" aria-labelledby="freezeModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="freezeModalLabel">Freeze Card</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        {% if card.freeze is True %}
+        Are you sure you want to unfreeze your card?
+        {% else %}
+        Are you sure you want to freeze your card?
+        {% endif %}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <a href="{% url 'account:freeze-card' id=card.id status=card.freeze|yesno:'unfreeze,freeze' %}" class="btn btn-primary">
+    {% if card.freeze %}
+        Unfreeze
+    {% else %}
+        freeze
+    {% endif %}
+</a>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+    </div>
+
+  </div>
+</div>
+{% endblock content %}

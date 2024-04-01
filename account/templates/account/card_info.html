@@ -1,0 +1,43 @@
+{% extends 'transaction/dsh/base.html' %} {% block title %}
+  FINEASE | Card Details
+{% endblock %} {% block content %}
+
+<div id="content-page" class="content-page">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="iq-card col-lg-12">
+                        <div class="iq-card-header d-flex justify-content-between">
+                           <div class="iq-header-title">
+                              <h4 class="card-title">{{card.card_type}} details</h4>
+                           </div>
+                        </div>
+                        <div class="iq-card-body">
+                           <p></p>
+                           <form>
+                              <div class="form-group">
+                                 <label for="colFormLabel">Card Holder Name</label>
+                                 <input readonly type="text" class="form-control" id="colFormLabel" value="{{card.card_holder_name}}">
+                              </div>
+                               <div class="form-group">
+                                 <label for="colFormLabel">Card Number</label>
+                                 <input readonly type="text" class="form-control" id="colFormLabel" value="{% with card_number=card.card_number %}{{ card_number|slice:'0:4' }} {{ card_number|slice:'4:8' }} {{ card_number|slice:'8:12' }} {{ card_number|slice:'12:' }}
+                                {% endwith %}">
+                              </div>
+                               <div class="form-group">
+                                 <label for="colFormLabel">Expiry Date</label>
+                                 <input readonly type="text" class="form-control" id="colFormLabel" value="{{ card.expiration_date|date:"m/y" }}">
+                              </div>
+                               <div class="form-group">
+                                 <label for="colFormLabel">CVV</label>
+                                 <input readonly type="text" class="form-control" id="colFormLabel" value="{{card.cvv}}">
+                              </div>
+                           </form>
+                        </div>
+                     </div>
+        </div>
+
+    </div>
+</div>
+
+
+{% endblock content %}

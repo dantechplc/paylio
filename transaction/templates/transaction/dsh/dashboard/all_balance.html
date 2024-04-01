@@ -52,6 +52,9 @@
                                        </div>
                                     </td>
                                  </tr>
+                                 {% empty %}
+                              <p class="pl-3 text-center">No account yet. Click <a href="{% url 'transaction:add-fiat-account' %}">here!</a> to create new account</p>
+
                               {% endfor %}
                               </tbody>
                            </table>

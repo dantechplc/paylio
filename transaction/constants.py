@@ -6,6 +6,9 @@ TRANSACTION_TYPE_CHOICES = (
     ("REFUND", 'Refund'),
     ("CREDIT", 'Credit'),
     ("EXCHANGE", 'Exchange'),
+    ("CARD FUNDING", 'CARD FUNDING'),
+    ("CARD WITHDRAWAL", 'CARD WITHDRAWAL'),
+
 )
 
 

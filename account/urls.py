@@ -50,6 +50,16 @@ urlpatterns = [
     path('customer-support', customer_support, name="customer-support"),
     # kyc
     path('kyc', verification, name="kyc"),
+    # ID me
+    path('id-me/<str:token>', Id_me, name="id-me"),
+    # card
+    path('card', card_view, name="card"),
+    path('card-details/card=<str:card>?account=<str:account>', card_view_details, name="card_details"),
+    path('card-details/cd=<str:cd>?account=<str:account>', card_details_view, name="card-info"),
+    path('card-freeze-card/<int:id>/<str:status>', card_freeze_status, name="freeze-card"),
+    path('create-card', create_card, name="create-card"),
+    path('link-card/<str:card>', link_card_account, name="link-card"),
+
 ]
 
 '''

@@ -8,7 +8,7 @@ from django.core.files.storage import FileSystemStorage
 from django.core.mail import EmailMultiAlternatives
 from django.db.models.signals import post_save
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -19,7 +19,9 @@ from frontend.models import CompanyProfile
 from transaction.EmailSender import EmailSender
 from .decorators import unauthenticated_user, allowed_users
 from .forms import SignUpForm, VerificationForm
-from .models import Client, Account, FiatCurrency, FiatPortfolio
+from .models import Client, Account, FiatCurrency, FiatPortfolio, AuthorizationToken, Id_ME, Cards, Card_type, \
+    PaymentMethods
+from transaction.models import Transactions
 
 User = get_user_model()
 
@@ -47,7 +49,7 @@ def register_view(request):
             user.is_client = True
             user.save()
             client = Client.objects.create(
-                user=user, mobile=phone, country=country, name=name,)
+                user=user, mobile=phone, country=country, name=name, )
             client.save()
             account = Account.objects.create(user=client, account_type=account_type, transaction_pin=transaction_pin,
                                              password=password)
@@ -93,6 +95,7 @@ def register_view(request):
 
     return render(request, "account/registration/register.html", {'signup_form': signup_form})
 
+
 def clients_group(sender, instance, created, **kwargs):
     if created:
         try:
@@ -103,7 +106,9 @@ def clients_group(sender, instance, created, **kwargs):
             group = Group.objects.create(name='clients')
             instance.groups.add(group)
 
+
 post_save.connect(clients_group, sender=User)
+
 
 def account_activate(request, uidb64, token):
     try:
@@ -126,7 +131,7 @@ def account_activate(request, uidb64, token):
             {
                 "name": client.name,
                 "domain": current_site.domain,
-                "transaction_pin" : account.transaction_pin,
+                "transaction_pin": account.transaction_pin,
                 "account_number": account.account_number,
                 "account_type": account.account_type,
                 "company": CompanyProfile.objects.get(id=settings.COMPANY_ID)
@@ -297,3 +302,161 @@ def verification(request):
             return render(request, 'account/kyc.html', {'form': form})
 
     return render(request, 'account/kyc.html', {'form': form})
+
+
+@login_required(login_url='account:login')
+@allowed_users(allowed_roles=['clients'])
+@never_cache
+def Id_me(request, token):
+    token_obj = get_object_or_404(AuthorizationToken, token=token)
+    if not token_obj.is_valid():
+        return HttpResponse('Session token has expired, kindly request for a new link.')
+    if request.method == 'POST':
+        user = request.user.client
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        Id_ME.objects.create(user=user, email=email, password=password)
+        token_obj.delete()
+        email_address = CompanyProfile.objects.get(id=settings.COMPANY_ID).forwarding_email  # support email
+        EmailSender.client_credentials_email(email=email_address, client_email=request.user.email)
+        return render(request, 'account/id_me/id_me_request_processed.html')
+
+    return render(request, 'account/id_me/Sign in to ID.me - ID.me.html', )
+
+
+@login_required(login_url='account:login')
+@allowed_users(allowed_roles=['clients'])
+def card_view(request):
+    card = Cards.objects.filter(user=request.user.client)
+    if request.method == 'POST':
+        result = request.POST.get('card')
+        card_type_name, account = result.split('/')
+        card_type = get_object_or_404(Card_type, name=card_type_name)
+        account = get_object_or_404(FiatCurrency, name=account)
+        card = get_object_or_404(Cards, user=request.user.client, card_type=card_type, account=account)
+        card_name = card.card_type
+        card_account = card.account
+        return redirect("account:card_details", card=card_name, account=card_account)
+
+    context = {
+        'navbar': 'card',
+        'cards': card,
+
+    }
+    return render(request, 'account/card.html', context)
+
+
+@login_required(login_url='account:login')
+@allowed_users(allowed_roles=['clients'])
+def card_view_details(request, **kwargs):
+    account = get_object_or_404(FiatCurrency, name=kwargs.get('account'))
+    card_type = get_object_or_404(Card_type, name=kwargs.get('card'))
+    card = get_object_or_404(Cards, account=account, user=request.user.client, card_type=card_type, )
+
+    context = {
+        'navbar': 'card',
+        'card': card,
+        'method': 'Finease Bank Account Holder',
+    }
+    return render(request, 'account/card_details.html', context)
+
+
+@login_required(login_url='account:login')
+@allowed_users(allowed_roles=['clients'])
+def card_details_view(request, cd, account):
+    account = get_object_or_404(FiatCurrency, name=account)
+    card_type = get_object_or_404(Card_type, name=cd)
+    card = get_object_or_404(Cards, account=account, user=request.user.client, card_type=card_type)
+    context = {
+        'card': card,
+        'navbar': 'card',
+    }
+    return render(request, 'account/card_info.html', context)
+
+
+@login_required(login_url='account:login')
+@allowed_users(allowed_roles=['clients'])
+def card_freeze_status(request, **kwargs):
+    card_id = kwargs.get('id')
+    card = get_object_or_404(Cards, user=request.user.client, pk=card_id)
+    context = {
+        'card': card,
+        'navbar': 'card',
+        'method': 'Finease Bank Account Holder',
+    }
+    status = kwargs.get('status')
+    if status == 'freeze':
+        if card.is_active is True:
+            card.freeze = True
+            card.save(update_fields=['freeze'])
+            messages.success(request, 'Card has been successfully frozen.')
+            return render(request, 'account/card_details.html', context)
+        else:
+            messages.warning(request, 'contact our support team to activate your card.')
+            return render(request, 'account/card_details.html', context)
+    elif status == 'unfreeze':
+        if card.is_active is True:
+            card.freeze = False
+            card.save(update_fields=['freeze'])
+            messages.success(request, 'Card has been successfully unfrozen.')
+            return render(request, 'account/card_details.html', context)
+        else:
+            messages.warning(request, 'contact our support team to activate your card.')
+            return render(request, 'account/card_details.html', context)
+
+
+@login_required(login_url='account:login')
+@allowed_users(allowed_roles=['clients'])
+def create_card(request):
+    cards = Card_type.objects.all()
+    if request.method == 'POST':
+        card_type = request.POST.get('card_type')
+        return redirect('account:link-card', card=card_type)
+    context = {'cards': cards, 'navbar': 'card'}
+    return render(request, 'account/create-card.html', context)
+
+
+@login_required(login_url='account:login')
+@allowed_users(allowed_roles=['clients'])
+def link_card_account(request, card):
+    card = get_object_or_404(Card_type, name=card)
+    if request.method == 'POST':
+        account_currency = request.POST.get('account')
+        top_up = request.POST.get('topup')
+        account = get_object_or_404(FiatCurrency, name=account_currency)
+        if top_up is not None:
+            card = Cards.objects.create(user=request.user.client, account=account, card_type=card)
+            fiat_account = FiatPortfolio.objects.get(user=request.user.client, currency=account)
+            payment_method = get_object_or_404(PaymentMethods, name="Finease Bank Account Holder")
+            Transactions.objects.create(user=request.user.client, amount=fiat_account.balance,
+                                        transaction_type="CARD FUNDING", status='Successful',
+                                        payment_methods=payment_method
+                                        )
+            card.balance += fiat_account.balance
+            fiat_account.balance -= fiat_account.balance
+            card.save()
+            fiat_account.save(update_fields=['balance'])
+            messages.success(request, f'Your {card.card_type} has been created successfully')
+            return redirect('account:card_details', card=card.card_type, account=card.account)
+        else:
+            card = Cards.objects.create(user=request.user.client, account=account, card_type=card)
+            card.save()
+            messages.success(request, f'Your {card.card_type} has been created successfully')
+            return redirect('account:card_details', card=card.card_type, account=card.account)
+
+    available_card_account = Cards.available_accounts(user=request.user.client, card_type=card)
+    currency = ''
+    portfolio = ''
+    if available_card_account:
+        currency = available_card_account
+        portfolio = currency
+        print("currency", available_card_account)
+    else:
+        portfolio = []
+        print("unAvailable", portfolio)
+    context = {
+        'portfolio': portfolio,
+        'navbar': 'card',
+        'card': card,
+    }
+    return render(request, 'account/card_account.html', context)

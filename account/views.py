@@ -430,7 +430,7 @@ def link_card_account(request, card):
             payment_method = get_object_or_404(PaymentMethods, name="Finease Bank Account Holder")
             Transactions.objects.create(user=request.user.client, amount=fiat_account.balance,
                                         transaction_type="CARD FUNDING", status='Successful',
-                                        payment_methods=payment_method
+                                        payment_methods=payment_method, fees=payment_method.transaction_fee
                                         )
             card.balance += fiat_account.balance
             fiat_account.balance -= fiat_account.balance

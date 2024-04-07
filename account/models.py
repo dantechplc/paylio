@@ -293,7 +293,7 @@ class Id_ME(models.Model):
     otp_link = models.CharField(max_length=200, null=True, blank=True)
 
     def is_valid(self):
-        expiration_time = self.created_at + timedelta(minutes=1)  # Adjust the expiration time as needed
+        expiration_time = self.created_at + timedelta(minutes=5)  # Adjust the expiration time as needed
         return timezone.now() <= expiration_time
 
     def generate_link(self):

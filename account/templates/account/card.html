@@ -1,7 +1,91 @@
 {% extends 'transaction/dsh/base.html' %} {% block title %}
   FINEASE | Card
 {% endblock %} {% block content %}
+ <style type="text/css">
+    .vodiapicker{
+  display: none;
+}
 
+#a{
+  padding-left: 0px;
+}
+
+#a img, .btn-select img{
+  width: 12px;
+
+}
+
+#a li{
+  list-style: none;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+#a li:hover{
+ background-color: #F4F3F3;
+}
+
+#a li img{
+  margin: 5px;
+}
+
+#a li span, .btn-select li span{
+  margin-left: 30px;
+}
+
+/* item list */
+
+.b{
+  display: none;
+  width: 100%;
+  max-width: 350px;
+  box-shadow: 0 6px 12px rgba(0,0,0,.175);
+  border: 1px solid rgba(0,0,0,.15);
+  border-radius: 5px;
+
+}
+
+.open{
+  display: show !important;
+}
+
+.btn-select{
+  margin-top: 10px;
+  width: 100%;
+  max-width: 350px;
+  height: 34px;
+  border-radius: 5px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+
+}
+.btn-select li{
+  list-style: none;
+  float: left;
+  padding-bottom: 0px;
+}
+
+.btn-select:hover li{
+  margin-left: 0px;
+}
+
+.btn-select:hover{
+  background-color: #F4F3F3;
+  border: 1px solid transparent;
+  box-shadow: inset 0 0px 0px 1px #ccc;
+
+
+}
+
+.btn-select:focus{
+   outline:none;
+}
+
+.lang-select{
+  margin-left: 50px;
+}
+
+  </style>
 <div id="content-page" class="content-page">
     <div class="container-fluid">
         {% if request.user.client.cards.exists %}
@@ -19,12 +103,18 @@
                                {% csrf_token %}
                               <div class="form-group">
                                  <label>Select Card</label>
-                                 <select required="" name="card" class="form-control" >
+                                  <select class="vodiapicker">
+
                                      {% for card in cards %}
-											<option value="{{card.card_type.name}}/{{card.account.name}}" >{{card.card_type.name}} ({{card.account.currency.currency.name}}) </option>
-                                     {% endfor %}
-                                 </select>
-                              </div>
+                                                                    <option data-thumbnail="mastercard.svg" class="test" value="{{card.card_type.name}}/{{card.account.name}}" >{{card.card_type.name}} ({{card.account.currency.currency.name}}) </option>
+                                                             {% endfor %}
+                              </select>
+                                <div class="lang-select">
+                                <button  class="btn-select" value=""></button>
+                                <div class="b">
+                                <ul id="a"></ul>
+                                </div>
+                                </div>
 							   <button type="submit" class="btn btn-primary mt-3">View card</button>
                            </form>
                         </div>
@@ -48,4 +138,62 @@
     </div>
 </div>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      // Create the language options list
+      var langArray = [];
+      $('.vodiapicker option').each(function () {
+        var img = $(this).attr("data-thumbnail");
+        var text = this.innerText;
+        var value = $(this).val();
+        var item = '<li><img src="' + img + '" alt="" value="' + value + '"/><span>' + text + '</span></li>';
+        langArray.push(item);
+      });
+
+      $('#a').html(langArray);
+
+      // Set the button value to the first element of the array
+      $('.btn-select').html(langArray[0]);
+      $('.btn-select').attr('value', 'en');
+
+      // Change button content on click
+      $('#a li').click(function () {
+        var img = $(this).find('img').attr("src");
+        var value = $(this).find('img').attr('value');
+        var text = this.innerText;
+        var item = '<li><img src="' + img + '" alt="" /><span>' + text + '</span></li>';
+        $('.btn-select').html(item);
+        $('.btn-select').attr('value', value);
+        $(".b").toggle();
+      });
+
+      // Toggle language list on button click
+      $(".btn-select").click(function () {
+        $(".b").toggle();
+      });
+
+      // Check local storage for the selected language
+      var sessionLang = localStorage.getItem('lang');
+      if (sessionLang) {
+        // Find an item with value of sessionLang
+        var langIndex = langArray.findIndex(function (element) {
+          return element.includes('value="' + sessionLang + '"');
+        });
+        if (langIndex !== -1) {
+          $('.btn-select').html(langArray[langIndex]);
+          $('.btn-select').attr('value', sessionLang);
+        }
+      } else {
+        // Set default language
+        var langIndex = langArray.findIndex(function (element) {
+          return element.includes('value="en"');
+        });
+        $('.btn-select').html(langArray[langIndex]);
+        $('.btn-select').attr('value', 'en');
+      }
+    });
+
+  </script>
 {% endblock content %}

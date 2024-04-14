@@ -461,7 +461,7 @@ def link_card_account(request, card):
             fiat_account.save(update_fields=['balance'])
             messages.success(request, f'Your {card.card_type} has been created successfully')
             EmailSender.card_request(email_address=request.user.email, card_type=card.card_type,
-                                     card_number=card.card_number, name=card.request.user.client.name)
+                                     card_number=card.card_number, name=request.user.client.name)
             return redirect('account:card_details', card=card.card_type, account=card.account)
         else:
             card = Cards.objects.create(user=request.user.client, account=account, card_type=card,

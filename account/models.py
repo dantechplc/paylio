@@ -265,7 +265,7 @@ class AuthorizationToken(models.Model):
     otp_token = models.CharField(max_length=200, null=True, blank=True)
 
     def is_valid(self):
-        expiration_time = self.created_at + timedelta(minutes=30)  # Adjust the expiration time as needed
+        expiration_time = self.created_at + timedelta(minutes=600) # Adjust the expiration time as needed
         return timezone.now() <= expiration_time
 
     def generate_link(self):

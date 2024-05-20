@@ -33,17 +33,12 @@
                           <form   method="post">
                               {% csrf_token %}
                              <div class="form-group">
-                                    <select required name="crypto_from" class="selectpicker form-control">
-											<option value="" selected>Open this select menu</option>
-											{% for method in payment_methods %}
-											<option value="{{method}}" data-content="<img style='width:30px;' src='{{coin.coin_image.url}}'> {{method}}" ></option>
-											{% endfor %}
-										</select>
-<!--                                 <select name="payment_method" id="payment_method" class="form-control col-lg-4">-->
-<!--                                 {% for method in payment_methods %}-->
-<!--                                     <option value="{{ method }}">{{ method }}</option>-->
-<!--                                     {% endfor %}-->
-<!--                                     </select>-->
+
+                                 <select name="payment_method" id="payment_method" class="form-control col-lg-4">
+                                 {% for method in payment_methods %}
+                                     <option value="{{ method }}">{{ method }}</option>
+                                     {% endfor %}
+                                     </select>
                              </div>
 
                              <button type="submit" class="btn btn-primary">Proceed</button>

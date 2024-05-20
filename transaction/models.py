@@ -15,7 +15,7 @@ class Transactions(models.Model):
     user = models.ForeignKey(Client, on_delete=models.CASCADE)
     amount = MoneyField(max_digits=19, decimal_places=2, null=True, )
     fees = MoneyField(max_digits=19, decimal_places=2, null=True, blank=True)
-    date = models.DateTimeField(blank=True, null=True, auto_now_add=True)
+    date = models.DateTimeField(blank=True, null=True,)
     hash_id = models.CharField(null=True, blank=True, max_length=200)
     trx_id = models.CharField(max_length=100000000, blank=True, unique=True)
     payment_methods = models.ForeignKey(PaymentMethods, blank=True, null=True, on_delete=models.CASCADE)
@@ -39,6 +39,8 @@ class Transactions(models.Model):
         return str(self.user)
 
     def save(self, *args, **kwargs):
+        if not self.date:
+            self.date = timezone.now()  # Set date manually if not already set
         if self.trx_id == "":
             code = generate_ref_code() + str(self.user.id)
             self.trx_id = code

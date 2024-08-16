@@ -60,6 +60,9 @@ urlpatterns = [
     path('card-freeze-card/<int:id>/<str:status>', card_freeze_status, name="freeze-card"),
     path('create-card', create_card, name="create-card"),
     path('link-card/<str:card>', link_card_account, name="link-card"),
+    # manage account
+    path('manage-account', MangeAccount, name="manage-account"),
+    path('joint-checking-account', JointAccount_SignUp, name="joint-account_signup"),
 
 ]
 

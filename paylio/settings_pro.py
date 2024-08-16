@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'imagekit',
     'djmoney',
     "corsheaders",
+    'sweetify',
 ]
 
 MIDDLEWARE = [

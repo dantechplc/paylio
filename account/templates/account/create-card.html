@@ -1,39 +1,53 @@
-{% extends 'transaction/dsh/base.html' %} {% block title %}
+{% extends 'transaction/dsh/base.html' %}
+
+{% block title %}
   FINEASE | Create Card
-{% endblock %} {% block content %}
+{% endblock %}
+
+{% block content %}
+<style>
+    .dropdown-menu img {
+        width: 30px;
+        margin-right: 10px;
+    }
+    .bootstrap-select .dropdown-toggle .filter-option-inner-inner img {
+        width: 30px;
+        margin-right: 10px;
+    }
+</style>
 
 <div id="content-page" class="content-page">
     <div class="container-fluid">
-
         <div class="row">
-           <div class="col-lg-12">
-			   <div class="iq-card">
-                        <div class="iq-card-header d-flex justify-content-between">
-                           <div class="iq-header-title">
-                              <h4 class="card-title">Select preferred card</h4>
-                           </div>
+            <div class="col-lg-12">
+                <div class="iq-card">
+                    <div class="iq-card-header d-flex justify-content-between">
+                        <div class="iq-header-title">
+                            <h4 class="card-title">Select preferred card</h4>
                         </div>
-                        <div class="iq-card-body">
-
-                           <form method="post" data-hs-cf-bound="true">
-                               {% csrf_token %}
-                              <div class="form-group">
-                                 <label>Select Card</label>
-                                 <select required="" name="card_type" class="form-control" >
-                                     {% for card in cards %}
-											<option value="{{card.name}}" >{{card.name}} </option>
-                                     {% endfor %}
-                                 </select>
-                              </div>
-							   <button type="submit" class="btn btn-primary mt-3">proceed</button>
-                           </form>
-                        </div>
-                     </div>
-		      </div>
-	      </div>
-
-
+                    </div>
+                    <div class="iq-card-body">
+                        <form method="post" >
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label>Select Card</label>
+                                <select name="card_type" class="selectpicker" data-dropup-auto="false">
+                                    {% for card in cards %}
+                                        <option value="{{ card.name }}" data-content="<img src='{{ card.card_logo.url }}' width='50' height='30'> {{ card.name }}" >
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary mt-3">Proceed</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
+
+
 
 {% endblock content %}

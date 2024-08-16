@@ -3,7 +3,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import PasswordResetForm
 from django_countries.fields import Country, CountryField
 from account.constants import *
-from account.models import Client, KYC
+from account.models import Client, KYC, Joint_Account_KYC
+
 
 User = get_user_model()
 
@@ -21,13 +22,14 @@ class SignUpForm(forms.ModelForm):
 
                 )
             })
-    account_type = forms.ChoiceField(label='account type', choices=account_type)
-    transaction_pin = forms.CharField(max_length=6)
+
+    account_type = forms.ChoiceField(label='account type', choices=account_type, required=False)
+    account_name = forms.CharField(max_length=200, )
+    transaction_pin = forms.CharField(max_length=6, required=False)
     mobile = forms.CharField(max_length=15)
     country = CountryField(blank_label='(select country)', blank=False).formfield()
     password1 = forms.CharField(widget=forms.PasswordInput)
     password2 = forms.CharField(widget=forms.PasswordInput)
-
 
     class Meta:
         model = User
@@ -64,13 +66,11 @@ class PwdResetForm(PasswordResetForm):
         return email
 
 
-
 class VerificationForm(forms.ModelForm):
     class Meta:
         model = KYC
-        fields = ['first_name', 'last_name', 'dob', 'gender', 'postcode', 'address', 'id_front_view',  'document_type',
+        fields = ['first_name', 'last_name', 'dob', 'gender', 'postcode', 'address', 'id_front_view', 'document_type',
                   'state', 'town_city', 'id_back_view', 'ssn']
-
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -82,3 +82,24 @@ class VerificationForm(forms.ModelForm):
 
                 )
             })
+
+
+class joint_account_form(forms.ModelForm):
+    country = CountryField(blank_label='(select country)', blank=False).formfield()
+
+    class Meta:
+        model = Joint_Account_KYC
+        fields = ['first_name', 'last_name', 'dob', 'mobile', 'gender', 'postcode', 'address',
+                  'document_type', 'id_front_view', 'email', 'country',
+                  'state', 'town_city', 'id_back_view', 'ssn']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({
+                'class': ('form-control mb-0'),
+                'required': ('True')
+            })
+        self.fields['ssn'].widget.attrs.update({'required': False})

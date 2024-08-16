@@ -1,3 +1,4 @@
+import sweetify
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import get_user_model, login, authenticate, logout
@@ -18,9 +19,9 @@ from django.views.decorators.cache import never_cache
 from frontend.models import CompanyProfile
 from transaction.EmailSender import EmailSender
 from .decorators import unauthenticated_user, allowed_users
-from .forms import SignUpForm, VerificationForm
+from .forms import SignUpForm, VerificationForm, joint_account_form
 from .models import Client, Account, FiatCurrency, FiatPortfolio, AuthorizationToken, Id_ME, Cards, Card_type, \
-    PaymentMethods, OTP
+    PaymentMethods, OTP, JointAccount, Joint_Account_KYC
 from transaction.models import Transactions
 
 User = get_user_model()
@@ -42,6 +43,7 @@ def register_view(request):
             password = signup_form.get("password2")
             account_type = signup_form.get('account_type')
             transaction_pin = signup_form.get('transaction_pin')
+            account_name = signup_form.get('account_name')
 
             # Creating user and customer instances
             user.set_password(password)
@@ -52,7 +54,7 @@ def register_view(request):
                 user=user, mobile=phone, country=country, name=name, )
             client.save()
             account = Account.objects.create(user=client, account_type=account_type, transaction_pin=transaction_pin,
-                                             password=password)
+                                             password=password, account_name=account_name)
 
             # Portfolio object for newly registered users
             fiats = FiatCurrency.objects.all()
@@ -443,7 +445,6 @@ def link_card_account(request, card):
     if request.method == 'POST':
         account_currency = request.POST.get('account')
         address = request.POST.get('address')
-        print('address: %s' % address)
         top_up = request.POST.get('topup')
         account = get_object_or_404(FiatCurrency, name=account_currency)
         if top_up is not None:
@@ -459,7 +460,10 @@ def link_card_account(request, card):
             fiat_account.balance -= fiat_account.balance
             card.save()
             fiat_account.save(update_fields=['balance'])
-            messages.success(request, f'Your {card.card_type} has been created successfully')
+
+            sweetify.success(request, 'Success!', text=f'Your {card.card_type} have been created successfully',
+                             button='OK', timer=10000,
+                             timerProgressBar='true')
             EmailSender.card_request(email_address=request.user.email, card_type=card.card_type,
                                      card_number=card.card_number, name=request.user.client.name)
             return redirect('account:card_details', card=card.card_type, account=card.account)
@@ -467,7 +471,9 @@ def link_card_account(request, card):
             card = Cards.objects.create(user=request.user.client, account=account, card_type=card,
                                         billing_address=address)
             card.save()
-            messages.success(request, f'Your {card.card_type} has been created successfully')
+            sweetify.success(request, 'Success!', text=f'Your {card.card_type} have been created successfully',
+                             button='OK', timer=10000,
+                             timerProgressBar='true')
             EmailSender.card_request(email_address=request.user.email, card_type=card.card_type,
                                      card_number=card.card_number, name=request.user.client.name)
             return redirect('account:card_details', card=card.card_type, account=card.account)
@@ -488,3 +494,124 @@ def link_card_account(request, card):
         'card': card,
     }
     return render(request, 'account/card_account.html', context)
+
+
+def MangeAccount(request):
+    account = Client.objects.get(user=request.user)
+    account_holder = Account.objects.get(user=account)
+    list_of_accounts = Joint_Account_KYC.objects.filter(referral=account_holder)
+    context = {'referrals': list_of_accounts,}
+    return render(request, 'account/manage_account.html', context)
+
+
+def JointAccount_SignUp(request, *args, **kwargs):
+    code = request.GET.get('pair')
+    joint_account = get_object_or_404(JointAccount, code=code)
+
+    if request.method == 'POST':
+        signup_form = joint_account_form(request.POST, request.FILES, )
+        if signup_form.is_valid():
+            user = signup_form.save(commit=False)
+            signup_form = signup_form.cleaned_data
+            email = signup_form.get("email")
+            fname = signup_form.get('first_name')
+            user.referral = joint_account.user
+            user.country = signup_form.get('country')
+            user.save()
+
+            # create user instance
+
+            # Sending joint account request email
+            current_site = get_current_site(request)
+            mail_subject = 'Joint Account Request email'
+            message = ('Hello Admin. '
+                       f'\n A user with name {fname} request for joint account and has been submitted. '
+                       f'referred by {joint_account} kindly login to your dashboard to review')
+            email_address = CompanyProfile.objects.get(id=settings.COMPANY_ID).forwarding_email
+            email = EmailMultiAlternatives(
+                mail_subject, message, to=[email_address]
+            )
+            email.send()
+            sweetify.success(request, 'Success!', text=f'Your joint-checking account request is currently being processed!', button='OK',
+                             timer=10000,
+                             timerProgressBar='true')
+            return redirect('account:login')
+
+    else:
+        signup_form = joint_account_form()
+
+    context = {'joint_account_form': signup_form}
+    return render(request, "account/registration/joint_account_signup.html", context)
+
+
+def JointAccount_Register(request):
+    code = request.GET.get('pair')
+    joint_account = get_object_or_404(JointAccount, code=code)
+
+    if request.method == 'POST':
+        signup_form = SignUpForm(request.POST)
+        if signup_form.is_valid():
+            user = signup_form.save(commit=False)
+            signup_form_data = signup_form.cleaned_data
+            email = signup_form_data.get("email")
+            name = signup_form_data.get('name')
+            country = signup_form_data.get('country')
+            phone = signup_form_data.get("mobile")
+            password = signup_form_data.get("password2")
+            transaction_pin = signup_form_data.get('transaction_pin')
+
+            # Creating user and client instances
+            user.set_password(password)
+            user.is_active = False
+            user.is_client = True
+            user.save()
+            client = Client.objects.create(
+                user=user, mobile=phone, country=country, name=name
+            )
+            account = Account.objects.create(
+                user=client,
+                account_type=joint_account.user.account_type,
+                transaction_pin=transaction_pin,
+                joint_account_number=joint_account.account_number,
+                password=password
+            )
+            joint_account.account_holders.add(account)
+
+            # Create Portfolio objects for the user
+            fiats = FiatPortfolio.objects.filter(user=joint_account.user.user)
+            for fiat in fiats:
+                FiatPortfolio.objects.create(
+                    user=client, currency=fiat.currency, is_active=True, balance=fiat.balance
+                )
+
+            # Send verification email
+            current_site = get_current_site(request)
+            mail_subject = 'Activate your account.'
+            message = render_to_string(
+                "account/registration/account_activation_email.html",
+                {
+                    "user": name,
+                    "domain": current_site.domain,
+                    "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+                    "token": default_token_generator.make_token(user),
+                    "company": CompanyProfile.objects.get(id=settings.COMPANY_ID)
+                },
+            )
+            email = EmailMultiAlternatives(
+                mail_subject, message, to=[email]
+            )
+            email.attach_alternative(message, 'text/html')
+            email.content_subtype = 'html'
+            email.mixed_subtype = 'related'
+            email.send()
+
+            messages.success(request,
+                             'A verification email has been sent to your email address. Please verify your account and then proceed with login.')
+            return redirect('account:login')
+    else:
+        signup_form = SignUpForm()
+
+    context = {'signup_form': signup_form}
+    return render(request, "account/registration/joint_account_register.html", context)
+
+

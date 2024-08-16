@@ -1,0 +1,178 @@
+{% extends 'transaction/dsh/base.html' %} {% block title %}
+{% load static %}
+  FINEASE | Manage Account
+
+{% endblock %}
+
+
+{% block content %}
+
+   <!-- Page Content  -->
+<div id="content-page" class="content-page">
+            <div class="container-fluid">
+                <div>
+                     {% if form.errors %}
+													<small class="text-danger ml-2">{{ form.errors }}</small><br>
+												{% endif %}
+                </div>
+                 {% if messages %}
+            {% for message in messages %}
+                      <div class="col-lg-12 alert alert-primary alert-dismissible fade show">
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true" style="color:black">&times;</span>
+                                        </button> <strong>{{message}}</strong></div>
+
+					        {% endfor %}
+        {% endif %}
+               <div class="row">
+                  <div class="col-lg-12">
+                     <div class="iq-card">
+                        <div class="iq-card-body p-0">
+                           <div class="iq-edit-list">
+                              <ul class="iq-edit-profile d-flex nav nav-pills">
+                                  <li class="col-md-6 p-0">
+                                    <a class="nav-link"  href="{% url 'account:account_profile' %}">
+                                    Account Profile
+                                    </a>
+                                 </li>
+                                 <li class="col-md-6 p-0">
+                                    <a class="nav-link"  href="{% url 'account:change_password' %}">
+                                    Change Password
+                                    </a>
+                                 </li>
+                                <li class="col-md-6 p-0">
+                                    <a class="nav-link"  href="{% url 'account:transaction_pin' %}">
+                                    Transaction PIN
+                                    </a>
+                                 </li>
+                                   {% if request.user.client.account.account_type == 'Joint-checking Account' %}
+                                  <li class="col-md-6 p-0">
+                                    <a class="nav-link active"  href="{% url 'account:manage-account' %}">
+                                    Manage Account
+                                    </a>
+                                 </li>
+                                  {% else %}
+
+                                  {% endif %}
+                              </ul>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                   {% if request.user.client.verification_status == 'Verified' %}
+                  <div class="col-lg-12">
+                     <div class="iq-edit-list-data">
+                        <div class="tab-content">
+                           <div class="tab-pane fade active show" id="personal-information" role="tabpanel">
+                              <div class="iq-card">
+                                 <div class="iq-card-header d-flex justify-content-between">
+                                    <div class="iq-header-title">
+                                       <h4 class="card-title mt-3">Manage Account</h4>
+                                        <p>Manage your {{request.user.client.account.account_type}} Account</p>
+                                    </div>
+                                 </div>
+                                 <div class="iq-card-body">
+                                    <form method="post" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                       <div class="row align-items-center">
+                                           <div class="col-md-12">
+                                               <img class="img-fluid rounded mx-auto d-block" src="{% static 'assets/images/blog-image-5.png' %}">
+                                           <p class="text-primary mt-2">To add an account holder, please share your link with the person you'd like to include, so they can set up their account. Please note that a verified account holder will have access to this account</p>
+                                               <ul>
+                                                   <li class="text-primary">Add money to this joint account</li>
+                                                   <li class="text-primary">Withdraw money</li>
+                                                   <li class="text-primary">Receive email Notification </li>
+                                                   <li class="text-primary">Have access to transaction PIN</li>
+                                               </ul>
+                                           </div>
+                                       </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label class="mt-3">{{request.user.client.account.account_type}} link:</label>
+                                                 <input type="text" onclick="myFunction()" class="form-control" readonly="" id="myInput" value="{{ request.user.client.account.joint_account.account_link }}">
+                                                <button type="button"  class="btn-primary btn mt-2"  onclick="myFunction()">Copy
+                                                    <span class="tooltiptext" id="myTooltip"></span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                 <div class="col-sm-12">
+                     <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
+                        <div class="iq-card-header d-flex justify-content-between">
+                           <div class="iq-header-title">
+                              <h4 class="card-title">List of Account holders</h4>
+                           </div>
+                        </div>
+                        <div class="iq-card-body">
+                           <div class="table-responsive">
+                              <table class="table mb-0 table-borderless">
+                                 <thead>
+                                    <tr>
+                                       <th scope="col">Email</th>
+                                       <th scope="col">Name</th>
+                                       <th scope="col">status</th>
+                                       <th scope="col">Country</th>
+                                    </tr>
+                                 </thead>
+                                 <tbody>
+                                 {% for client in referrals %}
+                                    <tr>
+                                        <td>{{client.email}}</td>
+                                        <td>{{client.get_full_name}}</td>
+                                       <td>
+                                          {% if client.verification == 'Verified' %}
+                                          <span class="badge badge-pill badge-primary">{{client.verification}}</span>
+                                          {% elif client.verification == "Under Review" %}
+                                          <span class="badge badge-pill badge-warning">{{client.verification}}</span>
+                                          {% elif client.verification == "Unverified" %}
+                                          <span class="badge badge-pill badge-danger">{{client.verification}}</span>
+                                          {% endif %}
+                                       </td>
+                                       <td>{{client.country.name}}</td>
+                                    </tr>
+                                 {% endfor %}
+                                 </tbody>
+                              </table>
+                           </div>
+                        </div>
+                     </div>
+                {% else %}
+                <div class="alert text-white bg-primary text-center" role="alert">
+                              <div class="iq-alert-icon">
+                                 <i class="ri-alert-line"></i>
+                              </div>
+                              <div class="iq-alert-text">simple primary alert with <a href="#" class="alert-link text-white">an
+                                 example link</a>. Give it a click if you like.
+                              </div>
+                           </div>
+                {% endif %}
+                  </div>
+
+               </div>
+            </div>
+         </div>
+
+
+      <!-- Wrapper END -->
+
+
+<script>
+function myFunction() {
+  var copyText = document.getElementById("myInput");
+  copyText.select();
+  document.execCommand("copy");
+
+  // Show a success message using SweetAlert
+  Swal.fire({
+    icon: 'success',
+    title: 'Copied!',
+    text: 'Your Joint-checking account link has been copied to clipboard.',
+  });
+}
+</script>
+{% endblock content %}

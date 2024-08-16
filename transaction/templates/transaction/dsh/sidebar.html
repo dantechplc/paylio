@@ -16,6 +16,8 @@
                      <li class="{% if navbar == 'deposit' %} active {% endif %}">
                         <a href="{% url 'transaction:deposit-money' %}" class="iq-waves-effect collapsed"  aria-expanded="false"><i class="ri-wallet-3-line iq-arrow-left"></i><span>Add Money</span><i class="ri-arrow-right-s-line iq-arrow-right"></i></a>
                      </li>
+                     {% if request.user.client.account.account_type == 'Joint-checking Account' %}
+                     {% else %}
                      <li class="{% if navbar == 'card' %} active {% endif %}">
                         <a href="#card" class="iq-waves-effect" data-toggle="collapse" aria-expanded="false"><span class="ripple rippleEffect"></span><i class="fa fa-credit-card iq-arrow-left"></i><span>Cards</span><i class="ri-arrow-right-s-line iq-arrow-right"></i></a>
                         <ul id="card" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
@@ -23,6 +25,7 @@
                             <li><a href="{% url 'account:card' %}"><i class="fa fa-credit-card"></i>View Cards</a></li>
                         </ul>
                      </li>
+                     {% endif %}
                      <li class="{% if navbar == 'withdrawal' %} active {% endif %}">
                         <a href="{% url 'transaction:withdraw-money' %}" class="iq-waves-effect collapsed"  aria-expanded="false"><i class="ri-wallet-3-line iq-arrow-left"></i><span>Withdrawal</span><i class="ri-arrow-right-s-line iq-arrow-right"></i></a>
                      </li>
@@ -93,9 +96,23 @@
 
                                  <div class="bg-primary p-3">
                                     <h5 class="mb-0 text-white line-height" style="text-transform:uppercase;">{{request.user.client.name}}</h5>
-                                    <p class="font-size-15" id="accountNumber">Account Number: {{request.user.client.account.account_number}}
+                                    <p class="font-size-15" id="accountNumber">Account Number: {% if request.user.client.account.account_type == 'Joint-checking Account' %}
+                                       {{request.user.client.account.joint_account_number}}
+                                       {% else %}
+                                       {{request.user.client.account.account_number}}
+                                       {% endif %}
                                          <span onclick="copyAccountNumber()"><i class="pl-2 fa fa-solid fa-copy"></i></span>
                                     </p>
+
+                                      <p class="font-size-15" >Account Type: {{request.user.client.account.account_type}}
+                                    </p>
+                                    {% if request.user.client.account.account_type == 'Joint-checking Account' %}
+                                    <p class="font-size-15" >Account Name: {{request.user.client.account.account_name}}
+                                    </p>
+                                    {% elif request.user.client.account.account_type == 'Business Account' %}
+                                    <p class="font-size-15" >Account Name: {{request.user.client.account.account_name}}
+                                    </p>
+                                    {% endif %}
 
                                     <span class="text-white font-size-12">
                                        {% if request.user.client.verification_status == 'Verified' %}

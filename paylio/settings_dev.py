@@ -12,7 +12,7 @@ SECRET_KEY = 'django-insecure-4%twcf7_z9hgx2ka^(41%-!!c9z0k3!$u#bo9sb=ksmrdfpqh9
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-#ALLOWED_HOSTS = ["*"]
+# ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     #  third party
     'imagekit',
     'djmoney',
+    'sweetify',
 ]
 
 MIDDLEWARE = [
@@ -114,3 +115,5 @@ AUTHENTICATION_BACKENDS = (
 LOGIN_URL = 'account:login'
 
 COMPANY_ID = 1
+
+SWEETIFY_SWEETALERT_LIBRARY = 'sweetalert2'

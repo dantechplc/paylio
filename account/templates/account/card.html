@@ -103,12 +103,13 @@
                                {% csrf_token %}
                               <div class="form-group">
                                  <label>Select Card</label>
-                                  <select class="form-control"  name="card" >
-
-                                     {% for card in cards %}
-                                                                    <option  class="form-control" value="{{card.card_type.name}}/{{card.account.name}}" >{{card.card_type.name}} ({{card.account.currency.currency.name}}) </option>
-                                                             {% endfor %}
-                              </select>
+                                    <select name="card" class="selectpicker" data-dropup-auto="false">
+                                    {% for card in cards %}
+                                        <option value="{{card.card_type.name}}/{{card.account.name}}" data-content="<img src='{{ card.card_type.card_logo.url }}' width='20' height='20'> {{card.card_type.name}} ({{card.account.currency.currency.name}})" >
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                              </div>
 
 							   <button type="submit" class="btn btn-primary mt-3">View card</button>
                            </form>

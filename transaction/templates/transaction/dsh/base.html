@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
+
 <html lang="en">
 <head>
       <!-- Required meta tags -->
@@ -15,10 +16,16 @@
       <link rel="stylesheet" href="{% static 'dsh/css/typography.css' %}">
       <!-- Style CSS -->
       <link rel="stylesheet" href="{% static 'dsh/css/style.css' %}">
-      <link rel="stylesheet" href="{% static 'dsh/css/bootstrap-select.css' %}">
-      <!-- Responsive CSS -->
+      <link rel="stylesheet" href="{% static 'dsh/css/sweetalert.css' %}">
       <link rel="stylesheet" href="{% static 'dsh/css/responsive.css' %}">
-      <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+<!--      <link rel="stylesheet" href="{% static 'dsh/css/bootstrap-select.css' %}">-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.1.5/sweetalert2.min.css">
+
+
+      <!-- Responsive CSS -->
+
+
+
 </head>
 
 
@@ -31,9 +38,11 @@
             {% include "transaction/dsh/sidebar.html" %}
             {% block content %}
             {% endblock content %}
+
             {% include "transaction/dsh/footer.html" %}
             {% include "transaction/dsh/js.html" %}
 
-
+{% load sweetify %}
+{% sweetify %}
 </body>
 </html>

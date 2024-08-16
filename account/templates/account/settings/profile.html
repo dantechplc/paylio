@@ -43,6 +43,15 @@
                                     Transaction PIN
                                     </a>
                                  </li>
+                                   {% if request.user.client.account.account_type == 'Joint-checking Account' %}
+                                  <li class="col-md-6 p-0">
+                                    <a class="nav-link"  href="{% url 'account:manage-account' %}">
+                                    Manage Account
+                                    </a>
+                                 </li>
+                                  {% else %}
+
+                                  {% endif %}
                               </ul>
                            </div>
                         </div>
@@ -81,8 +90,25 @@
                                           </div>
                                            <div class="form-group col-sm-6">
                                              <label for="lname">Account Number:</label>
-                                             <input readonly   class="form-control" value="{{request.user.client.account.account_number}}" >
+                                             <input readonly   class="form-control" value="{% if request.user.client.account.account_type == 'Joint-checking Account' %}{{request.user.client.account.joint_account_number}}
+                                       {% else %}{{request.user.client.account.account_number}}
+                                       {% endif %}" >
                                           </div>
+
+                                           {% if request.user.client.account.account_type == 'Joint-checking Account' %}
+                                           <div class="form-group col-sm-6">
+                                             <label for="lname">Joint-checking Account Name:</label>
+                                             <input readonly   class="form-control" value="{% if request.user.client.account.account_type == 'Joint-checking Account' %}{{request.user.client.account.account_name}}
+                                              {% endif %}" >
+                                          </div>
+                                           {% elif request.user.client.account.account_type == 'Business Account' %}
+                                            <div class="form-group col-sm-6">
+                                             <label for="lname">Business Account Name:</label>
+                                             <input readonly   class="form-control" value="{% if request.user.client.account.account_type == 'Business Account' %}{{request.user.client.account.account_name}}
+                                              {% endif %}" >
+                                          </div>
+                                          {% endif %}
+
                                           <div class="form-group col-sm-6">
                                             <label for="lname">Name:</label>
                                             <input readonly  class="form-control"  value="{{request.user.client.name}}">
@@ -91,6 +117,11 @@
                                          <div class="form-group col-sm-6">
                                             <label for="lname">Country:</label>
                                              <input  readonly  type="text" class="form-control"  value="{{request.user.client.country.name}}">
+                                         </div>
+
+                                         <div class="form-group col-sm-6">
+                                            <label for="lname">Account Type:</label>
+                                            <input readonly  class="form-control"  value="{{request.user.client.account.account_type}}">
                                          </div>
 
                                          <div class="form-group col-sm-6">

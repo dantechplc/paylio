@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+{% load static %}
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finease Bank {{transaction.transaction_type}} Receipt</title>
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
+            text-indent: 0;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f7f7f7;
+        }
+
+        .container {
+            padding: 15px;
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            text-align: center; /* Center-align contents */
+        }
+
+        h1 {
+            color: #00338C;
+            font-family: Arial, sans-serif;
+            font-style: normal;
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 20pt;
+            margin-bottom: 15px; /* Space below h1 */
+        }
+
+        h2 {
+            color: #EC7115;
+            font-family: Arial, sans-serif;
+            font-style: normal;
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 12pt;
+            margin: 10px 0; /* Space above and below h2 */
+        }
+
+        h2 .s1 {
+            display: inline-block;
+            padding-right: 100px; /* Add left padding to span */
+        }
+
+        p {
+            color: #7F7F7F;
+            font-family: Arial, sans-serif;
+            font-style: normal;
+            font-weight: normal;
+            text-decoration: none;
+            font-size: 10pt;
+            margin-bottom: 10px; /* Space below p */
+        }
+
+        .s1 {
+            color: #00338C;
+            font-family: Arial, sans-serif;
+            font-style: normal;
+            font-weight: normal;
+            text-decoration: none;
+            font-size: 12pt;
+            margin-bottom: 5px; /* Space below .s1 */
+        }
+
+        .s2, a {
+            color: #00F;
+            font-family: Arial, sans-serif;
+            font-style: normal;
+            font-weight: normal;
+            text-decoration: underline;
+            font-size: 10pt;
+        }
+
+        .responsive-img {
+            width: 100%;
+            height: auto;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 18pt;
+            }
+
+            p {
+                font-size: 9pt;
+            }
+
+            h2 {
+                font-size: 11pt;
+            }
+
+            .s1 {
+                font-size: 11pt;
+            }
+
+            .s2, a {
+                font-size: 9pt;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+       <img src="{% static 'dsh/assets/images/logo.png' %" alt="finease_bank_logo">
+        <h1>Transaction Receipt</h1>
+        <p>Generated from <b>Finease Bank</b> on {{transaction.date}}</p>
+        <h2>Transaction Amount <span  class="s1">{{transaction.amount}}</span></h2>
+        <hr>
+        <h2>Transaction Type <span class="s1">{{transaction.payment_methods}} {{transaction.transaction_type}}</span></h2>
+        <hr>
+        <h2>Transaction Date <span class="s1">{{transaction.date}}</span></h2>
+        <hr>
+
+            {% if transaction.transaction_type == 'TRANSFER'  %}
+         <h2>Sender <span class="s1">
+            {{transaction.user.name}}
+            {% elif transaction.transaction_type == 'DEPOSIT' %}
+              <h2>Sender <span class="s1">
+             {{transaction.account_name}}
+            {% elif transaction.transaction_type == 'WITHDRAWAL' %}
+                   <h2>Sender <span class="s1">
+             {{transaction.user.name}}
+            {% elif transaction.transaction_type == 'EXCHANGE' %}
+                        <h2>Exchange Account <span class="s1">
+             {{transaction.user.name}}
+        {% endif %}
+        </span></h2>
+        <hr>
+        {% if transaction.transaction_type == 'WITHDRAWAL' and transaction.payment_methods.name == 'Bitcoin(BTC)' %}
+        <h2>Beneficiary Wallet address</h2>
+        <p class="s1">{{transaction.wallet_address}}</p>
+           {% elif transaction.transaction_type == 'WITHDRAWAL' and transaction.payment_methods.name == 'Ethereum(ETH)' %}
+        <h2>Beneficiary Wallet address</h2>
+        <p class="s1">{{transaction.wallet_address}}</p>
+         {% elif transaction.transaction_type == 'WITHDRAWAL' and transaction.payment_methods.name == 'Cash App' %}
+        <h2>Beneficiary Cash App tag</h2>
+        <p class="s1">{{transaction.account_name}}</p>
+        {% elif transaction.transaction_type == 'WITHDRAWAL' %}
+        <h2>Beneficiary</h2>
+        <p class="s1">{{transaction.bank_name}} </p>
+        <p class="s1">{{transaction.routing_number}}</p>
+        {% elif transaction.transaction_type == 'DEPOSIT' %}
+        <h2>Beneficiary</h2>
+        <p class="s1">{{transaction.user.name}} </p>
+        {% elif transaction.transaction_type == 'TRANSFER' %}
+        <h2>Beneficiary</h2>
+        <p class="s1">{{transaction.account_name}} </p>
+        <p class="s1">{{transaction.account_number}}</p>
+        {% elif transaction.transaction_type == 'EXCHANGE' %}
+        <h2>Beneficiary</h2>
+         <p class="s1" >{{transaction.user.name}}</p>
+        {% endif %}
+        <hr>
+        <h2>Remark <span class="s1">{{transaction.payment_description|slice:50}}...</span></h2>
+        <hr>
+        <h2>Transaction Reference <span class="s1">{{transaction.trx_id}}</span></h2>
+        <h2>Transaction Status <span class="s1">{{transaction.transaction_type}} Request Successful</span></h2>
+        <p>If you have any questions or would like more information, <span class="s2"></span>send an email to <a href="mailto:support@fineasebank.com">support@fineasebank.com</a></p>
+        <p>Thank you for choosing Finease Bank.</p>
+
+    </div>
+</body>
+</html>

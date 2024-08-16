@@ -46,6 +46,15 @@
                                     Transaction PIN
                                     </a>
                                  </li>
+                                    {% if request.user.client.account.account_type == 'Joint-checking Account' %}
+                                  <li class="col-md-6 p-0">
+                                    <a class="nav-link"  href="{% url 'account:manage-account' %}">
+                                    Manage Account
+                                    </a>
+                                 </li>
+                                  {% else %}
+
+                                  {% endif %}
 
                               </ul>
                            </div>

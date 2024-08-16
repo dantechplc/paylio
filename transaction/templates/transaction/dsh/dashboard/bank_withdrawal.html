@@ -30,7 +30,12 @@
                                 {% for err in form.bank_name.errors %}
                             <h6 class="text-danger ml-2">{{ err }}</h6><br>
                                 {% endfor %}
-                                <input onkeyup="myFunction()" id="bank_name" required {% if form.is_bound %}value="{{ form.bank_name.value }}"{% endif %} type="text" class="form-control" name="bank_name"  placeholder="Enter your bank name" >
+                              <select onkeyup="myFunction()" id="bank_name" name="bank_name" class="selectpicker" data-dropup-auto="false" required {% if form.is_bound %}value="{{ form.bank_name.value }}"{% endif %}>
+                                    {% for bank in banks %}
+                                        <option value="{{ bank.name }}" data-content="<img src='{{ bank.logo.url }}' width='20' height='20'> {{ bank.name }}" >
+                                        </option>
+                                    {% endfor %}
+                                </select>
                          </div>
 
                           <div class="form-group">

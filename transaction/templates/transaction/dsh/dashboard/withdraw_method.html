@@ -33,11 +33,13 @@
                           <form   method="post">
                               {% csrf_token %}
                              <div class="form-group">
-                                 <select name="payment_method" id="payment_method" class="form-control col-lg-4">
-                                 {% for method in payment_methods %}
-                                     <option value="{{ method }}">{{ method }}</option>
-                                     {% endfor %}
-                                     </select>
+                                  <select name="payment_method" id="payment_method" class="selectpicker" data-dropup-auto="false">
+                                  {% for method in payment_methods %}
+                                        <option value="{{ method }}" data-content="<img src='{{ method.logo.url }}' width='30' height='30'> {{method}}" >
+                                        </option>
+                                    {% endfor %}
+                                  </select>
+
                              </div>
 
                              <button type="submit" class="btn btn-primary">Proceed</button>

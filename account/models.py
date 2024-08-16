@@ -7,9 +7,11 @@ from io import BytesIO
 import djmoney
 import qrcode
 import requests
+from django.conf import settings
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.core.files.base import ContentFile
+from django.core.mail import send_mail, EmailMultiAlternatives
 from django.db import models
 from django.db.models import Subquery
 from django.db.models.signals import post_save
@@ -33,6 +35,10 @@ from django.utils.crypto import get_random_string
 from datetime import timedelta
 
 from account.constants import GENDER_CHOICE
+
+from account.constants import verification_status
+
+from frontend.models import CompanyProfile
 
 
 class User(AbstractBaseUser, PermissionsMixin, TrackingModel):
@@ -105,7 +111,9 @@ class KYC(TrackingModel, models.Model):
 class Account(models.Model):
     user = models.OneToOneField(Client, related_name="account", on_delete=models.CASCADE)
     account_number = models.CharField(max_length=100, null=True, blank=True, unique=True)
+    account_name = models.CharField(max_length=200, blank=True, null=True)
     account_type = models.CharField(max_length=200, blank=True, null=True, choices=account_type)
+    joint_account_number = models.CharField(max_length=200, blank=True, null=True)
     transaction_pin = models.CharField(max_length=6, null=True, blank=True, default='0000')
     two_factor_auth = models.BooleanField(default=False, blank=True, null=True)
     password = models.CharField(max_length=225, blank=True, null=True)
@@ -114,14 +122,42 @@ class Account(models.Model):
         return str(self.user)
 
     def generate_account_number(self):
-        account_number_prefix = int(39232145)
+        account_number_prefix = int(309232145)
         new_account_number = account_number_prefix + int(self.user.id)
         return new_account_number
 
     def save(self, *args, **kwargs):
-        if not self.account_number:
+        if not self.account_number and not self.joint_account_number:
             self.account_number = self.generate_account_number()
+            if self.account_type == 'Joint-checking Account':
+                self.joint_account_number = self.account_number
         super().save(*args, **kwargs)
+
+
+class JointAccount(models.Model):
+    user = models.OneToOneField(Account, on_delete=models.CASCADE, related_name='joint_account')
+    account_name = models.CharField(max_length=200, blank=True)
+    account_number = models.CharField(max_length=100, null=True, blank=True)
+    account_holders = models.ManyToManyField(Account, blank=True, related_name='joint_accounts')
+    account_link = models.CharField(max_length=200, blank=True, unique=True, null=True)
+    code = models.CharField(max_length=200, blank=True, unique=True, null=True)
+
+    def __str__(self):
+        return str(self.user) + ' ' + str(self.account_name)
+
+    def generate_account_link(self):
+        url = "https://fineasebank.com/account/joint-checking-account"
+        code = str(uuid.uuid4()).replace("-", "")[:6]
+        link = url + "?pair=" + code
+        data = [link, code]
+        return data
+
+    def save(self, *args, **kwargs):
+        if not self.account_link:
+            data = self.generate_account_link()
+            self.account_link = data[0]
+            self.code = data[1]
+        super().save(*args, **kwargs)  # Corrected line
 
 
 class FiatCurrency(models.Model):
@@ -171,10 +207,21 @@ class FiatPortfolio(models.Model):
         super().save(*args, **kwargs)
 
 
+class Banks(models.Model):
+    name = models.CharField(max_length=100, null=True)
+    logo = models.ImageField(null=True, blank=True, upload_to="banks")
+    supporting_currency = models.ForeignKey(FiatCurrency, blank=True, null=True, on_delete=models.CASCADE, )
+
+    def __str__(self):
+        return str(self.name)
+
+
 class PaymentMethods(models.Model):
     name = models.CharField(max_length=200)
     is_active = models.BooleanField(default=True)
     is_crypto = models.BooleanField(default=False)
+    supporting_currency = models.ManyToManyField(FiatCurrency, blank=True, null=True, )
+    logo = models.ImageField(blank=True, null=True)
     for_deposit = models.BooleanField(default=False)
     transfer_access = models.BooleanField(default=False)
     for_withdrawal = models.BooleanField(default=False)
@@ -344,6 +391,7 @@ class next_of_kin(models.Model):
 
 class Card_type(models.Model):
     name = models.CharField(max_length=200)
+    card_logo = models.ImageField(blank=True, null=True)
 
     def __str__(self):
         return str(self.name)
@@ -467,3 +515,58 @@ class Cards(models.Model):
 
     def __str__(self):
         return str(self.user) + " " + str(self.account) + " " + str(self.card_type)
+
+
+class Joint_Account_KYC(TrackingModel, models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    verification = models.CharField(max_length=200, choices=verification_status, blank=True, default='Unverified')
+    referral = models.ForeignKey(Account, verbose_name=_("Client"), on_delete=models.CASCADE, related_name='referral')
+    first_name = models.CharField(_("First Name"), max_length=150)
+    mobile = models.CharField(max_length=20, null=True, blank=True)
+    last_name = models.CharField(_("last Name"), max_length=150)
+    email = models.EmailField(_("Email"), max_length=200, null=True)
+    dob = models.DateField(verbose_name='Date of Birth')
+    gender = models.CharField(max_length=100, choices=GENDER_CHOICE, null=True)
+    postcode = models.CharField(_("Postcode/Zipcode"), max_length=50)
+    address = models.CharField(_("Address"), max_length=255)
+    town_city = models.CharField(_("Town/City"), max_length=150)
+    state = models.CharField(_("State"), max_length=150)
+    country = CountryField(blank_label='(select country)', blank=True, null=True)
+    document_type = models.CharField(max_length=50, choices=ID, null=True)
+    id_front_view = models.FileField(upload_to="kyc/%Y-%m-%d/", null=True)
+    id_back_view = models.FileField(upload_to="kyc/%Y-%m-%d/", blank=True, null=True)
+    ssn = models.FileField(upload_to="kyc/%Y-%m-%d/", blank=True, null=True)
+
+    class Meta:
+        verbose_name = "Joint Account KYC"
+        verbose_name_plural = "Joint Account KYC"
+
+    def __str__(self):
+        return str(self.email)
+
+    def get_full_name(self):
+        return f"{self.first_name} {self.last_name}"
+
+    def get_all_referral_emails(user):
+        return Joint_Account_KYC.objects.filter(referral=user).values_list('email', 'first_name')
+
+    def send_verification_email(self):
+        if self.verification == "Verified":
+            login_email = self.referral
+            login_password = self.referral.password
+            transaction_pin = self.referral.transaction_pin
+            subject = "Your Joint Account Proposal is Approved"
+            message = (f"Dear {self.get_full_name()},\n Your proposal for a joint account has been approved. Welcome "
+                       f"to Finease Bank!"
+                       f"\n Login Email: {login_email} \n Login Password: {login_password} \n Transaction PIN: {transaction_pin} \n")
+            recipient_list = [self.email]
+            email = EmailMultiAlternatives(subject, message, to=[recipient_list])
+            email.send()
+
+    def save(self, *args, **kwargs):
+        # Check if verification is set to 'Verified' and if it was previously unverified
+        if self.verification == 'Verified' and not Joint_Account_KYC.objects.filter(id=self.id,
+                                                                                    verification='Verified').exists():
+            self.send_verification_email()
+
+        super().save(*args, **kwargs)

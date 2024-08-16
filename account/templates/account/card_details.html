@@ -11,8 +11,8 @@
   @import url("https://fonts.googleapis.com/css?family=Overpass+Mono");
 
   :root {
-    --purple: #280631;
-    --purple2: #0db9a978;
+    --purple: #574a5b;
+    --purple2: #8e202ff0;
     --white: #f6d3fd;
     --height: 222px;
     --width: 350px;
@@ -394,7 +394,11 @@ px);
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="freezeModalLabel">Freeze Card</h5>
+        <h5 class="modal-title" id="freezeModalLabel"> {% if card.freeze %}
+        Unfreeze
+    {% else %}
+        freeze
+    {% endif %}</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>

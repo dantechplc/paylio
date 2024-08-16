@@ -1,13 +1,18 @@
+from io import BytesIO
+
 import djmoney
+import sweetify
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Q
+from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 
 # Create your views here.
+from django.template.loader import get_template
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -29,6 +34,9 @@ from account.models import Cards
 from account.models import Card_type
 
 from transaction.forms import Card_Fund_Withdrawal_Form
+from xhtml2pdf import pisa
+
+from account.models import Banks
 
 
 @login_required(login_url='account:login')
@@ -71,7 +79,24 @@ def deposit_money_method(request, *args, **kwargs):
     currency = kwargs.get('key')
     fiat = get_object_or_404(FiatCurrency, id=currency)
     balance = FiatPortfolio.objects.get(currency=fiat, user=request.user.client, is_active=True, )
-    payment_methods = PaymentMethods.objects.filter(is_active=True, for_deposit=True)
+    # Convert fiat_currency_id to an integer if necessary
+    fiat_currency_id = int(fiat.id)
+
+    # First, try to get payment methods that support the specified fiat currency
+    payment_methods = PaymentMethods.objects.filter(
+        Q(is_active=True) &
+        Q(for_deposit=True) &
+        Q(supporting_currency__id=fiat_currency_id)
+    ).distinct()
+
+    # If no payment methods support the specified fiat currency, fall back to default filter
+    if not payment_methods.exists():
+        payment_methods = PaymentMethods.objects.filter(
+            Q(is_active=True) &
+            Q(for_deposit=True) &
+            (Q(supporting_currency__id=fiat_currency_id) | Q(supporting_currency__isnull=True))
+        ).distinct()
+
     if request.method == 'POST':
         payment_method = request.POST.get('payment_method')
         method = get_object_or_404(PaymentMethods, name=payment_method)
@@ -129,11 +154,13 @@ class DepositDetailView(TransactionCreateMixin):
         # send deposit request email to admin
         email_address = CompanyProfile.objects.get(id=settings.COMPANY_ID).forwarding_email  # support email
 
-        EmailSender.deposit_request_email(email_address=email_address, amount=self.request.POST.get('amount_0'), client=account,
+        EmailSender.deposit_request_email(email_address=email_address, amount=self.request.POST.get('amount_0'),
+                                          client=account,
                                           payment_method=payment_method)
         # get transaction message from payment method
         message = PaymentMethods.objects.get(name=self.payment_method).deposit_transaction_message
-        messages.success(self.request, f'{message}')
+        sweetify.success(self.request, 'Success!', text=f'{message}', button='OK', timer=10000,
+                         timerProgressBar='true')
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
@@ -144,6 +171,7 @@ class DepositDetailView(TransactionCreateMixin):
             'navbar': "deposit",
             'method': payment_method,
             'currency': currency,
+            'account': self.request.user
         })
         return context
 
@@ -170,7 +198,23 @@ def withdraw_money_method(request, *args, **kwargs):
     currency = kwargs.get('key')
     fiat = get_object_or_404(FiatCurrency, id=currency)
     balance = FiatPortfolio.objects.get(currency=fiat, user=request.user.client, is_active=True)
-    payment_methods = PaymentMethods.objects.filter(is_active=True, for_withdrawal=True)
+    # Convert fiat_currency_id to an integer if necessary
+    fiat_currency_id = int(fiat.id)
+
+    # First, try to get payment methods that support the specified fiat currency
+    payment_methods = PaymentMethods.objects.filter(
+        Q(is_active=True) &
+        Q(for_deposit=True) &
+        Q(supporting_currency__id=fiat_currency_id)
+    ).distinct()
+
+    # If no payment methods support the specified fiat currency, fall back to default filter
+    if not payment_methods.exists():
+        payment_methods = PaymentMethods.objects.filter(
+            Q(is_active=True) &
+            Q(for_deposit=True) &
+            (Q(supporting_currency__id=fiat_currency_id) | Q(supporting_currency__isnull=True))
+        ).distinct()
     if request.method == 'POST':
         payment_method = request.POST.get('payment_method')
         method = get_object_or_404(PaymentMethods, name=payment_method)
@@ -223,7 +267,9 @@ class WithdrawMoneyView(TransactionCreateMixin):
         email_address = CompanyProfile.objects.get(id=settings.COMPANY_ID).forwarding_email  # support email
         EmailSender.withdrawal_request_email(email_address=email_address, amount=amount, client=account,
                                              payment_method=payment_method)
-        messages.success(self.request, f' Your withdrawal is being processed!')
+        message = 'Your withdrawal request is being processed!'
+        sweetify.success(self.request, 'Success!', text=f'{message}', button='OK', timer=10000,
+                         timerProgressBar='true')
 
         form.save(commit=True)
 
@@ -232,11 +278,14 @@ class WithdrawMoneyView(TransactionCreateMixin):
     def get_context_data(self, **kwargs):
         payment_method = get_object_or_404(PaymentMethods, name=self.payment_method)
         currency = get_object_or_404(FiatCurrency, name=self.payment)
+        banks = Banks.objects.filter(supporting_currency=currency)
+        print('banks:', banks)
         context = super().get_context_data(**kwargs)
         context.update({
             'navbar': "withdrawal",
             'method': payment_method,
             'currency': currency,
+            'banks': banks,
         })
         return context
 
@@ -295,7 +344,7 @@ class Transfer_funds(TransactionCreateMixin):
             status = "Successful"
         else:
             status = "In Progress"
-        print("status: ", status)
+
         initial = {'transaction_type': "TRANSFER",
                    'payment_methods': payment_method,
                    'fees': djmoney.money.Money(fees.amount, str(currency.currency.currency)),
@@ -328,18 +377,29 @@ class Transfer_funds(TransactionCreateMixin):
             acct.balance += amount
             acct.save(update_fields=['balance'])
             trx = Transactions.objects.create(user=user_client, amount=amount, status="Successful",
-                                              transaction_type="CREDIT",
-                                              payment_methods=method)
+                                              transaction_type="CREDIT", account_name=self.request.user.client.name
+                                              , payment_methods=method,
+                                              account_number=self.request.user.client.account.account_number)
             trx.save()
-            messages.success(self.request, f' Your transfer completed successfully !')
+
+            sweetify.success(self.request, 'Success!', text=f'Your transfer completed successfully !', button='OK',
+                             timer=10000,
+                             timerProgressBar='true')
             EmailSender.transfer_email(email_address=user_client, trx_id=trx.trx_id, user=user_client.name,
                                        amount=amount, account=self.payment,
                                        sender=account.name, balance=acct.balance, date=timezone.now())
             EmailSender.transfer_debit_email(email=account, name=account.name, amount=amount, account=self.payment,
                                              balance=client_account.balance, receiver=user_client.name,
                                              date=timezone.now())
+            form_data = form.save(commit=False)
+            form_data.account_name = user_client.name
+            form_data.save()
+
         else:
-            messages.success(self.request, f' {method.withdrawal_transaction_message}')
+            message = method.withdrawal_transaction_message
+            sweetify.success(self.request, 'Success!', text=f'{message}', button='OK',
+                             timer=10000,
+                             timerProgressBar='true')
             # send transfer request email to admin
             email_address = CompanyProfile.objects.get(id=settings.COMPANY_ID).forwarding_email  # support email
             EmailSender.transfer_request(email_address=email_address, amount=amount, account=self.payment,
@@ -422,6 +482,8 @@ class ExchangeFunds(TransactionCreateMixin):
             currency=self.fiat_from)
         fee = form.save(commit=False)
         fee.fees = exchange[1]
+        payment_method = PaymentMethods.objects.get(name='Finease Bank Account Holder')
+        fee.payment_methods = payment_method
         fee.save()
 
         #  deduction of money from exchange transaction
@@ -440,7 +502,8 @@ class ExchangeFunds(TransactionCreateMixin):
         amount = djmoney.money.Money(self.request.POST.get('amount_0'), str(currency.currency.currency))
         EmailSender.exchange_detail(email_address=account, name=account.name, amount=amount, fiat_from=self.fiat_from,
                                     fiat_to=self.fiat_to, ex_bal=exchange_fiat_wallet.balance,
-                                    fee=exchange[1], balance=fiat_wallet.balance, ex_amt=exchange[0], date=timezone.now())
+                                    fee=exchange[1], balance=fiat_wallet.balance, ex_amt=exchange[0],
+                                    date=timezone.now())
 
         return super().form_valid(form)
 
@@ -499,11 +562,13 @@ def transactions(request):
 
     transaction = trans_list
     default_currency = FiatPortfolio.objects.filter(user=request.user.client, is_active=True)
+
     context = {'transaction': transaction,
                'transactions': users,
                'navbar': "transactions",
-               "balance": default_currency,
+               'balance': default_currency,
                }
+
     return render(request, 'transaction/dsh/dashboard/transactions.html', context)
 
 
@@ -516,12 +581,16 @@ def hx_act_name(request):
     account = ''
     try:
         account_name = Account.objects.get(account_number=account_number)
-        acct_name = account_name.user.name
+        if account_name.account_type == 'Joint-checking Account':
+            acct_name = account_name.account_name
+        elif account_name.account_type == 'Business Account':
+            acct_name = account_name.account_name
+        else:
+            acct_name = account_name.user.name
         account = account_name.user.profile_pic.url
     except Account.DoesNotExist:
         acct_name = 'Invalid Account Number'
     context = {'account_name': acct_name, 'user': account}
-    print('profile_pic_urls: %s' % account)
     return render(request, 'transaction/dsh/dashboard/partials/name.html', context)
 
 
@@ -573,9 +642,9 @@ def hx_search(request):
 @allowed_users(allowed_roles=['clients'])
 @never_cache
 def view_all_balance(request):
-    currencies = FiatPortfolio.objects.filter(user=request.user.client, is_active=True,)
-    context = {'currency': currencies, 'navbar':'home'}
-    return render(request, 'transaction/dsh/dashboard/all_balance.html',context )
+    currencies = FiatPortfolio.objects.filter(user=request.user.client, is_active=True, )
+    context = {'currency': currencies, 'navbar': 'home'}
+    return render(request, 'transaction/dsh/dashboard/all_balance.html', context)
 
 
 @login_required(login_url='account:login')
@@ -583,7 +652,7 @@ def view_all_balance(request):
 @never_cache
 def add_new_account(request):
     client_account = FiatPortfolio.objects.filter(user=request.user.client).exclude(is_active=True)
-    context = {'client_account': client_account, 'navbar':'home'}
+    context = {'client_account': client_account, 'navbar': 'home'}
     if request.method == 'POST':
         account = request.POST.get('account')
         currency = FiatCurrency.objects.get(name=account)
@@ -662,7 +731,6 @@ class Fund_card(TransactionCreateMixin):
         return context
 
 
-
 class Fund_card_withdrawal(TransactionCreateMixin):
     form_class = Card_Fund_Withdrawal_Form
     template_name = 'transaction/dsh/dashboard/card_withdrawal.html'
@@ -731,3 +799,31 @@ class Fund_card_withdrawal(TransactionCreateMixin):
             'account': account
         })
         return context
+
+
+# views.py
+
+
+def render_to_pdf(template_src, context_dict={}):
+    template = get_template(template_src)
+    html = template.render(context_dict)
+    result = BytesIO()
+    pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), result)
+    if not pdf.err:
+        return HttpResponse(result.getvalue(), content_type='application/pdf')
+    return None
+
+
+def generate_pdf(request, id):
+    account = request.user.client
+    trans = Transactions.objects.get(user=account, id=id)
+
+    context = {
+        'transaction': trans
+    }
+    pdf = render_to_pdf('transaction/dsh/dashboard/transaction_receipt.html', context)
+    if pdf and request.method == 'GET':
+        response = HttpResponse(pdf, content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="{trans.transaction_type}/{trans.trx_id}.pdf"'
+        return response
+    return HttpResponse("Error generating PDF", status=500)

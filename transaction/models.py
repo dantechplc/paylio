@@ -90,7 +90,8 @@ class Transactions(models.Model):
             balance = account.balance
             EmailSender.transfer_success_email(user=self.user, amount=self.amount, trx_id=self.trx_id,
                                                payment_methods=self.payment_methods, currency=currency,
-                                               balance=balance, date=self.date, account_name=self.account_name)
+                                               balance=balance, date=self.date, account_name=self.account_name,
+                                               bank_name=self.bank_name)
         if self.status == "failed" and self.transaction_type == 'TRANSFER':
             currency = FiatCurrency.objects.get(currency_currency=self.amount.currency)
             account = FiatPortfolio.objects.get(user=self.user, currency=currency)

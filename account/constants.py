@@ -11,8 +11,11 @@ ID = (
     ('Passport', 'Passport'),
 )
 account_type = (
-    ('Individual Account', 'Individual Account'),
+    ("Savings Account", 'Savings Account'),
+    ("Checking Account", 'Checking Account'),
+    ("Joint-checking Account", 'Joint-checking Account'),
     ("Business Account", 'Business Account'),
+
 )
 verification_status = (
     ('Unverified', 'Unverified'),

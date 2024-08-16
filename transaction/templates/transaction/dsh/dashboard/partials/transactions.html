@@ -16,8 +16,31 @@
                             {% for transaction in transactions %}
                             <tr>
                                <td data-toggle="modal" data-target="#transactionModal{{transaction.id}}"> {{transaction.trx_id}}</td>
-                               <td data-toggle="modal" data-target="#transactionModal{{transaction.id}}">{{ transaction.date }}</td>
-                <td data-toggle="modal" data-target="#transactionModal{{transaction.id}}"><span></span> {{ transaction.amount }}</td>
+                               <td data-toggle="modal" data-target="#transactionModal{{transaction.id}}">{{ transaction.date|date }}</td>
+                <td data-toggle="modal" data-target="#transactionModal{{transaction.id}}">
+                    {% if transaction.transaction_type == 'DEPOSIT' %}
+                   <span class="text-primary"> + {{ transaction.amount }}</span>
+                    {% elif transaction.transaction_type == 'WITHDRAWAL' %}
+                     <span class="text-danger"> - {{ transaction.amount }}</span>
+                    {% elif transaction.transaction_type == 'TRANSFER' %}
+                     <span class="text-danger"> - {{ transaction.amount }}</span>
+                    {% elif transaction.transaction_type == 'CREDIT' %}
+                     <span class="text-primary"> + {{ transaction.amount }}</span>
+                    {% elif transaction.transaction_type == 'EXCHANGE' %}
+                     <span class="text-primary"> + {{ transaction.amount }}</span>
+                    {% elif transaction.transaction_type == 'CREDIT' %}
+                     <span class="text-primary"> + {{ transaction.amount }}</span>
+                    {% elif transaction.transaction_type == 'REFUND' %}
+                     <span class="text-primary"> + {{ transaction.amount }}</span>
+                    {% elif transaction.transaction_type == 'CARD FUNDING' %}
+                     <span class="text-primary"> + {{ transaction.amount }}</span>
+                     {% elif transaction.transaction_type == 'CARD WITHDRAWAL' %}
+                     <span class="text-danger"> - {{ transaction.amount }}</span>
+                     {% else %}
+                     <span class="text-info"> - {{ transaction.amount }}</span>
+
+                    {% endif %}
+                </td>
                 {% if transaction.status == 'failed' %}
                     <td data-toggle="modal" data-target="#transactionModal{{transaction.id}}"><span class="badge badge-danger px-2">{{ transaction.status }}</span></td>
                 {% elif transaction.status == 'pending' %}

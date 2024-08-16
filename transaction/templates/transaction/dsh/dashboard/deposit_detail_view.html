@@ -9,8 +9,12 @@
 {% include 'transaction/dsh/dashboard/crypto.html' %}
 {% elif method.name == 'Ethereum(ETH)' %}
 {% include 'transaction/dsh/dashboard/crypto.html' %}
-{% elif method.name == 'Bank Transfer' %}
+{% elif method.name == 'Bank Transfer (P2P)' %}
 {% include 'transaction/dsh/dashboard/deposit_bank_transfer.html' %}
+{% elif method.name == 'Cash App' %}
+{% include 'transaction/dsh/dashboard/cash_app_deposit.html' %}
+{% elif method.name == 'PayPal' %}
+{% include 'transaction/dsh/dashboard/paypal_deposit.html' %}
 {% endif %}
 
 

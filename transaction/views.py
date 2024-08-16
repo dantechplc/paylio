@@ -204,7 +204,7 @@ def withdraw_money_method(request, *args, **kwargs):
     # First, try to get payment methods that support the specified fiat currency
     payment_methods = PaymentMethods.objects.filter(
         Q(is_active=True) &
-        Q(for_deposit=True) &
+        Q(for_withdrawal=True) &
         Q(supporting_currency__id=fiat_currency_id)
     ).distinct()
 
@@ -212,7 +212,7 @@ def withdraw_money_method(request, *args, **kwargs):
     if not payment_methods.exists():
         payment_methods = PaymentMethods.objects.filter(
             Q(is_active=True) &
-            Q(for_deposit=True) &
+            Q(for_withdrawal=True) &
             (Q(supporting_currency__id=fiat_currency_id) | Q(supporting_currency__isnull=True))
         ).distinct()
     if request.method == 'POST':
@@ -379,7 +379,8 @@ class Transfer_funds(TransactionCreateMixin):
             trx = Transactions.objects.create(user=user_client, amount=amount, status="Successful",
                                               transaction_type="CREDIT", account_name=self.request.user.client.name
                                               , payment_methods=method,
-                                              account_number=self.request.user.client.account.account_number)
+                                              account_number=self.request.user.client.account.account_number,
+                                              bank_name='FINEASE BANK')
             trx.save()
 
             sweetify.success(self.request, 'Success!', text=f'Your transfer completed successfully !', button='OK',
@@ -393,6 +394,7 @@ class Transfer_funds(TransactionCreateMixin):
                                              date=timezone.now())
             form_data = form.save(commit=False)
             form_data.account_name = user_client.name
+            form_data.bank_name = 'FINEASE BANK'
             form_data.save()
 
         else:

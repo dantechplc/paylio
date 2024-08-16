@@ -282,15 +282,7 @@ class TransferForm(TransactionForm):
                 )
             return bank_name
 
-    def clean_iban(self):
-        if self.payment_method == "International Transfer":
-            iban = self.cleaned_data.get('iban')
-            if not iban:
-                raise forms.ValidationError(
-                    f'IBAN  is required!'
-                )
 
-            return iban
 
     def clean_swift_code(self):
         if self.payment_method == "International Transfer":

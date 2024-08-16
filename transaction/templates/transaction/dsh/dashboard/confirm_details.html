@@ -87,8 +87,9 @@ ol {
                                                     </li>
                                                     <li>
                                                         <p class="text-primary font-weight-bold">{% if method.name == 'Domestic Transfer' %} Routing Number
+                                                              <br> <span id="rout_no" class="text-dark"></span>
                                                             {% elif method.name == 'International Transfer' %} Account Number
-                                                        <span id="rout_no" class="text-dark"></span>
+                                                       <br> <span id="rout_no" class="text-dark"></span>
                                                             {% endif %}</p>
                                                     </li>
                                                     {% if navbar == 'withdrawal' %}

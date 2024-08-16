@@ -115,11 +115,11 @@
 <body>
     <div class="container">
        <img src="{% static 'dsh/assets/images/logo.png' %" alt="finease_bank_logo">
-        <h1>Transaction Receipt</h1>
+        <h1>{{transaction.transaction_type}} Transaction Receipt</h1>
         <p>Generated from <b>Finease Bank</b> on {{transaction.date}}</p>
         <h2>Transaction Amount <span  class="s1">{{transaction.amount}}</span></h2>
         <hr>
-        <h2>Transaction Type <span class="s1">{{transaction.payment_methods}} {{transaction.transaction_type}}</span></h2>
+        <h2>Transaction Type <span class="s1">{{transaction.payment_methods}} </span></h2>
         <hr>
         <h2>Transaction Date <span class="s1">{{transaction.date}}</span></h2>
         <hr>
@@ -147,26 +147,35 @@
         <p class="s1">{{transaction.wallet_address}}</p>
          {% elif transaction.transaction_type == 'WITHDRAWAL' and transaction.payment_methods.name == 'Cash App' %}
         <h2>Beneficiary Cash App tag</h2>
-        <p class="s1">{{transaction.account_name}}</p>
-        {% elif transaction.transaction_type == 'WITHDRAWAL' %}
+         {% elif transaction.transaction_type == 'WITHDRAWAL' and transaction.payment_methods.name == 'PayPal' %}
         <h2>Beneficiary</h2>
+        <p class="s1">{{transaction.account_name}}</p>
+        {% elif transaction.transaction_type == 'WITHDRAWAL'  %}
+        <h2>Beneficiary</h2>
+        <p class="s1">{{transaction.account_name}}</p>
         <p class="s1">{{transaction.bank_name}} </p>
         <p class="s1">{{transaction.routing_number}}</p>
         {% elif transaction.transaction_type == 'DEPOSIT' %}
         <h2>Beneficiary</h2>
         <p class="s1">{{transaction.user.name}} </p>
-        {% elif transaction.transaction_type == 'TRANSFER' %}
+        {% elif transaction.transaction_type == 'TRANSFER'  %}
         <h2>Beneficiary</h2>
         <p class="s1">{{transaction.account_name}} </p>
         <p class="s1">{{transaction.account_number}}</p>
+        <p class="s1">{{transaction.bank_name}} </p>
         {% elif transaction.transaction_type == 'EXCHANGE' %}
         <h2>Beneficiary</h2>
          <p class="s1" >{{transaction.user.name}}</p>
+          {% elif transaction.transaction_type == 'CREDIT' %}
+                       <h2>Sender</h2>
+         <p class="s1" >{{transaction.account_name}}</p>
+                       <p class="s1">{{transaction.account_number}}</p>
+                       <p class="s1">{{transaction.bank_name}}</p>
         {% endif %}
         <hr>
         <h2>Remark <span class="s1">{{transaction.payment_description|slice:50}}...</span></h2>
         <hr>
-        <h2>Transaction Reference <span class="s1">{{transaction.trx_id}}</span></h2>
+        <h2>Transaction Reference No.<span class="s1">{{transaction.trx_id}}</span></h2>
         <h2>Transaction Status <span class="s1">{{transaction.transaction_type}} Request Successful</span></h2>
         <p>If you have any questions or would like more information, <span class="s2"></span>send an email to <a href="mailto:support@fineasebank.com">support@fineasebank.com</a></p>
         <p>Thank you for choosing Finease Bank.</p>

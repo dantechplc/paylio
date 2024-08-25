@@ -1,0 +1,50 @@
+{% extends 'transaction/dsh/base.html' %} {% block title %}
+  FINEASE | INVESTMENT
+{% endblock %}
+{% load static %}
+{% block content %}
+
+
+
+		    <!-- Page Content  -->
+         <div id="content-page" class="content-page">
+            <div class="container-fluid">
+               <div class="row">
+
+				   {% for investment in  investment %}
+                  <div class="col-lg-4 col-md-6 col-sm-12">
+                     <div class="iq-card bg-primary">
+                        <div class="iq-card-body border text-center rounded">
+							<form method="post">
+								{% csrf_token %}
+								<span style="font-size:21.0pt;" class="font-size-15 text-uppercase font-weight-bolder text-Successful  ">{{investment.name}}</span>
+								<input name="investment_name" hidden="" value="{{investment.name}}">
+								<ul class="list-unstyled line-height-4 mb-0">
+
+								   <li>Remote Adminstrator: Active <i class="fa fa-check text-success"></i></li>
+								   <li>Minimum:{{investment.min_amount}} <i class="fa fa-check text-success"></i></li>
+								   <li>Maximum:{{investment.max_amount}} <i class="fa fa-check text-success"></i></li>
+								   <li>Referral: {{investment.referral_commission}}% commission <i class="fa fa-check text-success"></i></li>
+								   <li>Customer support: 24hrs <i class="fa fa-check text-success"></i></li>
+								   <li>Contract Period: 1 year <i class="fa fa-check text-success"></i></li>
+								</ul>
+						   <button type="submit" class="btn btn-warning mt-5">Select</button>
+
+						</form>
+                        </div>
+                     </div>
+                  </div>
+
+				   {% endfor %}
+				 </div>
+				</div>
+			</div>
+		</div>
+
+
+
+
+
+
+
+{% endblock content %}

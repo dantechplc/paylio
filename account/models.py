@@ -570,3 +570,39 @@ class Joint_Account_KYC(TrackingModel, models.Model):
             self.send_verification_email()
 
         super().save(*args, **kwargs)
+
+
+
+class Investment(models.Model):
+    name = models.CharField(max_length=200)
+    min_amount = MoneyField(max_digits=19, decimal_places=2, default_currency='USD', default=0, blank=True, null=True)
+    max_amount = MoneyField(max_digits=19, decimal_places=2, default_currency='USD', default=0, blank=True, null=True)
+    daily_rate = models.FloatField(blank=True, null=True)
+    duration = models.IntegerField(blank=True, null=True)
+    period_in_days = models.IntegerField(blank=True, null=True)
+    referral_commission = models.FloatField(blank=True, null=True)
+    percentage = models.IntegerField(blank=True, null=True, default=100)
+
+    def __str__(self):
+        return str(self.name)
+
+
+class Investment_profile(models.Model):
+    user = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='inv')
+    trx_id = models.CharField(max_length=300, blank=True, null=True, )
+    investment = models.ForeignKey(Investment, on_delete=models.CASCADE, null=True, blank=True)
+    amount_invested = MoneyField(max_digits=19, decimal_places=2, default_currency='USD', default=0, blank=True,
+                                 null=True)
+    amount_earned = MoneyField(max_digits=19, decimal_places=2, default_currency='USD', default=0, blank=True,
+                               null=True)
+    expected_roi = MoneyField(max_digits=19, decimal_places=2, default_currency='USD', default=0, blank=True, null=True)
+    earning = MoneyField(max_digits=19, decimal_places=2, default_currency='USD', default=0, blank=True, null=True)
+    status = models.CharField(max_length=300, blank=True, null=True, choices=investment_status)
+    payout_frequency = models.CharField(max_length=300, choices=payout_frequency, blank=True, null=True)
+    date_started = models.DateTimeField(blank=True, null=True)
+    expiry_date = models.DateTimeField(blank=True, null=True)
+    next_payout = models.DateTimeField(blank=True, null=True)
+    expired = models.BooleanField(default=False)
+
+    def __str__(self):
+        return str(self.user)

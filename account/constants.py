@@ -32,3 +32,16 @@ status = (
     ('In Progress', 'In Progress'),
     ('Expired', 'Expired')
 )
+
+investment_status = (
+    ('Active', 'Active'),
+    ('Expired', 'Expired'),
+    ('On Hold', 'On Hold'),
+)
+
+payout_frequency = (
+    ('Weekly', 'Weekly'),
+    ('Twice a month (1st and 15th)', 'Twice a month (1st and 15th)'),
+    ('Monthly (1st business day)', 'Monthly(1st business day)'),
+    ('At the end of investment period', 'At the end of investment period'),
+)

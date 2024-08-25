@@ -27,4 +27,5 @@ urlpatterns = [
     path("card-funding/<str:method>/<str:card_type>/<str:fiat>", Fund_card.as_view(), name="fund-card"),
     path("card-withdrawal/<str:method>/<str:card_type>/<str:fiat>", Fund_card_withdrawal.as_view(), name="card-withdrawal"),
     path('generate_pdf/<int:id>', generate_pdf, name='generate_pdf'),
+    path('investment-plans/', investment, name='investment')
 ]

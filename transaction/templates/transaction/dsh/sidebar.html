@@ -16,6 +16,15 @@
                      <li class="{% if navbar == 'deposit' %} active {% endif %}">
                         <a href="{% url 'transaction:deposit-money' %}" class="iq-waves-effect collapsed"  aria-expanded="false"><i class="ri-wallet-3-line iq-arrow-left"></i><span>Add Money</span><i class="ri-arrow-right-s-line iq-arrow-right"></i></a>
                      </li>
+<!--                      <li class="{% if navbar == 'investment' %} active {% endif %}">-->
+<!--                        <a href="#mailbox" class="iq-waves-effect collapsed"  data-toggle="collapse" aria-expanded="false"><i class="ri-bar-chart-fill iq-arrow-left"></i><span>Investments</span><i class="ri-arrow-right-s-line iq-arrow-right"></i></a>-->
+<!--                        <ul id="mailbox" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">-->
+
+<!--                           <li><a href="{% url 'transaction:investment' %}"><i class="las la-plus-circle"></i>New Investment</a></li>-->
+<!--                           <li><a href="#"><i class="las la-th-list"></i>Investment Log</a></li>-->
+
+<!--                        </ul>-->
+<!--                     </li>-->
                      {% if request.user.client.account.account_type == 'Joint-checking Account' %}
                      {% else %}
                      <li class="{% if navbar == 'card' %} active {% endif %}">

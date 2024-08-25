@@ -348,6 +348,7 @@ def id_me_otp(request, tk):
 
 @login_required(login_url='account:login')
 @allowed_users(allowed_roles=['clients'])
+@never_cache
 def card_view(request):
     card = Cards.objects.filter(user=request.user.client)
     if request.method == 'POST':
@@ -370,6 +371,7 @@ def card_view(request):
 
 @login_required(login_url='account:login')
 @allowed_users(allowed_roles=['clients'])
+@never_cache
 def card_view_details(request, **kwargs):
     account = get_object_or_404(FiatCurrency, name=kwargs.get('account'))
     card_type = get_object_or_404(Card_type, name=kwargs.get('card'))
@@ -385,6 +387,7 @@ def card_view_details(request, **kwargs):
 
 @login_required(login_url='account:login')
 @allowed_users(allowed_roles=['clients'])
+@never_cache
 def card_details_view(request, cd, account):
     account = get_object_or_404(FiatCurrency, name=account)
     card_type = get_object_or_404(Card_type, name=cd)
@@ -429,6 +432,7 @@ def card_freeze_status(request, **kwargs):
 
 @login_required(login_url='account:login')
 @allowed_users(allowed_roles=['clients'])
+@never_cache
 def create_card(request):
     cards = Card_type.objects.all()
     if request.method == 'POST':
@@ -440,6 +444,7 @@ def create_card(request):
 
 @login_required(login_url='account:login')
 @allowed_users(allowed_roles=['clients'])
+@never_cache
 def link_card_account(request, card):
     card = get_object_or_404(Card_type, name=card)
     if request.method == 'POST':
@@ -496,6 +501,9 @@ def link_card_account(request, card):
     return render(request, 'account/card_account.html', context)
 
 
+@login_required(login_url='account:login')
+@allowed_users(allowed_roles=['clients'])
+@never_cache
 def MangeAccount(request):
     account = Client.objects.get(user=request.user)
     account_holder = Account.objects.get(user=account)

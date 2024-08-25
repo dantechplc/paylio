@@ -38,6 +38,8 @@ from xhtml2pdf import pisa
 
 from account.models import Banks
 
+from account.models import Investment
+
 
 @login_required(login_url='account:login')
 @allowed_users(allowed_roles=['clients'])
@@ -829,3 +831,16 @@ def generate_pdf(request, id):
         response['Content-Disposition'] = f'attachment; filename="{trans.transaction_type}/{trans.trx_id}.pdf"'
         return response
     return HttpResponse("Error generating PDF", status=500)
+
+@login_required(login_url='login')
+def investment(request):
+    investment = Investment.objects.all()
+    context = {
+        'investment': investment,
+        'navbar': 'investment'
+    }
+    if request.method == 'POST':
+        investment_name = request.POST.get('investment_name')
+        return redirect('transaction:investment_preview', investment_name)
+
+    return render(request, "transaction/dsh/dashboard/new_investment.html", context)

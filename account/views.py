@@ -57,7 +57,7 @@ def register_view(request):
             account = Account.objects.create(user=client, account_type=account_type, transaction_pin=transaction_pin,
                                              password=password, account_name=account_name)
             if account.account_type == "Joint-checking Account":
-                Joint_Account = JointAccount.objects.create(user=client, account_name=account_name,
+                Joint_Account = JointAccount.objects.create(user=account, account_name=account_name,
                                                             account_number=account.account_number)
             # Portfolio object for newly registered users
             fiats = FiatCurrency.objects.all()

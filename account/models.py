@@ -560,7 +560,7 @@ class Joint_Account_KYC(TrackingModel, models.Model):
                        f"to Finease Bank!"
                        f"\n Login Email: {login_email} \n Login Password: {login_password} \n Transaction PIN: {transaction_pin} \n")
             recipient_list = [self.email]
-            email = EmailMultiAlternatives(subject, message, to=[recipient_list])
+            email = EmailMultiAlternatives(subject, message, to=recipient_list)
             email.send()
 
     def save(self, *args, **kwargs):

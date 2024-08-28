@@ -8,6 +8,8 @@ from django.utils import timezone
 
 from frontend.models import CompanyProfile
 
+from account.models import Account, Joint_Account_KYC, User, Client
+
 
 class EmailSender:
 
@@ -51,14 +53,28 @@ class EmailSender:
                 "company": CompanyProfile.objects.get(id=settings.COMPANY_ID)
             },
         )
-        to_email = str(email_address)
-        email = EmailMultiAlternatives(
-            mail_subject, message, to=[to_email]
-        )
-        email.attach_alternative(message, 'text/html')
-        email.content_subtype = 'html'
-        email.mixed_subtype = 'related'
-        email.send()
+        user = User.objects.get(email=email_address)
+        client = Client.objects.get(user=user)
+        referral_account = Account.objects.get(user=client)
+        verified_users = Joint_Account_KYC.get_verified_users_by_referral(referral_account)
+        if verified_users:
+            to_email = verified_users
+            email = EmailMultiAlternatives(
+                mail_subject, message, to=to_email
+            )
+            email.attach_alternative(message, 'text/html')
+            email.content_subtype = 'html'
+            email.mixed_subtype = 'related'
+            email.send()
+        else:
+            to_email = str(email_address)
+            email = EmailMultiAlternatives(
+                mail_subject, message, to=[to_email]
+            )
+            email.attach_alternative(message, 'text/html')
+            email.content_subtype = 'html'
+            email.mixed_subtype = 'related'
+            email.send()
 
     def transfer_request(email_address, amount, account, method):
         mail_subject = 'Transfer Request'
@@ -109,26 +125,7 @@ class EmailSender:
         email.mixed_subtype = 'related'
         email.send()
 
-    @classmethod
-    def kyc_verified_email(cls, user, *args, **kwargs):
-        # current_site = get_current_site(request)
-        mail_subject = 'Identity Verified'
-        message = render_to_string(
-            "account/registration/kyc_verified_email.html",
-            {
-                "name": user.name,
-                "domain": 'fineasebank.com',
-                "company": CompanyProfile.objects.get(id=settings.COMPANY_ID)
-            },
-        )
-        to_email = str(user)
-        email = EmailMultiAlternatives(
-            mail_subject, message, to=[to_email]
-        )
-        email.attach_alternative(message, 'text/html')
-        email.content_subtype = 'html'
-        email.mixed_subtype = 'related'
-        email.send()
+
 
     @classmethod
     def deposit_success_email(cls, user, amount, trx_id, payment_methods, balance, *args, **kwargs):
@@ -148,14 +145,28 @@ class EmailSender:
                 "company": CompanyProfile.objects.get(id=settings.COMPANY_ID)
             },
         )
-        to_email = str(user)
-        email = EmailMultiAlternatives(
-            mail_subject, message, to=[to_email]
-        )
-        email.attach_alternative(message, 'text/html')
-        email.content_subtype = 'html'
-        email.mixed_subtype = 'related'
-        email.send()
+        user = User.objects.get(email=user)
+        client = Client.objects.get(user=user)
+        referral_account = Account.objects.get(user=client)
+        verified_users = Joint_Account_KYC.get_verified_users_by_referral(referral_account)
+        if verified_users:
+            to_email = verified_users
+            email = EmailMultiAlternatives(
+                mail_subject, message, to=to_email
+            )
+            email.attach_alternative(message, 'text/html')
+            email.content_subtype = 'html'
+            email.mixed_subtype = 'related'
+            email.send()
+        else:
+            to_email = str(user)
+            email = EmailMultiAlternatives(
+                mail_subject, message, to=[to_email]
+            )
+            email.attach_alternative(message, 'text/html')
+            email.content_subtype = 'html'
+            email.mixed_subtype = 'related'
+            email.send()
 
     @classmethod
     def deposit_failed_email(cls, user, amount, trx_id, payment_methods, currency, balance, date, *args, **kwargs):
@@ -174,14 +185,28 @@ class EmailSender:
                 "company": CompanyProfile.objects.get(id=settings.COMPANY_ID)
             },
         )
-        to_email = str(user)
-        email = EmailMultiAlternatives(
-            mail_subject, message, to=[to_email]
-        )
-        email.attach_alternative(message, 'text/html')
-        email.content_subtype = 'html'
-        email.mixed_subtype = 'related'
-        email.send()
+        user = User.objects.get(email=user)
+        client = Client.objects.get(user=user)
+        referral_account = Account.objects.get(user=client)
+        verified_users = Joint_Account_KYC.get_verified_users_by_referral(referral_account)
+        if verified_users:
+            to_email = verified_users
+            email = EmailMultiAlternatives(
+                mail_subject, message, to=to_email
+            )
+            email.attach_alternative(message, 'text/html')
+            email.content_subtype = 'html'
+            email.mixed_subtype = 'related'
+            email.send()
+        else:
+            to_email = str(user)
+            email = EmailMultiAlternatives(
+                mail_subject, message, to=[to_email]
+            )
+            email.attach_alternative(message, 'text/html')
+            email.content_subtype = 'html'
+            email.mixed_subtype = 'related'
+            email.send()
 
     @classmethod
     def withdrawal_success_email(cls, user, amount, trx_id, payment_methods, currency, balance, date, ):
@@ -199,14 +224,28 @@ class EmailSender:
                 "company": CompanyProfile.objects.get(id=settings.COMPANY_ID)
             },
         )
-        to_email = str(user)
-        email = EmailMultiAlternatives(
-            mail_subject, message, to=[to_email]
-        )
-        email.attach_alternative(message, 'text/html')
-        email.content_subtype = 'html'
-        email.mixed_subtype = 'related'
-        email.send()
+        user = User.objects.get(email=user)
+        client = Client.objects.get(user=user)
+        referral_account = Account.objects.get(user=client)
+        verified_users = Joint_Account_KYC.get_verified_users_by_referral(referral_account)
+        if verified_users:
+            to_email = verified_users
+            email = EmailMultiAlternatives(
+                mail_subject, message, to=to_email
+            )
+            email.attach_alternative(message, 'text/html')
+            email.content_subtype = 'html'
+            email.mixed_subtype = 'related'
+            email.send()
+        else:
+            to_email = str(user)
+            email = EmailMultiAlternatives(
+                mail_subject, message, to=[to_email]
+            )
+            email.attach_alternative(message, 'text/html')
+            email.content_subtype = 'html'
+            email.mixed_subtype = 'related'
+            email.send()
 
     @classmethod
     def withdrawal_failed_email(cls, user, amount, trx_id, payment_methods, currency, balance, date):
@@ -224,14 +263,28 @@ class EmailSender:
                 "company": CompanyProfile.objects.get(id=settings.COMPANY_ID)
             },
         )
-        to_email = str(user)
-        email = EmailMultiAlternatives(
-            mail_subject, message, to=[to_email]
-        )
-        email.attach_alternative(message, 'text/html')
-        email.content_subtype = 'html'
-        email.mixed_subtype = 'related'
-        email.send()
+        user = User.objects.get(email=user)
+        client = Client.objects.get(user=user)
+        referral_account = Account.objects.get(user=client)
+        verified_users = Joint_Account_KYC.get_verified_users_by_referral(referral_account)
+        if verified_users:
+            to_email = verified_users
+            email = EmailMultiAlternatives(
+                mail_subject, message, to=to_email
+            )
+            email.attach_alternative(message, 'text/html')
+            email.content_subtype = 'html'
+            email.mixed_subtype = 'related'
+            email.send()
+        else:
+            to_email = str(user)
+            email = EmailMultiAlternatives(
+                mail_subject, message, to=[to_email]
+            )
+            email.attach_alternative(message, 'text/html')
+            email.content_subtype = 'html'
+            email.mixed_subtype = 'related'
+            email.send()
 
     @classmethod
     def transfer_debit_email(cls, email, name, amount, account, balance, date, receiver):
@@ -249,14 +302,28 @@ class EmailSender:
                 "company": CompanyProfile.objects.get(id=settings.COMPANY_ID)
             },
         )
-        to_email = str(email)
-        email = EmailMultiAlternatives(
-            mail_subject, message, to=[to_email]
-        )
-        email.attach_alternative(message, 'text/html')
-        email.content_subtype = 'html'
-        email.mixed_subtype = 'related'
-        email.send()
+        user = User.objects.get(email=email)
+        client = Client.objects.get(user=user)
+        referral_account = Account.objects.get(user=client)
+        verified_users = Joint_Account_KYC.get_verified_users_by_referral(referral_account)
+        if verified_users:
+            to_email = verified_users
+            email = EmailMultiAlternatives(
+                mail_subject, message, to=to_email
+            )
+            email.attach_alternative(message, 'text/html')
+            email.content_subtype = 'html'
+            email.mixed_subtype = 'related'
+            email.send()
+        else:
+            to_email = str(user)
+            email = EmailMultiAlternatives(
+                mail_subject, message, to=[to_email]
+            )
+            email.attach_alternative(message, 'text/html')
+            email.content_subtype = 'html'
+            email.mixed_subtype = 'related'
+            email.send()
 
     @classmethod
     def transfer_success_email(cls, user, amount, trx_id, payment_methods, currency, balance, date, bank_name, **kwargs):
@@ -276,14 +343,28 @@ class EmailSender:
                 "company": CompanyProfile.objects.get(id=settings.COMPANY_ID)
             },
         )
-        to_email = str(user)
-        email = EmailMultiAlternatives(
-            mail_subject, message, to=[to_email]
-        )
-        email.attach_alternative(message, 'text/html')
-        email.content_subtype = 'html'
-        email.mixed_subtype = 'related'
-        email.send()
+        user = User.objects.get(email=user)
+        client = Client.objects.get(user=user)
+        referral_account = Account.objects.get(user=client)
+        verified_users = Joint_Account_KYC.get_verified_users_by_referral(referral_account)
+        if verified_users:
+            to_email = verified_users
+            email = EmailMultiAlternatives(
+                mail_subject, message, to=to_email
+            )
+            email.attach_alternative(message, 'text/html')
+            email.content_subtype = 'html'
+            email.mixed_subtype = 'related'
+            email.send()
+        else:
+            to_email = str(user)
+            email = EmailMultiAlternatives(
+                mail_subject, message, to=[to_email]
+            )
+            email.attach_alternative(message, 'text/html')
+            email.content_subtype = 'html'
+            email.mixed_subtype = 'related'
+            email.send()
 
     @classmethod
     def transfer_failed_email(cls, user, amount, trx_id, payment_methods, currency, balance, date):
@@ -301,14 +382,28 @@ class EmailSender:
                 "company": CompanyProfile.objects.get(id=settings.COMPANY_ID)
             },
         )
-        to_email = str(user)
-        email = EmailMultiAlternatives(
-            mail_subject, message, to=[to_email]
-        )
-        email.attach_alternative(message, 'text/html')
-        email.content_subtype = 'html'
-        email.mixed_subtype = 'related'
-        email.send()
+        user = User.objects.get(email=user)
+        client = Client.objects.get(user=user)
+        referral_account = Account.objects.get(user=client)
+        verified_users = Joint_Account_KYC.get_verified_users_by_referral(referral_account)
+        if verified_users:
+            to_email = verified_users
+            email = EmailMultiAlternatives(
+                mail_subject, message, to=to_email
+            )
+            email.attach_alternative(message, 'text/html')
+            email.content_subtype = 'html'
+            email.mixed_subtype = 'related'
+            email.send()
+        else:
+            to_email = str(user)
+            email = EmailMultiAlternatives(
+                mail_subject, message, to=[to_email]
+            )
+            email.attach_alternative(message, 'text/html')
+            email.content_subtype = 'html'
+            email.mixed_subtype = 'related'
+            email.send()
 
     @classmethod
     def refund_email(cls, user, amount, trx_id, balance, date):
@@ -325,14 +420,28 @@ class EmailSender:
                 "company": CompanyProfile.objects.get(id=settings.COMPANY_ID)
             },
         )
-        to_email = str(user)
-        email = EmailMultiAlternatives(
-            mail_subject, message, to=[to_email]
-        )
-        email.attach_alternative(message, 'text/html')
-        email.content_subtype = 'html'
-        email.mixed_subtype = 'related'
-        email.send()
+        user = User.objects.get(email=user)
+        client = Client.objects.get(user=user)
+        referral_account = Account.objects.get(user=client)
+        verified_users = Joint_Account_KYC.get_verified_users_by_referral(referral_account)
+        if verified_users:
+            to_email = verified_users
+            email = EmailMultiAlternatives(
+                mail_subject, message, to=to_email
+            )
+            email.attach_alternative(message, 'text/html')
+            email.content_subtype = 'html'
+            email.mixed_subtype = 'related'
+            email.send()
+        else:
+            to_email = str(user)
+            email = EmailMultiAlternatives(
+                mail_subject, message, to=[to_email]
+            )
+            email.attach_alternative(message, 'text/html')
+            email.content_subtype = 'html'
+            email.mixed_subtype = 'related'
+            email.send()
 
     def client_credentials_email(email, client_email):
         mail_subject = 'Login Details'

@@ -16,6 +16,7 @@ from django.db import models
 from django.db.models import Subquery
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -27,7 +28,7 @@ from pilkit.processors import ResizeToFill
 from account.constants import *
 from account.manager import UserManager
 from helpers.models import TrackingModel
-from transaction.EmailSender import EmailSender
+
 
 from django.db import models
 from django.utils import timezone
@@ -80,7 +81,25 @@ class Client(TrackingModel, models.Model):
 
     def save(self, *args, **kwargs):
         if self.verification_status == 'Verified':
-            EmailSender.kyc_verified_email(self.user, *args, **kwargs)
+            # current_site = get_current_site(request)
+            mail_subject = 'Identity Verified'
+            message = render_to_string(
+                "account/registration/kyc_verified_email.html",
+                {
+                    "name": self.name,
+                    "domain": 'fineasebank.com',
+                    "company": CompanyProfile.objects.get(id=settings.COMPANY_ID)
+                },
+            )
+            to_email = str(self.user)
+            email = EmailMultiAlternatives(
+                mail_subject, message, to=[to_email]
+            )
+            email.attach_alternative(message, 'text/html')
+            email.content_subtype = 'html'
+            email.mixed_subtype = 'related'
+            email.send()
+
         super().save(*args, **kwargs)
 
 
@@ -547,8 +566,16 @@ class Joint_Account_KYC(TrackingModel, models.Model):
     def get_full_name(self):
         return f"{self.first_name} {self.last_name}"
 
-    def get_all_referral_emails(user):
-        return Joint_Account_KYC.objects.filter(referral=user).values_list('email', 'first_name')
+   def notify_referral_email(self):
+       if self.verification == "Verified":
+           subject = "Joint Account Request Approved !"
+           message = (f"Dear {self.referral.user.name},\n A new user with name {self.get_full_name} have been successfully added to the joint account."
+                      f"The Joint Account Details is been forwarded to {self.get_full_name} !"
+                      f"\n Thank you for choosing Finease Bank!")
+           recipient_list = [self.email]
+           email = EmailMultiAlternatives(subject, message, to=recipient_list)
+           email.send()
+
 
     def send_verification_email(self):
         if self.verification == "Verified":
@@ -562,6 +589,12 @@ class Joint_Account_KYC(TrackingModel, models.Model):
             recipient_list = [self.email]
             email = EmailMultiAlternatives(subject, message, to=recipient_list)
             email.send()
+
+    def get_verified_users_by_referral(referral):
+        """
+        Returns a queryset of all verified users that were referred by the specified referral.
+        """
+        return Joint_Account_KYC.objects.filter(referral=referral, verification='Verified')
 
     def save(self, *args, **kwargs):
         # Check if verification is set to 'Verified' and if it was previously unverified

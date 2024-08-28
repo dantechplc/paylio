@@ -817,7 +817,8 @@ def render_to_pdf(template_src, context_dict={}):
         return HttpResponse(result.getvalue(), content_type='application/pdf')
     return None
 
-
+@login_required(login_url='account:login')
+@allowed_users(allowed_roles=['clients'])
 def generate_pdf(request, id):
     account = request.user.client
     trans = Transactions.objects.get(user=account, id=id)

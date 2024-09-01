@@ -566,7 +566,7 @@ class Joint_Account_KYC(TrackingModel, models.Model):
     def get_full_name(self):
         return f"{self.first_name} {self.last_name}"
 
-   def notify_referral_email(self):
+    def notify_referral_email(self):
        if self.verification == "Verified":
            subject = "Joint Account Request Approved !"
            message = (f"Dear {self.referral.user.name},\n A new user with name {self.get_full_name} have been successfully added to the joint account."

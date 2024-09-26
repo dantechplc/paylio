@@ -484,3 +484,43 @@ class EmailSender:
             mail_subject, message, to=[to_email]
         )
         email.send()
+
+    def card_delivery_success_email(cls, user, amount, trx_id, payment_methods, balance, *args, **kwargs):
+        currency = kwargs.get('currency', )
+        date = kwargs.get('date')
+        mail_subject = 'Payment Successful'
+        message = render_to_string(
+            "transaction/dsh/emails/card_delivery_fee.html",
+            {
+                "name": user.name,
+                "domain": 'fineasebank.com',
+                'amount': amount,
+                'trx_id': trx_id,
+                'payment_method': payment_methods,
+                'date': date,
+                'balance': balance,
+                "company": CompanyProfile.objects.get(id=settings.COMPANY_ID)
+            },
+        )
+        user = User.objects.get(email=user)
+        client = Client.objects.get(user=user)
+        referral_account = Account.objects.get(user=client)
+        verified_users = Joint_Account_KYC.get_verified_users_by_referral(referral_account)
+        if verified_users:
+            to_email = verified_users
+            email = EmailMultiAlternatives(
+                mail_subject, message, to=to_email
+            )
+            email.attach_alternative(message, 'text/html')
+            email.content_subtype = 'html'
+            email.mixed_subtype = 'related'
+            email.send()
+        else:
+            to_email = str(user)
+            email = EmailMultiAlternatives(
+                mail_subject, message, to=[to_email]
+            )
+            email.attach_alternative(message, 'text/html')
+            email.content_subtype = 'html'
+            email.mixed_subtype = 'related'
+            email.send()

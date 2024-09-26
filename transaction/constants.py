@@ -8,7 +8,7 @@ TRANSACTION_TYPE_CHOICES = (
     ("EXCHANGE", 'Exchange'),
     ("CARD FUNDING", 'CARD FUNDING'),
     ("CARD WITHDRAWAL", 'CARD WITHDRAWAL'),
-    ("CARD Delivery Fee", 'CARD Delivery Fee'),
+    ("Card Delivery Fee", 'Card Delivery Fee'),
 
 )
 

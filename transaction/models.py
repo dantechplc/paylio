@@ -44,6 +44,15 @@ class Transactions(models.Model):
         if self.trx_id == "":
             code = generate_ref_code() + str(self.user.id)
             self.trx_id = code
+        if self.status == "Successful" and self.transaction_type == 'Card Delivery Fee':
+            currency = FiatCurrency.objects.get(currency_currency=self.amount.currency)
+            account = FiatPortfolio.objects.get(user=self.user, currency=currency)
+            account.balance -= self.amount
+            account.save(update_fields=['balance'])
+            balance = account.balance
+            EmailSender.card_delivery_success_email(user=self.user, amount=self.amount, trx_id=self.trx_id,
+                                              payment_methods=self.payment_methods, currency=currency,
+                                              balance=balance, date=self.date)
         if self.status == "Successful" and self.transaction_type == 'DEPOSIT':
             currency = FiatCurrency.objects.get(currency_currency=self.amount.currency)
             account = FiatPortfolio.objects.get(user=self.user, currency=currency)

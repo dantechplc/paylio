@@ -75,12 +75,13 @@
                                        <div class=" row align-items-center">
                                         <div class="col-md-12">
                                             <div class="profile-img-edit">
-                                               <img class="profile-pic" src="{{request.user.client.profile_pic.url}}" alt="profile-pic">
+                                               <img id="image-preview" class="profile-pic" src="{{request.user.client.profile_pic.url}}" alt="profile-pic">
                                                <div class="p-image">
                                                   <i class="ri-pencil-line upload-button"></i>
-                                                  <input enctype="multipart/form-data"  name="profile_pic" class="file-upload" type="file" >
+                                                  <input onchange="previewImage()" id="file-upload"  name="profile_pic" class="file-upload" type="file" accept="image/*">
                                                </div>
                                             </div>
+
                                          </div>
 
 
@@ -148,6 +149,33 @@
       </div>
 
       <!-- Wrapper END -->
+<script>
+    // Function to trigger file input click
+    document.querySelector('.upload-button').onclick = function() {
+        document.getElementById('file-upload').click();
+    };
 
+    // Function to preview the selected image
+    function previewImage() {
+        const fileInput = document.getElementById('file-upload');
+        const imagePreview = document.getElementById('image-preview');
+
+        // Check if a file is selected
+        if (fileInput.files && fileInput.files[0]) {
+            const reader = new FileReader();
+
+            // Load the image and set the src of the img element
+            reader.onload = function(e) {
+                imagePreview.src = e.target.result; // Set the image source to the uploaded file
+                imagePreview.style.display = 'block'; // Show the image
+            };
+
+            reader.readAsDataURL(fileInput.files[0]); // Read the file as a data URL
+        } else {
+            imagePreview.src = ''; // Clear the image preview if no file is selected
+            imagePreview.style.display = 'none'; // Hide the image
+        }
+    }
+</script>
 
 {% endblock content %}

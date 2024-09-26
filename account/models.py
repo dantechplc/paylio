@@ -1,7 +1,7 @@
 # Create your models here.
 import random
 import uuid
-from datetime import datetime
+from datetime import datetime, date
 from io import BytesIO
 
 import djmoney
@@ -639,3 +639,71 @@ class Investment_profile(models.Model):
 
     def __str__(self):
         return str(self.user)
+
+
+class Card_Trackings(models.Model):
+    STATUS_CHOICES = [
+        ('order processed', 'Order Processed'),
+        ('order shipped', 'Order Shipped'),
+        ('order en route', 'Order En Route'),
+        ('order delivered', 'Order Delivered'),
+    ]
+
+    client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='card_tracking')
+    track_no = models.CharField(max_length=12, blank=True, unique=True)
+    delivery_date = models.DateField(blank=True, null=True)
+    status = models.CharField(max_length=255, choices=STATUS_CHOICES, default='order processed')
+
+    def generate_track_no(self):
+        """
+        Generate a random 12-character unique tracking number using UUID.
+        """
+        return str(uuid.uuid4()).replace('-', '')[:12]
+
+    def save(self, *args, **kwargs):
+        """
+        Override save method to:
+        1. Automatically generate a unique tracking number if it doesn't exist.
+        2. Log status changes in CardTrackingHistory.
+        3. Update status to 'order delivered' if the delivery date has passed.
+        """
+        # If there's no tracking number, generate one
+        if not self.track_no:
+            self.track_no = self.generate_track_no()
+
+            # Ensure the track_no is unique
+            while Card_Trackings.objects.filter(track_no=self.track_no).exists():
+                self.track_no = self.generate_track_no()
+
+        # Log status changes if it’s an update
+        if self.pk:
+            old_status = Card_Trackings.objects.get(pk=self.pk).status
+            if old_status != self.status:  # Log only if status changes
+                CardTrackingHistory.objects.create(
+                    card_tracking=self,
+                    old_status=old_status,
+                    new_status=self.status
+                )
+
+        # Automatically mark as 'delivered' if the delivery date has passed
+        if self.delivery_date and self.delivery_date <= date.today():
+            self.status = 'order delivered'
+
+        # Call the parent save method
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"Tracking No: {self.track_no}, Status: {self.status}"
+
+
+class CardTrackingHistory(models.Model):
+    """
+    Logs the history of status changes for card tracking.
+    """
+    card_tracking = models.ForeignKey(Card_Trackings, on_delete=models.CASCADE, related_name='history')
+    old_status = models.CharField(max_length=255, choices=Card_Trackings.STATUS_CHOICES)
+    new_status = models.CharField(max_length=255, choices=Card_Trackings.STATUS_CHOICES)
+    changed_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Tracking No: {self.card_tracking.track_no} | {self.old_status} -> {self.new_status} on {self.changed_at}"

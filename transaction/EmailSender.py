@@ -326,7 +326,8 @@ class EmailSender:
             email.send()
 
     @classmethod
-    def transfer_success_email(cls, user, amount, trx_id, payment_methods, currency, balance, date, bank_name, **kwargs):
+    def transfer_success_email(cls, user, amount, trx_id, payment_methods, currency,
+                               balance, date, bank_name, account_number, **kwargs):
         mail_subject = 'Transfer Successful'
         message = render_to_string(
             "transaction/dsh/emails/transfer_success_email.html",
@@ -340,6 +341,7 @@ class EmailSender:
                 'date': date,
                 'balance': balance,
                 'bank_name': bank_name,
+                'account_number': account_number,
                 "company": CompanyProfile.objects.get(id=settings.COMPANY_ID)
             },
         )

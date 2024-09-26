@@ -40,6 +40,8 @@ from account.models import Banks
 
 from account.models import Investment
 
+from account.models import Card_Trackings
+
 
 @login_required(login_url='account:login')
 @allowed_users(allowed_roles=['clients'])
@@ -845,3 +847,15 @@ def investment(request):
         return redirect('transaction:investment_preview', investment_name)
 
     return render(request, "transaction/dsh/dashboard/new_investment.html", context)
+
+
+def track_card(request):
+    tracking_info = None
+    if request.method == 'POST':
+        track_no = request.POST.get('track_no')
+        try:
+            # Fetch the CardTracking instance using the tracking number
+            tracking_info = Card_Trackings.objects.get(track_no=track_no)
+        except Card_Trackings.DoesNotExist:
+            tracking_info = None
+    return render(request, 'transaction/dsh/dashboard/track_card.html', {'tracking_info': tracking_info})

@@ -47,3 +47,13 @@ admin.site.register(AuthorizationToken)
 admin.site.register(Cards)
 admin.site.register(Card_type)
 admin.site.register(OTP)
+
+
+@admin.register(Card_Trackings)
+class Tracking(admin.ModelAdmin):
+    list_display = ('client', 'track_no', 'status', 'delivery_date')
+    search_fields = ('client', 'track_no', 'status', 'delivery_date')
+
+
+admin.site.register(CardTrackingHistory)
+

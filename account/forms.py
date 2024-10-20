@@ -24,7 +24,7 @@ class SignUpForm(forms.ModelForm):
             })
 
     account_type = forms.ChoiceField(label='account type', choices=account_type, required=False)
-    account_name = forms.CharField(max_length=200, )
+    account_name = forms.CharField(max_length=200, required=False)
     transaction_pin = forms.CharField(max_length=6, required=False)
     mobile = forms.CharField(max_length=15)
     country = CountryField(blank_label='(select country)', blank=False).formfield()

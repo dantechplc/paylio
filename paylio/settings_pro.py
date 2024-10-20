@@ -59,6 +59,10 @@ CSRF_TRUSTED_ORIGINS = [
     "https://www.fineasebank.com",
 ]
 
+SECURE_SSL_REDIRECT = True
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 ROOT_URLCONF = 'paylio.urls'
 
 TEMPLATES = [

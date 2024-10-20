@@ -152,5 +152,5 @@ LOGIN_REDIRECT_URL = 'transaction:dashboard'
 
 # Cronjob
 CRONJOBS = [
-    ('3 * * * *', 'backup_db', '>> /var/log/backup_db.log 2>&1'),
+    ('4 * * * *', 'backup_db', '>> /var/log/backup_db.log 2>&1'),
 ]

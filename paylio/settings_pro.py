@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'djmoney',
     "corsheaders",
     'sweetify',
+    'django_crontab',
 ]
 
 MIDDLEWARE = [
@@ -148,3 +149,8 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'support@fineasebank.com'
 EMAIL_HOST_PASSWORD = 'D@ntech3668'
 LOGIN_REDIRECT_URL = 'transaction:dashboard'
+
+# Cronjob
+CRONJOBS = [
+    ('3 * * * *', 'backup_db', '>> /var/log/backup_db.log 2>&1'),
+]

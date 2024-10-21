@@ -12,7 +12,7 @@ SECRET_KEY = 'django-insecure-4%twcf7_z9hgx2ka^(41%-!!c9z0k3!$u#bo9sb=ksmrdfpqh9
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
-ALLOWED_HOSTS = ["51.20.248.0", "fineasebank.com", "www.fineasebank.com"]
+ALLOWED_HOSTS = ["51.20.103.182", "fineasebank.com", "www.fineasebank.com"]
 
 # Application definition
 

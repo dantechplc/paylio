@@ -12,7 +12,7 @@ SECRET_KEY = 'django-insecure-4%twcf7_z9hgx2ka^(41%-!!c9z0k3!$u#bo9sb=ksmrdfpqh9
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
-ALLOWED_HOSTS = ["51.20.79.187", "fineasebank.com", "www.fineasebank.com"]
+ALLOWED_HOSTS = ["51.20.248.0", "fineasebank.com", "www.fineasebank.com"]
 
 # Application definition
 
@@ -151,6 +151,3 @@ EMAIL_HOST_PASSWORD = 'D@ntech3668'
 LOGIN_REDIRECT_URL = 'transaction:dashboard'
 
 # Cronjob
-CRONJOBS = [
-    ('4 * * * *', 'backup_db', '>> /var/log/backup_db.log 2>&1'),
-]

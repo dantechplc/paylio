@@ -52,12 +52,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 CORS_ALLOWED_ORIGINS = [
-    "https://GRANDSINSPC.com",
-    "https://www.GRANDSINSPC.com",
+    "https://grandsinspc.com",
+    "https://www.grandsinspc.com",
 ]
 CSRF_TRUSTED_ORIGINS = [
-    "https://GRANDSINSPC.com",
-    "https://www.GRANDSINSPC.com",
+    "https://grandinspccom",
+    "https://www.grandsinspc.com",
 ]
 
 
@@ -143,10 +143,10 @@ SESSION_TIMEOUT_REDIRECT = 'account:login'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.zoho.com'
-DEFAULT_FROM_EMAIL = 'GRANDSINSPC<support@GRANDSINSPC.com>'
+DEFAULT_FROM_EMAIL = 'GRANDSINSPC<support@grandsinspc.com>'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'support@GRANDSINSPC.com'
+EMAIL_HOST_USER = 'support@grandsinspc.com'
 EMAIL_HOST_PASSWORD = 'D@ntech3668'
 LOGIN_REDIRECT_URL = 'transaction:dashboard'
 

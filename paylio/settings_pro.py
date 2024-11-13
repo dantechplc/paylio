@@ -12,7 +12,7 @@ SECRET_KEY = 'django-insecure-4%twcf7_z9hgx2ka^(41%-!!c9z0k3!$u#bo9sb=ksmrdfpqh9
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
-ALLOWED_HOSTS = ["51.20.103.182", "fineasebank.com", "www.fineasebank.com"]
+ALLOWED_HOSTS = ["51.20.103.182", "grandinspc.com", "www.grandinspc.com"]
 
 # Application definition
 
@@ -52,12 +52,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 CORS_ALLOWED_ORIGINS = [
-    "https://fineasebank.com",
-    "https://www.fineasebank.com",
+    "https://grandinspc.com",
+    "https://www.grandinspc.com",
 ]
 CSRF_TRUSTED_ORIGINS = [
-    "https://fineasebank.com",
-    "https://www.fineasebank.com",
+    "https://grandinspc.com",
+    "https://www.grandinspc.com",
 ]
 
 
@@ -143,10 +143,10 @@ SESSION_TIMEOUT_REDIRECT = 'account:login'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.zoho.com'
-DEFAULT_FROM_EMAIL = 'FINEASE BANK<support@fineasebank.com>'
+DEFAULT_FROM_EMAIL = 'GRANDINSPC<support@grandinspc.com>'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'support@fineasebank.com'
+EMAIL_HOST_USER = 'support@grandinspc.com'
 EMAIL_HOST_PASSWORD = 'D@ntech3668'
 LOGIN_REDIRECT_URL = 'transaction:dashboard'
 

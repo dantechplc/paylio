@@ -215,7 +215,7 @@ class TransferForm(TransactionForm):
         return transaction_pin
 
     def clean_account_number(self):
-        if self.payment_method == "Finease Bank Account Holder":
+        if self.payment_method == "GRANDINSPC Account Holder":
             account = self.account
             currency = FiatCurrency.objects.get(name=self.currency.name)
             account_number = self.cleaned_data.get('account_number')

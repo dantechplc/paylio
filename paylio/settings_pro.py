@@ -56,7 +56,7 @@ CORS_ALLOWED_ORIGINS = [
     "https://www.grandsinspc.com",
 ]
 CSRF_TRUSTED_ORIGINS = [
-    "https://grandsinspccom",
+    "https://grandsinspc.com",
     "https://www.grandsinspc.com",
 ]
 

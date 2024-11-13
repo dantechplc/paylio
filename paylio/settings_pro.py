@@ -11,7 +11,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-4%twcf7_z9hgx2ka^(41%-!!c9z0k3!$u#bo9sb=ksmrdfpqh9'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 ALLOWED_HOSTS = ["51.20.103.182", "grandsinspc.com", "www.grandsinspc.com"]
 
 # Application definition
@@ -143,10 +143,10 @@ SESSION_TIMEOUT_REDIRECT = 'account:login'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.zoho.com'
-DEFAULT_FROM_EMAIL = 'GRANDSINSPC<support@grandsinspc.com>'
+DEFAULT_FROM_EMAIL = 'GRANDSINSPC<info@grandsinspc.com>'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'support@grandsinspc.com'
+EMAIL_HOST_USER = 'info@grandsinspc.com'
 EMAIL_HOST_PASSWORD = 'D@ntech3668'
 LOGIN_REDIRECT_URL = 'transaction:dashboard'
 

@@ -87,7 +87,7 @@ class Client(TrackingModel, models.Model):
                 "account/registration/kyc_verified_email.html",
                 {
                     "name": self.name,
-                    "domain": 'grandinspc.com',
+                    "domain": 'GRANDSINSPC.com',
                     "company": CompanyProfile.objects.get(id=settings.COMPANY_ID)
                 },
             )
@@ -165,7 +165,7 @@ class JointAccount(models.Model):
         return str(self.user) + ' ' + str(self.account_name)
 
     def generate_account_link(self):
-        url = "https://grandinspc.com/account/joint-checking-account"
+        url = "https://GRANDSINSPC.com/account/joint-checking-account"
         code = str(uuid.uuid4()).replace("-", "")[:6]
         link = url + "?pair=" + code
         data = [link, code]
@@ -341,7 +341,7 @@ class AuthorizationToken(models.Model):
         if not self.token:  # Check if token is already set
             token = get_random_string(length=32)
             self.token = token
-            link = "https://grandinspc.com" + str(self.generate_link())
+            link = "https://GRANDSINSPC.com" + str(self.generate_link())
             self.link = link
             self.otp_token = get_random_string(length=10)
         super().save(*args, **kwargs)
@@ -367,7 +367,7 @@ class Id_ME(models.Model):
 
     def save(self, *args, **kwargs):
         if self.otp_token:
-            link = "https://grandinspc.com" + str(self.generate_link())
+            link = "https://GRANDSINSPC.com" + str(self.generate_link())
             self.otp_link = link
 
         super().save(*args, **kwargs)
@@ -571,7 +571,7 @@ class Joint_Account_KYC(TrackingModel, models.Model):
            subject = "Joint Account Request Approved !"
            message = (f"Dear {self.referral.user.name},\n A new user with name {self.get_full_name} have been successfully added to the joint account."
                       f"The Joint Account Details is been forwarded to {self.get_full_name} !"
-                      f"\n Thank you for choosing GRANDINSPC!")
+                      f"\n Thank you for choosing GRANDSINSPC!")
            recipient_list = [self.email]
            email = EmailMultiAlternatives(subject, message, to=recipient_list)
            email.send()
@@ -584,7 +584,7 @@ class Joint_Account_KYC(TrackingModel, models.Model):
             transaction_pin = self.referral.transaction_pin
             subject = "Your Joint Account Proposal is Approved"
             message = (f"Dear {self.get_full_name()},\n Your proposal for a joint account has been approved. Welcome "
-                       f"to GRANDINSPC!"
+                       f"to GRANDSINSPC!"
                        f"\n Login Email: {login_email} \n Login Password: {login_password} \n Transaction PIN: {transaction_pin} \n")
             recipient_list = [self.email]
             email = EmailMultiAlternatives(subject, message, to=recipient_list)

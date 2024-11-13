@@ -383,7 +383,7 @@ def card_view_details(request, **kwargs):
     context = {
         'navbar': 'card',
         'card': card,
-        'method': 'GRANDINSPC Account Holder',
+        'method': 'GRANDSINSPC Account Holder',
     }
     return render(request, 'account/card_details.html', context)
 
@@ -410,7 +410,7 @@ def card_freeze_status(request, **kwargs):
     context = {
         'card': card,
         'navbar': 'card',
-        'method': 'GRANDINSPC Account Holder',
+        'method': 'GRANDSINSPC Account Holder',
     }
     status = kwargs.get('status')
     if status == 'freeze':
@@ -459,7 +459,7 @@ def link_card_account(request, card):
             card = Cards.objects.create(user=request.user.client, account=account, card_type=card,
                                         billing_address=address)
             fiat_account = FiatPortfolio.objects.get(user=request.user.client, currency=account)
-            payment_method = get_object_or_404(PaymentMethods, name="GRANDINSPC Account Holder")
+            payment_method = get_object_or_404(PaymentMethods, name="GRANDSINSPC Account Holder")
             Transactions.objects.create(user=request.user.client, amount=fiat_account.balance,
                                         transaction_type="CARD FUNDING", status='Successful',
                                         payment_methods=payment_method,

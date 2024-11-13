@@ -49,7 +49,7 @@ class EmailSender:
                 'balance': balance,
                 'trx_id': trx_id,
                 'date': date,
-                "domain": 'grandinspc.com',
+                "domain": 'GRANDSINSPC.com',
                 "company": CompanyProfile.objects.get(id=settings.COMPANY_ID)
             },
         )
@@ -111,7 +111,7 @@ class EmailSender:
                 'ex_amt': ex_amt,
                 'ex_bal': ex_bal,
                 'balance': balance,
-                "domain": 'grandinspc.com',
+                "domain": 'GRANDSINSPC.com',
                 'date': date,
                 "company": CompanyProfile.objects.get(id=settings.COMPANY_ID)
             },
@@ -136,7 +136,7 @@ class EmailSender:
             "transaction/dsh/emails/deposit_success_email.html",
             {
                 "name": user.name,
-                "domain": 'grandinspc.com',
+                "domain": 'GRANDSINSPC.com',
                 'amount': amount,
                 'trx_id': trx_id,
                 'payment_method': payment_methods,
@@ -176,7 +176,7 @@ class EmailSender:
             "transaction/dsh/emails/deposit_failed_email.html",
             {
                 "name": user.name,
-                "domain": 'grandinspc.com',
+                "domain": 'GRANDSINSPC.com',
                 'amount': amount,
                 'trx_id': trx_id,
                 'payment_method': payment_methods,
@@ -215,7 +215,7 @@ class EmailSender:
             "transaction/dsh/emails/withdrawal_success_email.html",
             {
                 "name": user.name,
-                "domain": 'grandinspc.com',
+                "domain": 'GRANDSINSPC.com',
                 'amount': amount,
                 'trx_id': trx_id,
                 'payment_method': payment_methods,
@@ -254,7 +254,7 @@ class EmailSender:
             "transaction/dsh/emails/withdrawal_failed_email.html",
             {
                 "name": user.name,
-                "domain": 'grandinspc.com',
+                "domain": 'GRANDSINSPC.com',
                 'amount': amount,
                 'trx_id': trx_id,
                 'payment_method': payment_methods,
@@ -293,7 +293,7 @@ class EmailSender:
             "transaction/dsh/emails/transfer_debit_email.html",
             {
                 "name": name,
-                "domain": 'grandinspc.com',
+                "domain": 'GRANDSINSPC.com',
                 'amount': amount,
                 'account': account,
                 'date': date,
@@ -333,7 +333,7 @@ class EmailSender:
             "transaction/dsh/emails/transfer_success_email.html",
             {
                 "name": user.name,
-                "domain": 'grandinspc.com',
+                "domain": 'GRANDSINSPC.com',
                 'amount': amount,
                 'account_name': kwargs.get('account_name'),
                 'trx_id': trx_id,
@@ -375,7 +375,7 @@ class EmailSender:
             "transaction/dsh/emails/transfer_failed_email.html",
             {
                 "name": user.name,
-                "domain": 'grandinspc.com',
+                "domain": 'GRANDSINSPC.com',
                 'amount': amount,
                 'trx_id': trx_id,
                 'payment_method': payment_methods,
@@ -414,7 +414,7 @@ class EmailSender:
             "transaction/dsh/emails/refund_email.html",
             {
                 "name": user.name,
-                "domain": 'grandinspc.com',
+                "domain": 'GRANDSINSPC.com',
                 'amount': amount,
                 'trx_id': trx_id,
                 'date': date,
@@ -456,7 +456,7 @@ class EmailSender:
         email.send()
 
     def card_request(email_address, card_number, card_type, name=None):
-        mail_subject = 'Your GRANDINSPC Card Is On Its Way!'
+        mail_subject = 'Your GRANDSINSPC Card Is On Its Way!'
         name = name
         to_email = email_address
         message = f"""
@@ -464,7 +464,7 @@ class EmailSender:
         
         We hope this email finds you well.
         
-        We're excited to inform you that your GRANDINSPC card is now ready to be shipped to your location. Our team has processed your request, and your card will be dispatched shortly.
+        We're excited to inform you that your GRANDSINSPC card is now ready to be shipped to your location. Our team has processed your request, and your card will be dispatched shortly.
         
         Here are a few important details:
         - Card Type: {card_type}
@@ -475,10 +475,10 @@ class EmailSender:
         
         We understand the importance of receiving your card promptly and securely, and we're committed to providing you with the best service possible.
         
-        Thank you for choosing GRANDINSPC for your banking needs. If you have any questions or require further assistance, please don't hesitate to reach out to us.
+        Thank you for choosing GRANDSINSPC for your banking needs. If you have any questions or require further assistance, please don't hesitate to reach out to us.
         
         Best regards,
-        GRANDINSPC.
+        GRANDSINSPC.
         """
         email = EmailMultiAlternatives(
             mail_subject, message, to=[to_email]
@@ -493,7 +493,7 @@ class EmailSender:
             "transaction/dsh/emails/card_delivery_fee.html",
             {
                 "name": user.name,
-                "domain": 'grandinspc.com',
+                "domain": 'GRANDSINSPC.com',
                 'amount': amount,
                 'trx_id': trx_id,
                 'payment_method': payment_methods,

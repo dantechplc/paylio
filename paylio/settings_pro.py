@@ -55,10 +55,10 @@ CORS_ALLOWED_ORIGINS = [
     "https://grandsinspc.com",
     "https://www.grandsinspc.com",
 ]
-CSRF_TRUSTED_ORIGINS = [
-    "https://grandsinspccom",
-    "https://www.grandsinspc.com",
-]
+# CSRF_TRUSTED_ORIGINS = [
+#     "https://grandsinspccom",
+#     "https://www.grandsinspc.com",
+# ]
 
 
 

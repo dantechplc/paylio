@@ -37,7 +37,7 @@ urlpatterns = [
         ),
         name="password_reset_confirm",
     ),
-    path('password_reset_confirm/MTA/password_reset_complete/',
+    path('password_reset_confirm/<uid>/password_reset_complete/',
          auth_views.PasswordResetCompleteView.as_view(template_name="account/password_reset/password_reset_done.html"),
          name="password_reset_complete"),
 

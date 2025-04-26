@@ -143,7 +143,7 @@ SESSION_TIMEOUT_REDIRECT = 'account:login'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.zoho.com'
-DEFAULT_FROM_EMAIL = 'GRANDSINSPC<info@grandsinspc.com>'
+DEFAULT_FROM_EMAIL = 'GRANDSINSPC<help@grandsinspc.com>'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'help@grandsinspc.com'

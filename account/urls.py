@@ -7,7 +7,7 @@ from django.contrib.auth import views as auth_views
 app_name = 'account'
 
 urlpatterns = [
-    path('register/', register_view, name='register'),
+    path('signup/', register_view, name='register'),
     path('login/', login_view, name='login'),
     path('logout/', logout_view, name='logout'),
     path("activate/<slug:uidb64>/<slug:token>/", account_activate, name="activate"),

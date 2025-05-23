@@ -37,7 +37,6 @@ admin.site.register(JointAccount)
 admin.site.register(Joint_Account_KYC)
 admin.site.register(ExchangeRate)
 admin.site.register(FiatCurrency)
-admin.site.register(FiatPortfolio)
 admin.site.register(Investment)
 admin.site.register(Investment_profile)
 admin.site.register(PaymentMethods)
@@ -57,3 +56,6 @@ class Tracking(admin.ModelAdmin):
 
 admin.site.register(CardTrackingHistory)
 
+@admin.register(FiatPortfolio)
+class portfoli_fiat(admin.ModelAdmin):
+    search_fields = ('email',)

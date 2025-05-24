@@ -82,6 +82,7 @@
                                           <label class="custom-control-label" for="customCheck1">I accept <a href="{% url 'terms' %}">Terms and Conditions</a></label>
                                       </div>
                                   </div>
+                                 {{ signup_form.honeypot }}
                                   <div class="sign-info text-center">
                                       <button type="submit" class="btn btn-primary d-block w-100 mb-2">Sign Up</button>
                                       <span class="text-dark d-inline-block line-height-2">Already Have Account ? <a href="{% url 'account:login' %}">Log In</a></span>

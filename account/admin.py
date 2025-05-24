@@ -58,4 +58,4 @@ admin.site.register(CardTrackingHistory)
 
 @admin.register(FiatPortfolio)
 class portfoli_fiat(admin.ModelAdmin):
-    search_fields = ('email',)
+    search_fields = ('user',)

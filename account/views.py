@@ -29,46 +29,56 @@ User = get_user_model()
 
 @unauthenticated_user
 def register_view(request):
-    """" Register view for customer """
+    """Register view for customer"""
 
     if request.method == 'POST':
         signup_form = SignUpForm(request.POST)
         if signup_form.is_valid():
-            user = signup_form.save(commit=False)
-            signup_form = signup_form.cleaned_data
-            email = signup_form.get("email")
-            name = signup_form.get('name')
-            country = signup_form.get('country')
-            phone = signup_form.get("mobile")
-            password = signup_form.get("password2")
-            account_type = signup_form.get('account_type')
-            transaction_pin = signup_form.get('transaction_pin')
-            account_name = signup_form.get('account_name')
+            # Extract cleaned data
+            cleaned_data = signup_form.cleaned_data
+            email = cleaned_data.get("email")
+            name = cleaned_data.get("name")
+            country = cleaned_data.get("country")
+            phone = cleaned_data.get("mobile")
+            password = cleaned_data.get("password2")
+            account_type = cleaned_data.get("account_type")
+            transaction_pin = cleaned_data.get("transaction_pin")
+            account_name = cleaned_data.get("account_name")
 
-            # Creating user and customer instances
+            # Save user with hashed password and mark as client
+            user = signup_form.save(commit=False)
             user.set_password(password)
             user.is_active = False
             user.is_client = True
             user.save()
-            client = Client.objects.create(
-                user=user, mobile=phone, country=country, name=name, )
-            client.save()
 
-            account = Account.objects.create(user=client, account_type=account_type, transaction_pin=transaction_pin,
-                                             password=password, account_name=account_name)
+            # Create client profile
+            client = Client.objects.create(user=user, mobile=phone, country=country, name=name)
+
+            # Create bank account
+            account = Account.objects.create(
+                user=client,
+                account_type=account_type,
+                transaction_pin=transaction_pin,
+                password=password,  # consider removing if not needed
+                account_name=account_name
+            )
+
+            # If it's a joint-checking account, create related record
             if account.account_type == "Joint-checking Account":
-                Joint_Account = JointAccount.objects.create(user=account, account_name=account_name,
-                                                            account_number=account.account_number)
-            # Portfolio object for newly registered users
-            fiats = FiatCurrency.objects.all()
-            for fiat in fiats:
-                portfolio = FiatPortfolio.objects.create(
-                    user=client, currency=fiat, is_active=False
+                JointAccount.objects.create(
+                    user=account,
+                    account_name=account_name,
+                    account_number=account.account_number
                 )
 
-            # Sending customer verification email
+            # Create inactive fiat portfolios for all available currencies
+            for fiat in FiatCurrency.objects.all():
+                FiatPortfolio.objects.create(user=client, currency=fiat, is_active=False)
+
+            # Send account activation email
             current_site = get_current_site(request)
-            mail_subject = 'Activate your account.'
+            mail_subject = 'Activate your account'
             message = render_to_string(
                 "account/registration/account_activation_email.html",
                 {
@@ -76,29 +86,28 @@ def register_view(request):
                     "domain": current_site.domain,
                     "uid": urlsafe_base64_encode(force_bytes(user.pk)),
                     "token": default_token_generator.make_token(user),
-                    "company": CompanyProfile.objects.get(id=settings.COMPANY_ID)
+                    "company": CompanyProfile.objects.get(id=settings.COMPANY_ID),
                 },
             )
-            to_email = email
-            messages.success(request,
-                             'A verification email has been sent to your '
-                             'email address, verify your account then '
-                             'proceed with login ')
-            email = EmailMultiAlternatives(
-                mail_subject, message, to=[to_email]
+
+            email_message = EmailMultiAlternatives(
+                mail_subject, message, to=[email]
             )
-            email.attach_alternative(message, 'text/html')
-            email.content_subtype = 'html'
-            email.mixed_subtype = 'related'
-            email.send()
+            email_message.attach_alternative(message, 'text/html')
+            email_message.content_subtype = 'html'
+            email_message.mixed_subtype = 'related'
+            email_message.send()
+
+            messages.success(request,
+                'A verification email has been sent. Please verify your account to proceed with login.'
+            )
             return redirect('account:login')
 
     else:
         signup_form = SignUpForm()
-        context = {'signup_form': signup_form}
-        return render(request, "account/registration/register.html", context)
 
     return render(request, "account/registration/register.html", {'signup_form': signup_form})
+
 
 
 def clients_group(sender, instance, created, **kwargs):

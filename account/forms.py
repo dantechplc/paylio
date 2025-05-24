@@ -31,6 +31,20 @@ class SignUpForm(forms.ModelForm):
     password1 = forms.CharField(widget=forms.PasswordInput)
     password2 = forms.CharField(widget=forms.PasswordInput)
 
+     honeypot = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={
+            'style': 'display:none;',
+            'autocomplete': 'off'
+        })
+    )
+
+    def clean_honeypot(self):
+        data = self.cleaned_data.get('honeypot')
+        if data:
+            raise ValidationError("Bot detected.")
+        return data
+
     class Meta:
         model = User
         fields = ['email', 'name']

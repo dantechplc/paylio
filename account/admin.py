@@ -58,4 +58,5 @@ admin.site.register(CardTrackingHistory)
 
 @admin.register(FiatPortfolio)
 class portfoli_fiat(admin.ModelAdmin):
-    search_fields = ('client',)
+    list_display = ('user', 'balance', )
+    search_fields = ('user',)

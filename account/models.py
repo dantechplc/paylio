@@ -5,7 +5,7 @@ from datetime import datetime, date
 from io import BytesIO
 
 import djmoney
-import qrcode
+# import qrcode
 import requests
 from django.conf import settings
 from django.contrib.auth.base_user import AbstractBaseUser

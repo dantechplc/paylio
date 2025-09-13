@@ -12,7 +12,7 @@ SECRET_KEY = 'django-insecure-4%twcf7_z9hgx2ka^(41%-!!c9z0k3!$u#bo9sb=ksmrdfpqh9
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-ALLOWED_HOSTS = ["13.53.134.50", "grandsinspc.com", "www.grandsinspc.com"]
+ALLOWED_HOSTS = ["141.147.109.101", "zentrobank.com", "www.zentrobank.com"]
 
 # Application definition
 
@@ -53,12 +53,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 CORS_ALLOWED_ORIGINS = [
-    "https://grandsinspc.com",
-    "https://www.grandsinspc.com",
+    "https://zentrobank.com",
+    "https://www.zentrobank.com",
 ]
 CSRF_TRUSTED_ORIGINS = [
-    "https://grandsinspc.com",
-    "https://www.grandsinspc.com",
+    "https://zentrobank.com",
+    "https://www.zentrobank.com",
 ]
 
 
@@ -144,10 +144,10 @@ SESSION_TIMEOUT_REDIRECT = 'account:login'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.zoho.com'
-DEFAULT_FROM_EMAIL = 'GRANDSINSPC<helpdesk@grandsinspc.com>'
+DEFAULT_FROM_EMAIL = 'ZentroBank<info@zentrobank.com>'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'helpdesk@grandsinspc.com'
+EMAIL_HOST_USER = 'info@zentrobank.com'
 EMAIL_HOST_PASSWORD = 'D@ntech3668'
 LOGIN_REDIRECT_URL = 'transaction:dashboard'
 

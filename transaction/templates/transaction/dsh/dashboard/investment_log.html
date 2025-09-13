@@ -1,0 +1,135 @@
+{% extends 'transaction/dsh/base.html' %} {% block title %}
+  GRANDSINSPC | Transactions
+{% endblock %}
+
+{% block content %}
+
+<div id="content-page" class="content-page">
+    <div class="container-fluid">
+       <div class="row">
+          <div class="col-lg-12">
+                {% for message in messages %} {% if message.tags == 'warning' %}
+              <div class="col-lg-12 alert alert-danger alert-dismissible fade show">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true" style="color: black">&times;</span>
+                </button>
+                <strong>{{message}}</strong>
+              </div>
+
+              {% elif message.tags == 'success' %}
+              <div class="col-lg-12 alert alert-primary alert-dismissible fade show">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true" style="color: black">&times;</span>
+                </button>
+                <strong>{{message}}</strong>
+              </div>
+
+              {% endif %} {% endfor %}
+            <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
+               <div class="iq-card-header d-flex justify-content-between">
+                  <div class="iq-header-title">
+                     <h4 class="card-title"> Transactions </h4>
+                  </div>
+               </div>
+
+                  <div class="table-responsive">
+                     <div id="transaction">
+<table class="table mb-0 table-borderless">
+                        <thead>
+                           <tr>
+
+                              <th scope="col">Transaction ID</th>
+                              <th scope="col">Date</th>
+                              <th scope="col">Amount</th>
+                              <th scope="col">Status</th>
+
+                           </tr>
+                        </thead>
+                        <tbody>
+
+
+                            {% for transaction in transaction %}
+                            <tr>
+                               <td data-toggle="modal" data-target="#transactionModal{{transaction.id}}"> {{transaction.trx_id}}</td>
+                               <td data-toggle="modal" data-target="#transactionModal{{transaction.id}}">{{ transaction.date|date }}</td>
+                <td data-toggle="modal" data-target="#transactionModal{{transaction.id}}">
+
+                    {% if transaction.transaction_type == 'INVESTMENT' %}
+                     <span class="text-danger"> - {{ transaction.amount }}</span>
+                     {% else %}
+                     <span class="text-info"> - {{ transaction.amount }}</span>
+
+                    {% endif %}
+                </td>
+                {% if transaction.status == 'failed' %}
+                    <td data-toggle="modal" data-target="#transactionModal{{transaction.id}}"><span class="badge badge-danger px-2">{{ transaction.status }}</span></td>
+                {% elif transaction.status == 'pending' %}
+                    <td data-toggle="modal" data-target="#transactionModal{{transaction.id}}"><span class="badge badge-warning px-2">{{ transaction.status }}</span></td>
+                {% elif transaction.status == 'Successful' %}
+                    <td data-toggle="modal" data-target="#transactionModal{{transaction.id}}"><span class="badge badge-success px-2">{{ transaction.status }}</span></td>
+                {% elif transaction.status == 'Received' %}
+                    <td data-toggle="modal" data-target="#transactionModal{{transaction.id}}"><span class="badge badge-success">{{ transaction.status }}</span></td>
+                {% elif transaction.status == 'Expired' %}
+                    <td data-toggle="modal" data-target="#transactionModal{{transaction.id}}"><span class="badge badge-danger">{{ transaction.status }}</span></td>
+                {% else %}
+                    <td data-toggle="modal" data-target="#transactionModal{{transaction.id}}"><span class="badge badge-info">{{ transaction.status }}</span></td>
+                {% endif %}
+                            </tr>
+
+                        {% endfor %}
+                        </tbody>
+                     </table>
+</div>
+
+                  </div>
+               </div>
+
+            <!--Pagination-->
+                {% if not transaction  %}
+
+                              <p class="text-center">No recent Investment</p>
+            {% else %}
+           <div class="col-6 dataTables_paginate paging_simple_numbers">
+										<ul class="pagination">
+											{% if transaction.has_previous %}
+											<li class="paginate_button page-item previous active " id="example2_previous"><a  aria-controls="example2" data-dt-idx="0" tabindex="0" class="page-link"  href="?page={{ transaction.previous_page_number }}" >Previous</a></li>
+											{% else %}
+											<li class="paginate_button page-item previous disabled" ><a href="#" aria-controls="example2" data-dt-idx="0" tabindex="0" class="page-link">Previous</a></li>
+											{% endif %}
+
+											{% if transaction.number|add:'-3' > 1 %}
+											<li class="paginate_button page-item " ><a  href="?page={{ transaction.number|add:'-3' }}"  aria-controls="example2" data-dt-idx="0" tabindex="0" class="page-link">&hellip;</a></li>
+											{% endif %}
+
+											 {% for i in transaction.paginator.page_range %}
+                      							{% if transaction.number == i %}
+											<li class="paginate_button page-item active"><a href="#" aria-controls="example2" data-dt-idx="1" tabindex="0" class="page-link">  {{ i }}</a></li>
+											{% elif i > transaction.number|add:'-3' and i < transaction.number|add:'3' %}
+											<li class="paginate_button page-item "><a href="?page={{ i }}"  aria-controls="example2" data-dt-idx="2" tabindex="0" class="page-link">{{ i }}</a></li>
+											 {% endif %}
+											{% endfor %}
+
+											{% if transaction.paginator.num_pages > transaction.number|add:'-3' %}
+											<li class="paginate_button page-item" ><a href="?page={{ transaction.number|add:'-3' }}"  aria-controls="example2" data-dt-idx="0" tabindex="0" class="page-link">&hellip;</a></li>
+											<li class=" paginate_button page-item" ><a href="?page={{ transaction.paginator.num_pages }}" aria-controls="example2" data-dt-idx="0" tabindex="0" class="page-link">{{transaction.paginator.num_pages}}</a></li>
+											{% endif %}
+
+											{% if transactions.has_next %}
+											<li class="paginate_button page-item next active" id="example2_next"><a href="?page={{ transaction.next_page_number }}"  aria-controls="example2" data-dt-idx="3" tabindex="0" class="page-link">Next</a></li>
+											{% else %}
+											<li class="paginate_button page-item disabled" id="example2_next"><a href="#" aria-controls="example2" data-dt-idx="3" tabindex="0" class="page-link">Next</a></li>
+											{% endif %}
+										</ul>
+									</div>
+
+              {% endif %}
+        </div>
+       </div>
+    </div>
+    </div>
+</div>
+
+
+{% include 'transaction/dsh/dashboard/transaction_details.html' %}
+
+{% endblock content %}

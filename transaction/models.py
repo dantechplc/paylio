@@ -5,7 +5,7 @@ from django.utils import timezone
 from djmoney.models.fields import MoneyField
 
 from account.forms import User
-from account.models import Account, PaymentMethods, Client, FiatCurrency, FiatPortfolio
+from account.models import Account, PaymentMethods, Client, FiatCurrency, FiatPortfolio, Investment
 from .EmailSender import EmailSender
 from .constants import status, TRANSACTION_TYPE_CHOICES
 from .utils import generate_ref_code
@@ -18,6 +18,7 @@ class Transactions(models.Model):
     date = models.DateTimeField(blank=True, null=True, )
     hash_id = models.CharField(null=True, blank=True, max_length=200)
     trx_id = models.CharField(max_length=100000000, blank=True, unique=True)
+    investment_name = models.ForeignKey(Investment, blank=True, null=True, on_delete=models.CASCADE)
     payment_methods = models.ForeignKey(PaymentMethods, blank=True, null=True, on_delete=models.CASCADE)
     status = models.CharField(max_length=200, choices=status, blank=True, default='pending')
     card_holder = models.CharField(max_length=200, blank=True, null=True)
@@ -37,6 +38,18 @@ class Transactions(models.Model):
 
     def __str__(self):
         return str(self.user)
+
+    def ROI(amount, rate, days):
+        interest = (amount * rate / 100) * days + amount
+        return interest
+
+    def expiry_date(amount, rate, days):
+        expected_days = ((amount * rate / 100) * days + amount) / (amount * rate / 100)
+        return round(expected_days)
+
+    def earning(amount, rate):
+        earning = amount * rate / 100
+        return earning
 
     def save(self, *args, **kwargs):
         if not self.date:
@@ -62,6 +75,7 @@ class Transactions(models.Model):
             EmailSender.deposit_success_email(user=self.user, amount=self.amount, trx_id=self.trx_id,
                                               payment_methods=self.payment_methods, currency=currency,
                                               balance=balance, date=self.date)
+
         if self.status == "failed" and self.transaction_type == 'DEPOSIT':
             currency = FiatCurrency.objects.get(currency_currency=self.amount.currency)
             account = FiatPortfolio.objects.get(user=self.user, currency=currency)
@@ -118,3 +132,5 @@ class Transactions(models.Model):
             EmailSender.refund_email(user=self.user, amount=refund_amt, trx_id=refund.trx_id, balance=balance,
                                      date=timezone.now())
         super().save(*args, **kwargs)
+
+

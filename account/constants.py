@@ -12,10 +12,10 @@ ID = (
 )
 account_type = (
     ("Savings Account", 'Savings Account'),
+    ("Investment Account", 'Investment Account'),
     ("Checking Account", 'Checking Account'),
     ("Joint-checking Account", 'Joint-checking Account'),
     ("Business Account", 'Business Account'),
-
 )
 verification_status = (
     ('Unverified', 'Unverified'),

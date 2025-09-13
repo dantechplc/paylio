@@ -34,8 +34,9 @@ INSTALLED_APPS = [
     'imagekit',
     'djmoney',
     'sweetify',
+    "django_smart_ratelimit",
 ]
-
+RATELIMIT_BACKEND = 'database'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

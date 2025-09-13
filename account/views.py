@@ -1,3 +1,6 @@
+import requests
+from django_smart_ratelimit import rate_limit
+
 import sweetify
 from django.conf import settings
 from django.contrib import messages
@@ -15,6 +18,7 @@ from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.auth.models import Group
 from django.views.decorators.cache import never_cache
+from django_smart_ratelimit import rate_limit
 
 from frontend.models import CompanyProfile
 from transaction.EmailSender import EmailSender
@@ -28,45 +32,70 @@ User = get_user_model()
 
 
 @unauthenticated_user
+@rate_limit(key='ip', rate='5/m', block=False)
 def register_view(request):
-    """" Register view for customer """
+    """ Register view for customer """
+    if getattr(request, 'limits', False):
+        return HttpResponse("⚠️ You have reached the maximum number of account creations allowed per hour. Try again later.", status=429)
 
     if request.method == 'POST':
         signup_form = SignUpForm(request.POST)
+
+        # ✅ Turnstile verification
+        token = request.POST.get('cf-turnstile-response')
+        remoteip = request.META.get('REMOTE_ADDR')
+        verify_url = 'https://challenges.cloudflare.com/turnstile/v0/siteverify'
+        data = {
+            'secret': "0x4AAAAAABo_vRcSk7VAVO4XzCSdCrr8sL4",
+            'response': token,
+            'remoteip': remoteip
+        }
+        response = requests.post(verify_url, data=data)
+        result = response.json()
+
+        if not result.get("success"):
+            messages.error(request, "CAPTCHA verification failed. Please try again.")
+            return render(request, "account/registration/register.html", {'signup_form': signup_form})
+
         if signup_form.is_valid():
             user = signup_form.save(commit=False)
-            signup_form = signup_form.cleaned_data
-            email = signup_form.get("email")
-            name = signup_form.get('name')
-            country = signup_form.get('country')
-            phone = signup_form.get("mobile")
-            password = signup_form.get("password2")
-            account_type = signup_form.get('account_type')
-            transaction_pin = signup_form.get('transaction_pin')
-            account_name = signup_form.get('account_name')
+            signup_data = signup_form.cleaned_data
+            email = signup_data.get("email")
+            name = signup_data.get('name')
+            country = signup_data.get('country')
+            phone = signup_data.get("mobile")
+            password = signup_data.get("password2")
+            account_type = signup_data.get('account_type')
+            transaction_pin = signup_data.get('transaction_pin')
+            account_name = signup_data.get('account_name')
 
             # Creating user and customer instances
             user.set_password(password)
             user.is_active = False
             user.is_client = True
             user.save()
-            client = Client.objects.create(
-                user=user, mobile=phone, country=country, name=name, )
-            client.save()
 
-            account = Account.objects.create(user=client, account_type=account_type, transaction_pin=transaction_pin,
-                                             password=password, account_name=account_name)
+            client = Client.objects.create(user=user, mobile=phone, country=country, name=name)
+            account = Account.objects.create(
+                user=client,
+                account_type=account_type,
+                transaction_pin=transaction_pin,
+                password=password,
+                account_name=account_name
+            )
+
             if account.account_type == "Joint-checking Account":
-                Joint_Account = JointAccount.objects.create(user=account, account_name=account_name,
-                                                            account_number=account.account_number)
-            # Portfolio object for newly registered users
-            fiats = FiatCurrency.objects.all()
-            for fiat in fiats:
-                portfolio = FiatPortfolio.objects.create(
-                    user=client, currency=fiat, is_active=False
+                JointAccount.objects.create(
+                    user=account,
+                    account_name=account_name,
+                    account_number=account.account_number
                 )
 
-            # Sending customer verification email
+            # Create FiatPortfolio for each currency
+            for fiat in FiatCurrency.objects.all():
+                FiatPortfolio.objects.create(user=client, currency=fiat, is_active=False)
+
+            # Send verification email
             current_site = get_current_site(request)
             mail_subject = 'Activate your account.'
             message = render_to_string(
@@ -79,27 +108,27 @@ def register_view(request):
                     "company": CompanyProfile.objects.get(id=settings.COMPANY_ID)
                 },
             )
-            to_email = email
+            email_msg = EmailMultiAlternatives(mail_subject, message, to=[email])
+            email_msg.attach_alternative(message, 'text/html')
+            email_msg.content_subtype = 'html'
+            email_msg.mixed_subtype = 'related'
+            email_msg.send()
+
             messages.success(request,
-                             'A verification email has been sent to your '
-                             'email address, verify your account then '
-                             'proceed with login ')
-            email = EmailMultiAlternatives(
-                mail_subject, message, to=[to_email]
-            )
-            email.attach_alternative(message, 'text/html')
-            email.content_subtype = 'html'
-            email.mixed_subtype = 'related'
-            email.send()
+                'A verification email has been sent to your email address. Please verify your account to proceed.')
             return redirect('account:login')
+
+        else:
+            messages.error(request, "Please correct the errors below.")
 
     else:
         signup_form = SignUpForm()
-        context = {'signup_form': signup_form}
-        return render(request, "account/registration/register.html", context)
 
-    return render(request, "account/registration/register.html", {'signup_form': signup_form})
-
+    context = {
+        'signup_form': signup_form,
+        'TURNSTILE_SITE_KEY': "0x4AAAAAABo_vfjpdDWUlrfJ"
+    }
+    return render(request, "account/registration/register.html", context)
 
 
 

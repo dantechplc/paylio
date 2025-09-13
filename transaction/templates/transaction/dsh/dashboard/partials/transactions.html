@@ -36,6 +36,8 @@
                      <span class="text-primary"> + {{ transaction.amount }}</span>
                      {% elif transaction.transaction_type == 'CARD WITHDRAWAL' %}
                      <span class="text-danger"> - {{ transaction.amount }}</span>
+                    {% elif transaction.transaction_type == 'INVESTMENT' %}
+                     <span class="text-danger"> - {{ transaction.amount }}</span>
                      {% else %}
                      <span class="text-info"> - {{ transaction.amount }}</span>
 

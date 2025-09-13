@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     "corsheaders",
     'sweetify',
     'django_crontab',
+      "django_smart_ratelimit",
 ]
 
 MIDDLEWARE = [
@@ -151,3 +152,7 @@ EMAIL_HOST_PASSWORD = 'D@ntech3668'
 LOGIN_REDIRECT_URL = 'transaction:dashboard'
 
 # Cronjob
+CRONJOBS = [
+    ('* * * * *', 'transaction.cron.daily_roi', '>> /var/log/crontask.log 2>&1'),
+    ('* * * * *', 'transaction.cron.investment_expired_check', '>> /var/log/cronexp_dte.log 2>&1')
+]

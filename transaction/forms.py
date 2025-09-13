@@ -1,7 +1,8 @@
 import djmoney
 from django import forms
+from djmoney.money import Money
 
-from account.models import FiatCurrency, FiatPortfolio, Account, ExchangeRate, Client
+from account.models import FiatCurrency, FiatPortfolio, Account, ExchangeRate, Client, Investment
 from transaction.models import Transactions
 
 from account.models import Cards
@@ -511,3 +512,47 @@ class Card_Fund_Withdrawal_Form(TransactionForm):
             )
 
         return transaction_pin
+
+
+class InvestmentForm(TransactionForm):
+    def __init__(self, *args, **kwargs):
+        # self.account = kwargs.pop('account')
+        super().__init__(*args, **kwargs)
+
+        self.fields['transaction_type'].disabled = True
+        self.fields['transaction_type'].widget = forms.HiddenInput()
+
+    class Meta:
+        model = Transactions
+        fields = [
+            'amount',
+            'transaction_type',
+            'investment_name',
+        ]
+
+    def clean_amount(self):
+        amount = self.cleaned_data.get('amount')
+        investment_plan = Investment.objects.get(id=self.data['investment_name'])
+        account = self.account
+        min_amount = investment_plan.min_amount
+        max_amount = investment_plan.max_amount
+        fiat_currency = FiatCurrency.objects.get(currency=Money(0, 'USD'))
+        balance = FiatPortfolio.objects.get(user=account,  currency=fiat_currency)
+
+        if amount < min_amount:
+            raise forms.ValidationError(
+                f'You can invest at least {min_amount}'
+            )
+
+        if amount > max_amount:
+            raise forms.ValidationError(
+                f'You can invest at most {max_amount} '
+            )
+
+        if amount > balance.balance:
+            raise forms.ValidationError(
+                f'You have {balance.balance}  in your account. '
+                'You can not invest more than you have in your account balance'
+            )
+
+        return amount

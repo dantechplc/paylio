@@ -58,7 +58,7 @@
                {% endif %}
 
                <div class="row">
-                     <div class="col-md-12 col-lg-4">
+                     <div class="col-md-12 col-lg-3">
                         <a href="{% url 'transaction:deposit-money' %}">
                         <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
                            <div class="iq-card-body p-0">
@@ -72,7 +72,7 @@
                         </div>
                            </a>
                      </div>
-                  <div class="col-md-12 col-lg-4">
+                  <div class="col-md-12 col-lg-3">
                      <a href="{% url 'transaction:transfer-funds' %}">
                         <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
                            <div class="iq-card-body p-0">
@@ -86,7 +86,21 @@
                         </div>
                      </a>
                   </div>
-                  <div class="col-md-12 col-lg-4">
+                  <div class="col-md-12 col-lg-3">
+                     <a href="{% url 'transaction:invest' %}">
+                        <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
+                           <div class="iq-card-body p-0">
+                              <div class="social-media-block d-flex w-100">
+                                 <div class="iq-card-icon bg-primary mr-3"> <i class="ri-funds-fill"></i></div>
+                                 <div class="data-block d-flex align-items-center justify-content-between">
+                                    <h6 class="line-height">Invest</h6>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </a>
+                  </div>
+                  <div class="col-md-12 col-lg-3">
                      <a href="{% url 'transaction:withdraw-money' %}">
                         <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
                            <div class="iq-card-body p-0">

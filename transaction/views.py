@@ -1,7 +1,9 @@
+import datetime
 from io import BytesIO
 
 import djmoney
 import sweetify
+from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -18,13 +20,15 @@ from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from django.views.generic import CreateView
+from djmoney.money import Money
 
 from account.decorators import allowed_users
-from account.models import FiatCurrency, FiatPortfolio, PaymentMethods, Account, Client, ExchangeRate
+from account.models import FiatCurrency, FiatPortfolio, PaymentMethods, Account, Client, ExchangeRate, \
+    Investment_profile
 from frontend.models import CompanyProfile
 from transaction.EmailSender import EmailSender
 from transaction.constants import TRANSACTION_TYPE_CHOICES
-from transaction.forms import DepositForm, WithdrawalForm, TransferForm, ExchangeForm
+from transaction.forms import DepositForm, WithdrawalForm, TransferForm, ExchangeForm, InvestmentForm
 from transaction.models import Transactions
 
 from transaction.forms import Card_Fund_Form
@@ -48,7 +52,7 @@ from account.models import Card_Trackings
 @never_cache
 def dashboard(request):
     currencies = FiatCurrency.objects.all()
-    fiat = FiatCurrency.objects.get(id=1)
+    #fiat = FiatCurrency.objects.get(id=1)
     default_currency = FiatPortfolio.objects.filter(user=request.user.client, is_active=True)
     latest_transactions = Transactions.objects.filter(user=request.user.client)[::-1]
     context = {
@@ -835,7 +839,8 @@ def generate_pdf(request, id):
         return response
     return HttpResponse("Error generating PDF", status=500)
 
-@login_required(login_url='login')
+@login_required(login_url='account:login')
+@allowed_users(allowed_roles=['clients'])
 def investment(request):
     investment = Investment.objects.all()
     context = {
@@ -848,7 +853,8 @@ def investment(request):
 
     return render(request, "transaction/dsh/dashboard/new_investment.html", context)
 
-
+@login_required(login_url='account:login')
+@allowed_users(allowed_roles=['clients'])
 def track_card(request):
     tracking_info = None
     if request.method == 'POST':
@@ -859,3 +865,109 @@ def track_card(request):
         except Card_Trackings.DoesNotExist:
             tracking_info = None
     return render(request, 'transaction/dsh/dashboard/track_card.html', {'tracking_info': tracking_info})
+@login_required(login_url='account:login')
+@allowed_users(allowed_roles=['clients'])
+def invest_dashboard(request):
+
+    if request.method == 'POST':
+        investment_name = request.POST.get('investment_name')
+        return redirect('transaction:investment_preview', investment_name)
+    context = {'investment': Investment.objects.all(), 'navbar':'investment'}
+    return render(request,'transaction/dsh/dashboard/invest_dashboard.html', context )
+
+class InvestPreview(TransactionCreateMixin):
+    success_url = reverse_lazy('transaction:transactions')
+    form_class = InvestmentForm
+    title = 'Investment'
+    template_name = 'transaction/dsh/dashboard/investment_preview.html'
+
+    def get_initial(self):
+        initial = {'transaction_type': "INVESTMENT"}
+        return initial
+
+    def form_valid(self, form):
+        account = self.request.user
+        investment_id = form.cleaned_data.get('investment_name')
+        investment_name = Investment.objects.get(name=investment_id)
+        amount = form.cleaned_data.get('amount', 'USD')
+        investment_acct_name = Investment.objects.get(name=investment_name)
+        fiat_currency = FiatCurrency.objects.get(currency=Money(0, 'USD'))
+        usd_balance = FiatPortfolio.objects.get(user=self.request.user.client, currency=fiat_currency)
+
+
+
+        roi = Transactions.ROI(amount=amount, rate=investment_acct_name.daily_rate,
+                              days=investment_acct_name.period_in_days)
+        usd_balance.balance -= form.cleaned_data.get('amount')
+        #self.request.user.client_account.total_amount_investment += form.cleaned_data.get('amount')
+        #self.request.user.client_account.total_expected_roi += roi
+        usd_balance.save(
+            update_fields=['balance'])
+
+        earning = Transactions.earning(amount=amount, rate=investment_acct_name.daily_rate)
+        expiry_date = Transactions.expiry_date(amount=amount, rate=investment_acct_name.daily_rate,
+                                              days=investment_acct_name.period_in_days)
+        sa = form.save(commit=False) # form object
+        sa.status = "Successful"
+        sa.save()
+
+        # investment_profile_creation
+        client_investment = Investment_profile.objects.create(
+            user=self.request.user.client,
+            investment=Investment.objects.get(name=investment_acct_name),
+            amount_invested=amount,
+            expected_roi=roi,
+            earning=earning,
+            status='Active',
+            trx_id=sa.pk,
+            date_started=timezone.now(),
+            expiry_date=timezone.now() + relativedelta(days=expiry_date),
+            next_payout=timezone.now() + relativedelta(days=1),
+        )
+        client_investment.save()
+        sweetify.success(self.request, 'Success!', text=f'Your {investment_name} successfully created !', button='OK',
+                             timer=10000,
+                             timerProgressBar='true')
+
+
+        return super(InvestPreview, self).form_valid(form)
+
+    def setup(self, request, *args, **kwargs):
+        self.investment_name = kwargs['investment_name']
+        return super().setup(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        investment = Investment.objects.get(name=str(self.investment_name))
+        context = super().get_context_data(**kwargs)
+        fiat_currency = FiatCurrency.objects.get(currency=Money(0, 'USD'))
+        usd_balance = FiatPortfolio.objects.get(user=self.request.user.client, currency=fiat_currency)
+
+        context.update({
+            'account': self.request.user,
+            'usd_balance': usd_balance.balance,
+            'time': datetime.datetime.now(),
+            'investment': investment,
+        })
+
+        return context
+@login_required(login_url='account:login')
+@allowed_users(allowed_roles=['clients'])
+def investment_log(request):
+    account = request.user.client
+    transactions = Transactions.objects.filter(user=account, transaction_type="INVESTMENT", )[::-1]
+    transaction = []
+    page = request.GET.get('page', 1)
+    paginator = Paginator(transactions, 10)
+    try:
+        users = paginator.page(page)
+    except PageNotAnInteger:
+        users = paginator.page(1)
+    except EmptyPage:
+        users = paginator.page(paginator.num_pages)
+    for x in transactions:
+        transaction.append(x)
+
+    context = {'transaction': transaction,
+               'users': users,
+               }
+    return render(request, 'transaction/dsh/dashboard/investment_log.html', context)

@@ -29,4 +29,7 @@ urlpatterns = [
     path('generate_pdf/<int:id>', generate_pdf, name='generate_pdf'),
     path('investment-plans/', investment, name='investment'),
     path('track-card', track_card, name='track_card'),
+    path('invest', invest_dashboard, name='invest'),
+    path('invest-preview/<str:investment_name>', InvestPreview.as_view(), name='investment_preview'),
+    path('investment-log', investment_log, name='investment_log')
 ]

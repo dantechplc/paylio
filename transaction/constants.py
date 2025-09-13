@@ -9,6 +9,7 @@ TRANSACTION_TYPE_CHOICES = (
     ("CARD FUNDING", 'CARD FUNDING'),
     ("CARD WITHDRAWAL", 'CARD WITHDRAWAL'),
     ("Card Delivery Fee", 'Card Delivery Fee'),
+    ("INVESTMENT",'INVESTMENT'),
 
 )
 

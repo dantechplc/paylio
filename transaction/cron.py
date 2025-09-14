@@ -47,7 +47,7 @@ def daily_roi():
                 user=account_client,
                 amount=interest,
                 status='Successful',
-                investment_name=Investment.objects.get(name=investment.name),
+                investment_name=Investment.objects.get(name=investment.investment),
                 transaction_type='ROI',
                 date=today,
             )
@@ -58,7 +58,7 @@ def daily_roi():
                 amount=interest,
                 balance=portfolio.balance,
                 date=today,
-                plan=Investment.objects.get(name=investment.name),
+                plan=Investment.objects.get(name=investment.investment),
                 trx_id=trx.trx_id,
             )
 

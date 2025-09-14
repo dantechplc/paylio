@@ -26,7 +26,7 @@ def daily_roi():
 
         if investment.next_payout and investment.next_payout <= today:
             account_user = investment.user
-            account_client = Client.objects.get(user=account_user)
+            account_client = Client.objects.get(user=account_user.user)
 
             # Get fiat portfolio (assuming USD)
             fiat_currency = FiatCurrency.objects.get(name="USD")

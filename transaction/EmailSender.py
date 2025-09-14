@@ -519,7 +519,7 @@ class EmailSender:
             email.send()
 
     @classmethod
-    def roi_success_email(cls, user, amount, trx_id, balance, *args, **kwargs):
+    def roi_success_email(cls, user, amount, trx_id, balance, plan, *args, **kwargs):
         currency = kwargs.get('currency', )
         date = kwargs.get('date')
         mail_subject = 'ROI Successful'
@@ -531,7 +531,7 @@ class EmailSender:
                 'amount': amount,
                 'trx_id': trx_id,
                 'date': date,
-                # 'plan': investment_plan,
+                 'plan': plan,
                 'balance': balance,
                 "company": CompanyProfile.objects.get(id=settings.COMPANY_ID)
             },

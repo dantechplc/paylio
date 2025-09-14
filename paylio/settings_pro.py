@@ -156,3 +156,12 @@ CRONJOBS = [
     ('* * * * *', 'transaction.cron.daily_roi', '>> /var/log/crontask.log 2>&1'),
     ('* * * * *', 'transaction.cron.investment_expired_check', '>> /var/log/cronexp_dte.log 2>&1')
 ]
+
+
+RATELIMIT_USE_CACHE = True  # Or configure a database-backed cache
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'my_cache_table',
+    }
+}

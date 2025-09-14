@@ -31,8 +31,8 @@ from transaction.models import Transactions
 User = get_user_model()
 
 
-
-@rate_limit(key='ip', rate='5/m', block=False)
+@unauthenticated_user
+# @rate_limit(key='ip', rate='5/m', block=False)
 def register_view(request):
     """ Register view for customer """
     if getattr(request, 'limits', False):

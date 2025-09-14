@@ -183,7 +183,7 @@ class FiatCurrency(models.Model):
     name = models.CharField(max_length=20)
     currency = MoneyField(max_digits=19, decimal_places=2, default=0, blank=True, null=True)
     image = models.ImageField(upload_to='fiat_images', blank=True, null=True)
-    image = ImageSpecField(source='image',
+    image_thumbnail = ImageSpecField(source='image',
                                      processors=[ResizeToFill(50, 30)],
                                      format="PNG",
                                      options={'quality': 60})

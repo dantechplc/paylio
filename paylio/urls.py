@@ -18,8 +18,8 @@ urlpatterns = [
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='sitemaps'),
 ]
 
-admin.site.index_title = "GRANDSINSPC Admin"
-admin.site.site_header = "GRANDSINSPC"
+admin.site.index_title = "ZENTROBANK Admin"
+admin.site.site_header = "ZENTROBANK"
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

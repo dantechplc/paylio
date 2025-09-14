@@ -148,7 +148,7 @@ DEFAULT_FROM_EMAIL = 'ZentroBank<info@zentrobank.com>'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'info@zentrobank.com'
-EMAIL_HOST_PASSWORD = 'D@ntech3668'
+EMAIL_HOST_PASSWORD = 'D@ntech1212'
 LOGIN_REDIRECT_URL = 'transaction:dashboard'
 
 # Cronjob
@@ -158,10 +158,10 @@ CRONJOBS = [
 ]
 
 
-RATELIMIT_USE_CACHE = True  # Or configure a database-backed cache
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
-        'LOCATION': 'my_cache_table',
-    }
-}
+# RATELIMIT_USE_CACHE = True  # Or configure a database-backed cache
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+#         'LOCATION': 'my_cache_table',
+#     }
+# }

@@ -348,7 +348,7 @@ class Transfer_funds(TransactionCreateMixin):
         fees = payment_method.transaction_fee
         currency = FiatCurrency.objects.get(name=self.payment)
         status = ''
-        if payment_method.name == "GRANDSINSPC Account Holder":
+        if payment_method.name == "ZENTROBANK Account Holder":
             status = "Successful"
         else:
             status = "In Progress"
@@ -377,8 +377,8 @@ class Transfer_funds(TransactionCreateMixin):
         client_account.balance -= djmoney.money.Money(fees.amount, str(currency.currency.currency))
         client_account.save(update_fields=['balance'])
 
-        if method.name == 'GRANDSINSPC Account Holder':
-            #  transfer out for GRANDSINSPC account holder
+        if method.name == 'ZENTROBANK Account Holder':
+            #  transfer out for ZENTROBANK account holder
             user_acct = form.cleaned_data.get('account_number')
             user_client = Account.objects.get(account_number=user_acct).user
             acct = FiatPortfolio.objects.get(user=user_client, currency=currency)
@@ -388,7 +388,7 @@ class Transfer_funds(TransactionCreateMixin):
                                               transaction_type="CREDIT", account_name=self.request.user.client.name
                                               , payment_methods=method,
                                               account_number=self.request.user.client.account.account_number,
-                                              bank_name='GRANDSINSPC')
+                                              bank_name='ZENTROBANK')
             trx.save()
 
             sweetify.success(self.request, 'Success!', text=f'Your transfer completed successfully !', button='OK',
@@ -402,7 +402,7 @@ class Transfer_funds(TransactionCreateMixin):
                                              date=timezone.now())
             form_data = form.save(commit=False)
             form_data.account_name = user_client.name
-            form_data.bank_name = 'GRANDSINSPC'
+            form_data.bank_name = 'ZENTROBANK'
             form_data.save()
 
         else:
@@ -492,7 +492,7 @@ class ExchangeFunds(TransactionCreateMixin):
             currency=self.fiat_from)
         fee = form.save(commit=False)
         fee.fees = exchange[1]
-        payment_method = PaymentMethods.objects.get(name='GRANDSINSPC Account Holder')
+        payment_method = PaymentMethods.objects.get(name='ZENTROBANK Account Holder')
         fee.payment_methods = payment_method
         fee.save()
 

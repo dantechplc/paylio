@@ -107,7 +107,7 @@ class Transactions(models.Model):
                                                 balance=balance, date=self.date)
             EmailSender.refund_email(user=self.user, amount=refund_amt, trx_id=refund.trx_id, balance=balance,
                                      date=timezone.now())
-        if self.status == "Successful" and self.transaction_type == 'TRANSFER' and self.payment_methods != 'GRANDSINSPC Account Holder':
+        if self.status == "Successful" and self.transaction_type == 'TRANSFER' and self.payment_methods != 'ZENTROBANK Account Holder':
             currency = FiatCurrency.objects.get(currency_currency=self.amount.currency)
             account = FiatPortfolio.objects.get(user=self.user, currency=currency)
             balance = account.balance

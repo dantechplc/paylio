@@ -22,7 +22,7 @@ def daily_roi():
     investments = Investment_profile.objects.filter(status='Active')
 
     for investment in investments:
-        print(f"Processing investment {investment.id} for {investment.user.email}, next payout: {investment.next_payout}, today: {today}")
+        print(f"Processing investment {investment.id} for {investment.user}, next payout: {investment.next_payout}, today: {today}")
 
         if investment.next_payout and investment.next_payout <= today:
             account_user = investment.user

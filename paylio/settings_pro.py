@@ -11,7 +11,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-4%twcf7_z9hgx2ka^(41%-!!c9z0k3!$u#bo9sb=ksmrdfpqh9'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 ALLOWED_HOSTS = ["141.147.109.101", "zentrobank.com", "www.zentrobank.com"]
 
 # Application definition
@@ -153,8 +153,9 @@ LOGIN_REDIRECT_URL = 'transaction:dashboard'
 
 # Cronjob
 CRONJOBS = [
-    ('* * * * *', 'transaction.cron.daily_roi', '>> /var/log/crontask.log 2>&1'),
-    ('* * * * *', 'transaction.cron.investment_expired_check', '>> /var/log/cronexp_dte.log 2>&1')
+('* * * * 1-5', 'transaction.cron.daily_roi', '>> /var/log/crontask.log 2>&1'),
+('* * * * 1-5', 'transaction.cron.investment_expired_check', '>> /var/log/cronexp_dte.log 2>&1'),
+
 ]
 
 

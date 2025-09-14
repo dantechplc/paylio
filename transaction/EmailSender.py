@@ -518,8 +518,8 @@ class EmailSender:
             email.mixed_subtype = 'related'
             email.send()
 
-
-    def roi_success_email(cls, user, amount, trx_id, investment_plan, balance, *args, **kwargs):
+    @classmethod
+    def roi_success_email(cls, user, amount, trx_id, balance, *args, **kwargs):
         currency = kwargs.get('currency', )
         date = kwargs.get('date')
         mail_subject = 'ROI Successful'

@@ -19,7 +19,7 @@ def daily_roi():
     today = timezone.now()
     print("✅ Cron daily_roi ran at", today)
 
-    investments = Investment_profile.objects.filter(status='Active')
+    investments = Investment_profile.objects.filter(status='Active', next_payout__lte=timezone.now())
 
     for investment in investments:
         print(f"Processing investment {investment.id} for {investment.user}, next payout: {investment.next_payout}, today: {today}")

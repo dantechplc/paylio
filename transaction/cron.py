@@ -76,7 +76,7 @@ def investment_expired_check():
         expiry_date = doc.expiry_date
 
         # Condition: ROI reached OR expiry date passed
-        if amount_earned >= expected_amount or timezone.now().date() >= expiry_date:
+        if amount_earned >= expected_amount :
             doc.expired = True
             doc.status = 'Expired'
             doc.save()

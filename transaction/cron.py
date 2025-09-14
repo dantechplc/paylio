@@ -17,6 +17,7 @@ from transaction.models import Transactions
 
 def daily_roi():
     today = timezone.now()
+    print("Cron investment_expired_check ran at", timezone.now())
     investments = Investment_profile.objects.filter(status='Active')
     if investments is not None:
         for investment in investments:

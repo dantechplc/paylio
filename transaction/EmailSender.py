@@ -569,7 +569,7 @@ class EmailSender:
                 'amount': amount,
                 'trx_id': trx_id,
                 'date': date,
-                'plan': investment_plan,
+                # 'plan': investment_plan,
                 'balance': balance,
                 "company": CompanyProfile.objects.get(id=settings.COMPANY_ID)
             },

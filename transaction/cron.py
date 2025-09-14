@@ -47,7 +47,7 @@ def daily_roi():
                     trx = Transactions.objects.create(
                         user=account_client,
                         amount = interest,
-                        investment_name = inv_pro.investment_name,
+                        # investment_name = inv_pro.investment_name,
                         status='Successful',
                         transaction_type = 'ROI',
                         date=timezone.now()
@@ -59,7 +59,7 @@ def daily_roi():
                     mail_subject = "INVESTMENT INTEREST"
                     to_email = str(investment.user)
                     EmailSender.roi_success_email(user=to_email, amount=interest,
-                                                  investment_plan=inv_pro.investment_name,
+                                                  # investment_plan=inv_pro.investment_name,
                                               balance=cl.balance, date=timezone.now(),
                                             trx_id=trx.trx_id)
 

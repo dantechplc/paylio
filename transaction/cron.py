@@ -17,51 +17,46 @@ from transaction.models import Transactions
 
 def daily_roi():
     today = timezone.now()
-    print("Cron investment_expired_check ran at", timezone.now())
+    print("✅ Cron daily_roi ran at", today)
+
     investments = Investment_profile.objects.filter(status='Active')
-    if investments is not None:
-        for investment in investments:
-            date = investment.next_payout
-            if date <= today:
-                accounts = Investment_profile.objects.filter(user=investment.user, status='Active')
-                for account in accounts:
-                    fiat_currency = FiatCurrency.objects.get(currency=Money(0, 'USD'))
 
-                    interest = account.earning
-                    account_user = User.objects.get(email=account)
-                    account_client = Client.objects.get(user=account_user)
-                    client_acct = FiatPortfolio.objects.get(user=account_client, currency=fiat_currency)
-                    bal = client_acct.balance
-                    new_bal = bal + interest
-                    cl = FiatPortfolio.objects.get(user=account_client, currency=fiat_currency)
-                    cl.save(update_fields=['balance'])
+    for investment in investments:
+        if investment.next_payout and investment.next_payout <= today:
+            account_user = investment.user
+            account_client = Client.objects.get(user=account_user)
 
-                    # Investment Profile
-                    inv_pro = Investment_profile.objects.filter(status="Active", user=investment.user)
-                    inv_amt = account.amount_earned + interest
-                    next_payment = Transactions.get_next_payout(timezone.now())
-                    inv_pro.update(amount_earned=inv_amt, next_payout=next_payment)
+            # Get fiat portfolio (assuming USD)
+            fiat_currency = FiatCurrency.objects.get(name="USD")
+            portfolio = FiatPortfolio.objects.get(user=account_client, currency=fiat_currency)
 
-                    # transaction
+            # Add interest
+            interest = investment.earning
+            portfolio.balance += interest
+            portfolio.save(update_fields=['balance'])
 
-                    trx = Transactions.objects.create(
-                        user=account_client,
-                        amount = interest,
-                        # investment_name = inv_pro.investment_name,
-                        status='Successful',
-                        transaction_type = 'ROI',
-                        date=timezone.now()
+            # Update investment profile
+            investment.amount_earned += interest
+            investment.next_payout = Transactions.get_next_payout(today)  # define this helper
+            investment.save(update_fields=['amount_earned', 'next_payout'])
 
-                    )
-                    trx.save()
+            # Record transaction
+            trx = Transactions.objects.create(
+                user=account_client,
+                amount=interest,
+                status='Successful',
+                transaction_type='ROI',
+                date=today,
+            )
 
-                    # ROI email
-                    mail_subject = "INVESTMENT INTEREST"
-                    to_email = str(investment.user)
-                    EmailSender.roi_success_email(user=to_email, amount=interest,
-                                                  # investment_plan=inv_pro.investment_name,
-                                              balance=cl.balance, date=timezone.now(),
-                                            trx_id=trx.trx_id)
+            # Send ROI email
+            EmailSender.roi_success_email(
+                user=account_user.email,
+                amount=interest,
+                balance=portfolio.balance,
+                date=today,
+                trx_id=trx.trx_id,
+            )
 
 
 from django.utils import timezone

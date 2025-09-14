@@ -905,10 +905,11 @@ class InvestPreview(TransactionCreateMixin):
             update_fields=['balance'])
 
         earning = Transactions.earning(amount=amount, rate=investment_acct_name.daily_rate)
-        expiry_date = Transactions.expiry_date(amount=amount, rate=investment_acct_name.daily_rate,
-                                              days=investment_acct_name.period_in_days)
+        # expiry_date = Transactions.expiry_date(amount=amount, rate=investment_acct_name.daily_rate,
+        #                                       days=investment_acct_name.period_in_days)
         sa = form.save(commit=False) # form object
         sa.status = "Successful"
+        sa.investment_name = Investment.objects.get(name=str(self.investment_name))
         sa.save()
 
         # investment_profile_creation
@@ -921,8 +922,8 @@ class InvestPreview(TransactionCreateMixin):
             status='Active',
             trx_id=sa.pk,
             date_started=timezone.now(),
-            expiry_date=timezone.now() + relativedelta(days=expiry_date),
-            next_payout=timezone.now() + relativedelta(days=1),
+            expiry_date= Transactions.add_business_days(timezone.now(), investment_acct_name.period_in_days),
+            next_payout=Transactions.get_next_payout(timezone.now()),
         )
         client_investment.save()
         sweetify.success(self.request, 'Success!', text=f'Your {investment_name} successfully created !', button='OK',

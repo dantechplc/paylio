@@ -555,3 +555,30 @@ class EmailSender:
             email.content_subtype = 'html'
             email.mixed_subtype = 'related'
             email.send()
+
+
+    def roi_success_email(cls, user, amount, trx_id, investment_plan, balance, *args, **kwargs):
+        currency = kwargs.get('currency', )
+        date = kwargs.get('date')
+        mail_subject = 'ROI Successful'
+        message = render_to_string(
+            "transaction/dsh/emails/roi_success_email.html",
+            {
+                "name": user.name,
+                "domain": 'ZENTROBANK.com',
+                'amount': amount,
+                'trx_id': trx_id,
+                'date': date,
+                'plan': investment_plan,
+                'balance': balance,
+                "company": CompanyProfile.objects.get(id=settings.COMPANY_ID)
+            },
+        )
+        to_email = str(user)
+        email = EmailMultiAlternatives(
+                mail_subject, message, to=[to_email]
+            )
+        email.attach_alternative(message, 'text/html')
+        email.content_subtype = 'html'
+        email.mixed_subtype = 'related'
+        email.send()

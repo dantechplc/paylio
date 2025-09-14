@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.db import models
 
 # Create your models here.
@@ -50,6 +52,29 @@ class Transactions(models.Model):
     def earning(amount, rate):
         earning = amount * rate / 100
         return earning
+
+    def add_business_days(start_date, days):
+        current_date = start_date
+        added_days = 0
+
+        while added_days < days:
+            current_date += timedelta(days=1)
+            if current_date.weekday() < 5:  # 0=Mon, 6=Sun
+                added_days += 1
+
+        return current_date
+    def get_next_payout(today):
+        today = timezone.now()
+
+        if today.weekday() == 5:
+            # Saturday → next Monday
+            return today + timedelta(days=2)
+        elif today.weekday() == 6:
+            # Sunday → next Monday
+            return today + timedelta(days=1)
+        else:
+            # Mon–Fri → just add 1 day
+            return today + timedelta(days=1)
 
     def save(self, *args, **kwargs):
         if not self.date:

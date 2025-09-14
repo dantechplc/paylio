@@ -38,40 +38,62 @@ def daily_roi():
                     # Investment Profile
                     inv_pro = Investment_profile.objects.filter(status="Active", user=investment.user)
                     inv_amt = account.amount_earned + interest
-                    next_payment = timezone.now() + relativedelta(days=1)
+                    next_payment = Transactions.get_next_payout(timezone.now())
                     inv_pro.update(amount_earned=inv_amt, next_payout=next_payment)
+
+                    # transaction
+
+                    trx = Transactions.objects.create(
+                        user=account_client,
+                        amount = interest,
+                        investment_name = inv_pro.investment_name,
+                        status='Successful',
+                        transaction_type = 'ROI',
+                        date=timezone.now()
+
+                    )
+                    trx.save()
 
                     # ROI email
                     mail_subject = "INVESTMENT INTEREST"
                     to_email = str(investment.user)
-                    EmailSender.deposit_success_email(user=to_email, amount=interest,
-                                               currency=fiat_currency,
-                                              balance=cl.balance, date=timezone.now())
+                    EmailSender.roi_success_email(user=to_email, amount=interest,
+                                                  investment_plan=inv_pro.investment_name,
+                                              balance=cl.balance, date=timezone.now(),
+                                            trx_id=trx.trx_id)
 
 
+from django.utils import timezone
+from django.core.mail import EmailMultiAlternatives
 
 def investment_expired_check():
-
     qs = Investment_profile.objects.filter(expired=False, status='Active')
+
     for doc in qs:
         expected_amount = doc.expected_roi
         amount_earned = doc.amount_earned
-        if amount_earned >= expected_amount:
+        expiry_date = doc.expiry_date
+
+        # Condition: ROI reached OR expiry date passed
+        if amount_earned >= expected_amount or timezone.now().date() >= expiry_date:
             doc.expired = True
             doc.status = 'Expired'
             doc.save()
-            print('Expired investment found for ', doc.user)
-            trx = Transactions.objects.filter(pk=doc.trx_id)
-            trx.update(status='Expired')
+
+            print('Expired investment found for', doc.user)
+
+            # Update related transaction
+            Transactions.objects.filter(pk=doc.trx_id).update(status='Expired')
+
+            # Notify admin
             email = 'chukwujidan@gmail.com'
-            # message =
             mail_subject = "Expired Investment"
             to_email = str(email)
-            message1 = f'Hello Admin. {doc.user} {doc.investment} Investment plan of {doc.amount_invested} expired ' \
-                       f'today. '
-            email = EmailMultiAlternatives(
-                mail_subject, message1, to=[to_email]
+            message1 = (
+                f'Hello Admin. {doc.user} {doc.investment} Investment plan of '
+                f'{doc.amount_invested} has expired today.'
             )
+            email = EmailMultiAlternatives(mail_subject, message1, to=[to_email])
             email.attach_alternative(message1, 'text/html')
             email.content_subtype = 'html'
             email.mixed_subtype = 'related'

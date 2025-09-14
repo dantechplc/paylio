@@ -10,6 +10,8 @@ TRANSACTION_TYPE_CHOICES = (
     ("CARD WITHDRAWAL", 'CARD WITHDRAWAL'),
     ("Card Delivery Fee", 'Card Delivery Fee'),
     ("INVESTMENT",'INVESTMENT'),
+    ("ROI",'ROI'),
+
 
 )
 

@@ -10,7 +10,7 @@ class TransactionsAdmin(admin.ModelAdmin):
     # Optional: customize the fields displayed on the detail view page
     fieldsets = (
         (None, {
-            'fields': ('user', 'amount', 'fees', 'date', 'hash_id', 'trx_id', 'payment_methods', 'status', 'card_holder',
+            'fields': ('user', 'amount', 'fees', 'date', 'hash_id', 'trx_id', 'investment_name', 'payment_methods', 'status', 'card_holder',
                        'card_number', 'cvc', 'month', 'year', 'bank_name', 'account_name', 'swift_code', 'iban',
                        'routing_number', 'wallet_address', 'account_number', 'transaction_type', 'payment_description')
         }),

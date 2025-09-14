@@ -138,6 +138,9 @@
             {% elif transaction.transaction_type == 'INVESTMENT' %}
                         <h2> Account Name<span class="s1">
              {{transaction.user.name}}
+            {% elif transaction.transaction_type == 'ROI' %}
+                        <h2> Investment Plan<span class="s1">
+             {{transaction.investment_name}}
         {% endif %}
         </span></h2>
         <hr>
@@ -174,6 +177,9 @@
                        <p class="s1">{{transaction.account_number}}</p>
                        <p class="s1">{{transaction.bank_name}}</p>
           {% elif transaction.transaction_type == 'INVESTMENT' %}
+        <h2>Beneficiary</h2>
+                            <p>{{transaction.user.name}}</p>
+          {% elif transaction.transaction_type == 'ROI' %}
         <h2>Beneficiary</h2>
                             <p>{{transaction.user.name}}</p>
         {% endif %}

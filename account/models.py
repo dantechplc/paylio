@@ -7,6 +7,7 @@ from io import BytesIO
 import djmoney
 import qrcode
 import requests
+from PIL import Image
 from django.conf import settings
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
@@ -178,6 +179,8 @@ class JointAccount(models.Model):
             self.code = data[1]
         super().save(*args, **kwargs)  # Corrected line
 
+if not hasattr(Image, 'ANTIALIAS'):
+    Image.ANTIALIAS = Image.Resampling.LANCZOS
 
 class FiatCurrency(models.Model):
     name = models.CharField(max_length=20)

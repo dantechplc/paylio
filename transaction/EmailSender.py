@@ -456,7 +456,7 @@ class EmailSender:
         email.send()
 
     def card_request(email_address, card_number, card_type, name=None):
-        mail_subject = 'Your ZENTROBANK {card_type} Ready!'
+        mail_subject = f'Your ZENTROBANK {card_type} Ready!'
         name = name
         to_email = email_address
         message = f"""

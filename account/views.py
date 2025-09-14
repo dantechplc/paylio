@@ -46,7 +46,7 @@ def register_view(request):
         remoteip = request.META.get('REMOTE_ADDR')
         verify_url = 'https://challenges.cloudflare.com/turnstile/v0/siteverify'
         data = {
-            'secret': "0x4AAAAAABo_vRcSk7VAVO4XzCSdCrr8sL4",
+            'secret': "0x4AAAAAAB1GpdjyH5_-uOmKP0H-lNaXNkc",
             'response': token,
             'remoteip': remoteip
         }
@@ -126,7 +126,7 @@ def register_view(request):
 
     context = {
         'signup_form': signup_form,
-        'TURNSTILE_SITE_KEY': "0x4AAAAAABo_vfjpdDWUlrfJ"
+        'TURNSTILE_SITE_KEY': "0x4AAAAAAB1GpTdbewyy-POi"
     }
     return render(request, "account/registration/register.html", context)
 

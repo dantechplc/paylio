@@ -112,7 +112,7 @@
                                                     <th scope="col">Date</th>
                                                     <th scope="col">Status</th>
                                                     <th scope="col">Amount</th>
-                                                    <th scope="col">Duration</th>
+                                                    <th scope="col">Duration (days)</th>
 
                                                  </tr>
                                               </thead>
@@ -121,7 +121,7 @@
                                                     <td>{{time|date}}</td>
                                                     <td><span class="badge badge-danger">Unpaid</span></td>
                                                     <td id="amount"></td>
-                                                    <td>2-3 months</td>
+                                                    <td>{{investment.period_in_days}}</td>
                                                  </tr>
                                               </tbody>
                                            </table>
@@ -166,7 +166,7 @@
                                      <div class="col-sm-9 text-left">
                                         <div class="col-sm-12 mt-5">
                                             <b class="text-danger">Notes:</b>
-                                            <p><span style="color:red;">*</span> Upon successfully payment, you will receive your daily(i.e. Monday - Friday) profit directly to your USD account.</p>
+                                            <p><span style="color:red;">*</span> Upon successfully payment, you will receive your daily profit directly to your USD account.</p>
                                             <p><span style="color:red;">*</span> You can always upgrade or top up your investment. </p>
                                             <p><span style="color:red;">*</span> You can always reach out to the support team or your account manager for ease of the processes. </p>
                                          </div>

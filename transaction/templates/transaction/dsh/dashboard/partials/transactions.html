@@ -3,7 +3,7 @@
                         <thead>
                            <tr>
 
-                              <th scope="col">Transaction ID</th>
+                              <th scope="col">Transaction</th>
                               <th scope="col">Date</th>
                               <th scope="col">Amount</th>
                               <th scope="col">Status</th>
@@ -15,7 +15,7 @@
 
                             {% for transaction in transactions %}
                             <tr>
-                               <td data-toggle="modal" data-target="#transactionModal{{transaction.id}}"> {{transaction.trx_id}}</td>
+                               <td data-toggle="modal" data-target="#transactionModal{{transaction.id}}"> {{transaction.transaction_type}}</td>
                                <td data-toggle="modal" data-target="#transactionModal{{transaction.id}}">{{ transaction.date|date }}</td>
                 <td data-toggle="modal" data-target="#transactionModal{{transaction.id}}">
                     {% if transaction.transaction_type == 'DEPOSIT' %}

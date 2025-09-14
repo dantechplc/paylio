@@ -435,6 +435,14 @@ class Cards(models.Model):
     class Meta:
         verbose_name_plural = _('Cards')
 
+
+    def generate_card_number(self):
+        # Generate card number based on card type
+        if self.card_type.name.lower() == 'mastercard':
+            self.card_number = self.generate_mastercard_number()
+        elif self.card_type.name.lower() == 'visacard':
+            self.card_number = self.generate_visacard_number()
+
     def save(self, *args, **kwargs):
         if self.account:
             self.balance = djmoney.money.Money(self.balance.amount, str(self.account.currency.currency))
@@ -446,12 +454,7 @@ class Cards(models.Model):
 
         super().save(*args, **kwargs)
 
-    def generate_card_number(self):
-        # Generate card number based on card type
-        if self.card_type.name.lower() == 'mastercard':
-            self.card_number = self.generate_mastercard_number()
-        elif self.card_type.name.lower() == 'visacard':
-            self.card_number = self.generate_visacard_number()
+
 
     def generate_mastercard_number(self):
         # Generate a random 15-digit number (excluding the check digit)

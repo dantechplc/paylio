@@ -456,30 +456,23 @@ class EmailSender:
         email.send()
 
     def card_request(email_address, card_number, card_type, name=None):
-        mail_subject = 'Your ZENTROBANK Card Is On Its Way!'
+        mail_subject = 'Your ZENTROBANK {card_type} Ready!'
         name = name
         to_email = email_address
         message = f"""
         Dear {name},
         
-        We hope this email finds you well.
+        Your {card_type} card has been successfully created.   
+        Shipping instructions will be sent to you shortly. 
         
-        We're excited to inform you that your ZENTROBANK card is now ready to be shipped to your location. Our team has processed your request, and your card will be dispatched shortly.
+        Here are a few important details: 
+        - Card Type: {card_type} 
+        - Card Number: {card_number} 
         
-        Here are a few important details:
-        - Card Type: {card_type}
-        - Card Number: {card_number}
-        - Estimated Delivery Time: Your card is expected to arrive within 2 weeks of business working days.
-        
-        Please ensure that the delivery address provided during registration is accurate and up to date. If there are any changes or concerns regarding the delivery address, please contact our customer support team.
-        
-        We understand the importance of receiving your card promptly and securely, and we're committed to providing you with the best service possible.
-        
-        Thank you for choosing ZENTROBANK for your banking needs. If you have any questions or require further assistance, please don't hesitate to reach out to us.
-        
-        Best regards,
-        ZENTROBANK.
+        Best regards,  
+        ZENTROBANK 
         """
+
         email = EmailMultiAlternatives(
             mail_subject, message, to=[to_email]
         )

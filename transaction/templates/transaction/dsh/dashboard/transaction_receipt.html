@@ -119,7 +119,7 @@
         <p>Generated from <b>ZENTROBANK</b> on {{transaction.date}}</p>
         <h2>Transaction Amount <span  class="s1">{{transaction.amount}}</span></h2>
         <hr>
-        <h2>Transaction Type <span class="s1">{{transaction.payment_methods}} </span></h2>
+        <h2>Transaction Type <span class="s1">{{transaction.transaction_type}}  </span></h2>
         <hr>
         <h2>Transaction Date <span class="s1">{{transaction.date}}</span></h2>
         <hr>
@@ -134,7 +134,9 @@
                    <h2>Sender <span class="s1">
              {{transaction.user.name}}
             {% elif transaction.transaction_type == 'EXCHANGE' %}
-                        <h2>Exchange Account <span class="s1">
+                        <h2> Account Name<span class="s1">
+            {% elif transaction.transaction_type == 'INVESTMENT' %}
+                        <h2> Account Name<span class="s1">
              {{transaction.user.name}}
         {% endif %}
         </span></h2>
@@ -171,6 +173,9 @@
          <p class="s1" >{{transaction.account_name}}</p>
                        <p class="s1">{{transaction.account_number}}</p>
                        <p class="s1">{{transaction.bank_name}}</p>
+          {% elif transaction.transaction_type == 'INVESTMENT' %}
+        <h2>Beneficiary</h2>
+                            <p>{{transaction.user.name}}</p>
         {% endif %}
         <hr>
         <h2>Remark <span class="s1">{{transaction.payment_description|slice:50}}...</span></h2>

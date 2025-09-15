@@ -68,20 +68,25 @@ from django.utils import timezone
 from django.core.mail import EmailMultiAlternatives
 
 def investment_expired_check():
-    qs = Investment_profile.objects.filter(expired=False, status='Active')
+    # Get both querysets
+    qs1 = Investment_profile.objects.filter(expired=False, status='Active')
+    qs2 = CustomInvestment.objects.filter(expired=False, status='Active')
 
-    for doc in qs:
+    # Chain them together into one iterable
+    all_investments = list(qs1) + list(qs2)
+
+    for doc in all_investments:
         expected_amount = doc.expected_roi
         amount_earned = doc.amount_earned
         expiry_date = doc.expiry_date
 
         # Condition: ROI reached OR expiry date passed
-        if amount_earned >= expected_amount :
+        if amount_earned >= expected_amount or (expiry_date and expiry_date <= timezone.now()):
             doc.expired = True
             doc.status = 'Expired'
-            doc.save()
+            doc.save(update_fields=['expired', 'status'])
 
-            print('Expired investment found for', doc.user)
+            print('✅ Expired investment found for', doc.user)
 
             # Update related transaction
             Transactions.objects.filter(pk=doc.trx_id).update(status='Expired')
@@ -92,7 +97,7 @@ def investment_expired_check():
             to_email = str(email)
             message1 = (
                 f'Hello Admin. {doc.user} {doc.investment} Investment plan of '
-                f'{doc.amount_invested} has expired today.'
+                f'{doc.amount_invested} ({getattr(doc, "amount_invested_currency", None)}) has expired today.'
             )
             email = EmailMultiAlternatives(mail_subject, message1, to=[to_email])
             email.attach_alternative(message1, 'text/html')

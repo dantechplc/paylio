@@ -125,7 +125,7 @@ def daily_roi():
 
     custom_investments = CustomInvestment.objects.filter(
         status='Active', next_payout__lte=today
-    ).select_related("user", "currency", "name")
+    ).select_related("user",)
 
     # Process both sets in one loop
     for investment in chain(investments, custom_investments):
@@ -172,7 +172,7 @@ def daily_roi():
 
         # Send ROI email
         EmailSender.roi_success_email(
-            user=getattr(account_client.user, "email", None),
+            user=getattr(account_client, "email", None),
             amount=interest,
             balance=portfolio.balance,
             date=today,

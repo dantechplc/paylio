@@ -143,7 +143,7 @@ def daily_roi():
             account_client = investment.user  # already a Client FK
             fiat = investment.amount_invested.currency
             print('currency', fiat)
-            fiat_currency = FiatCurrency.objects.get(name=fiat)
+            fiat_currency = FiatCurrency.objects.get(currency__currency=fiat)
 
         # Portfolio lookup
         portfolio = FiatPortfolio.objects.get(

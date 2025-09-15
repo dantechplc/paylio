@@ -191,7 +191,7 @@ class CustomInvestment(models.Model):
                 self.expiry_date = Transactions.add_business_days(timezone.now(), self.period_in_days)
 
             # Always recalculate next payout when active
-            self.next_payout = Transactions.get_next_payout(timezone.now())
+            # self.next_payout = Transactions.get_next_payout(timezone.now())
         self.amount_invested = djmoney.money.Money(self.amount_invested.amount, str(self.currency.currency.currency))
         self.amount_earned = djmoney.money.Money(self.amount_earned.amount, str(self.currency.currency.currency))
         self.expected_roi= djmoney.money.Money(self.expected_roi.amount, str(self.currency.currency.currency))

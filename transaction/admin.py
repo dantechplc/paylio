@@ -1,6 +1,7 @@
 
 from django.contrib import admin
-from .models import Transactions
+from .models import Transactions, CustomInvestment
+
 
 class TransactionsAdmin(admin.ModelAdmin):
     list_display = ('user', 'amount', 'status', 'date', 'transaction_type')  # Display these fields in the list view
@@ -17,3 +18,50 @@ class TransactionsAdmin(admin.ModelAdmin):
     )
 
 admin.site.register(Transactions, TransactionsAdmin)
+
+
+@admin.register(CustomInvestment)
+class CustomInvestmentAdmin(admin.ModelAdmin):
+    list_display = (
+        "user",
+        "name",
+        "currency",
+        "amount_invested",
+        "amount_earned",
+        "expected_roi",
+        "earning",
+        "status",
+        "period_in_days",
+        "date_started",
+        "expiry_date",
+        "next_payout",
+        "expired",
+    )
+    list_filter = ("status", "currency", "expired")
+    search_fields = ("user__email", )
+    ordering = ("-date_started",)
+
+
+    fieldsets = (
+        (None, {
+            "fields": (
+                "user",
+                "name",
+                "currency",
+                "status",
+                "period_in_days",
+                "amount_invested",
+                "expected_roi",
+            )
+        }),
+        ("Progress", {
+            "fields": (
+                "amount_earned",
+                "earning",
+                "date_started",
+                "expiry_date",
+                "next_payout",
+                "expired",
+            )
+        }),
+    )

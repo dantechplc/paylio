@@ -29,7 +29,8 @@ def daily_roi():
             account_client = Client.objects.get(user=account_user.user)
 
             # Get fiat portfolio (assuming USD)
-            fiat_currency = FiatCurrency.objects.get(name="USD")
+            fiat = investment.amount_invested.currency
+            fiat_currency = FiatCurrency.objects.get(name=fiat)
             portfolio = FiatPortfolio.objects.get(user=account_client, currency=fiat_currency)
 
             # Add interest

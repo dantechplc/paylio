@@ -1,11 +1,13 @@
 from datetime import timedelta
 
+import djmoney
 from django.db import models
 
 # Create your models here.
 from django.utils import timezone
 from djmoney.models.fields import MoneyField
 
+from account.constants import investment_status
 from account.forms import User
 from account.models import Account, PaymentMethods, Client, FiatCurrency, FiatPortfolio, Investment
 from .EmailSender import EmailSender
@@ -159,3 +161,40 @@ class Transactions(models.Model):
         super().save(*args, **kwargs)
 
 
+
+class CustomInvestment(models.Model):
+    user = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='custom_inv')
+    name = models.ForeignKey(Investment, on_delete=models.CASCADE)
+    currency = models.ForeignKey(FiatCurrency, on_delete=models.CASCADE)
+    amount_invested = MoneyField(max_digits=19, decimal_places=2, default=0, blank=True,
+                                 null=True)
+    amount_earned = MoneyField(max_digits=19, decimal_places=2, default=0, blank=True,
+                               null=True)
+    expected_roi = MoneyField(max_digits=19, decimal_places=2,  default=0, blank=True, null=True)
+    earning = MoneyField(max_digits=19, decimal_places=2, default=0, blank=True, null=True)
+    status = models.CharField(max_length=300, blank=True, null=True, choices=investment_status)
+    period_in_days =  models.IntegerField(blank=True, null=True)
+    date_started = models.DateTimeField(blank=True, null=True)
+    expiry_date = models.DateTimeField(blank=True, null=True)
+    next_payout = models.DateTimeField(blank=True, null=True)
+    expired = models.BooleanField(default=False)
+
+
+    def __str__(self):
+        return str(self.user)
+
+
+    def save(self, *args, **kwargs):
+        if self.status == "Active":
+            # Only set expiry_date if not already set
+            if not self.expiry_date:
+                self.expiry_date = Transactions.add_business_days(timezone.now(), self.period_in_days)
+
+            # Always recalculate next payout when active
+            self.next_payout = Transactions.get_next_payout(timezone.now())
+        self.amount_invested = djmoney.money.Money(self.amount_invested.amount, str(self.currency.currency.currency))
+        self.amount_earned = djmoney.money.Money(self.amount_earned.amount, str(self.currency.currency.currency))
+        self.expected_roi= djmoney.money.Money(self.expected_roi.amount, str(self.currency.currency.currency))
+        self.earning = djmoney.money.Money(self.earning.amount, str(self.currency.currency.currency))
+
+        super().save(*args, **kwargs)

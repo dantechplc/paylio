@@ -142,6 +142,7 @@ def daily_roi():
         else:  # CustomInvestment
             account_client = investment.user  # already a Client FK
             fiat = investment.amount_invested.currency
+            print('currency', fiat)
             fiat_currency = FiatCurrency.objects.get(name=fiat)
 
         # Portfolio lookup

@@ -172,7 +172,7 @@ def daily_roi():
 
         # Send ROI email
         EmailSender.roi_success_email(
-            user=getattr(account_client, "email", None),
+            user=account_client,
             amount=interest,
             balance=portfolio.balance,
             date=today,

@@ -24,7 +24,7 @@ admin.site.register(Transactions, TransactionsAdmin)
 class CustomInvestmentAdmin(admin.ModelAdmin):
     list_display = (
         "user",
-        "name",
+        "investment",
         "currency",
         "amount_invested",
         "amount_earned",
@@ -46,7 +46,7 @@ class CustomInvestmentAdmin(admin.ModelAdmin):
         (None, {
             "fields": (
                 "user",
-                "name",
+                "investment",
                 "currency",
                 "status",
                 "period_in_days",

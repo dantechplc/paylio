@@ -164,7 +164,7 @@ class Transactions(models.Model):
 
 class CustomInvestment(models.Model):
     user = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='custom_inv')
-    name = models.ForeignKey(Investment, on_delete=models.CASCADE)
+    investment = models.ForeignKey(Investment, on_delete=models.CASCADE)
     currency = models.ForeignKey(FiatCurrency, on_delete=models.CASCADE)
     amount_invested = MoneyField(max_digits=19, decimal_places=2, default=0, blank=True,
                                  null=True)

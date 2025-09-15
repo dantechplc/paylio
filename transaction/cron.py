@@ -137,7 +137,7 @@ def daily_roi():
         # Figure out the correct user / client depending on model
         if isinstance(investment, Investment_profile):
             account_user = investment.user
-            account_client = Client.objects.get(user=account_user)
+            account_client = Client.objects.get(user=account_user.user)
             fiat_currency = FiatCurrency.objects.get(name="USD")  # fallback
         else:  # CustomInvestment
             account_client = investment.user  # already a Client FK

@@ -184,7 +184,7 @@ if not hasattr(Image, 'ANTIALIAS'):
 
 class FiatCurrency(models.Model):
     name = models.CharField(max_length=20)
-    currency = MoneyField(max_digits=19, decimal_places=2, default=0, blank=True, null=True)
+    currency = MoneyField(max_digits=19, decimal_places=2, default_currency='USD', default=0, blank=True, null=True)
     image = models.ImageField(upload_to='fiat_images', blank=True, null=True)
     image_thumbnail = ImageSpecField(source='image',
                                      processors=[ResizeToFill(50, 30)],
@@ -216,7 +216,7 @@ class FiatCurrency(models.Model):
 class FiatPortfolio(models.Model):
     user = models.ForeignKey(Client, on_delete=models.CASCADE, null=True)
     currency = models.ForeignKey(FiatCurrency, null=True, related_name="fiat_portfolio", on_delete=models.CASCADE)
-    balance = MoneyField(max_digits=19, decimal_places=2, default=0, blank=True, null=True, )
+    balance = MoneyField(max_digits=19, decimal_places=2, default_currency='USD', default=0, blank=True, null=True, )
     is_active = models.BooleanField(default=True, blank=True, null=True)
     freeze_account = models.BooleanField(default=False, null=True, blank=True)
 
@@ -249,7 +249,7 @@ class PaymentMethods(models.Model):
     for_withdrawal = models.BooleanField(default=False)
     wallet_address = models.CharField(max_length=300, blank=True, null=True)
     wallet_qrcode = models.ImageField(blank=True, null=True)
-    transaction_fee = MoneyField(max_digits=19, decimal_places=2, default=0, blank=True, null=True)
+    transaction_fee = MoneyField(max_digits=19, decimal_places=2, default_currency='USD', default=0, blank=True, null=True)
     deposit_transaction_message = models.TextField(blank=True, null=True)
     withdrawal_transaction_message = models.TextField(blank=True, null=True)
 

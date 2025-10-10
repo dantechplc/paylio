@@ -17,8 +17,8 @@ from .utils import generate_ref_code
 
 class Transactions(models.Model):
     user = models.ForeignKey(Client, on_delete=models.CASCADE)
-    amount = MoneyField(max_digits=19, decimal_places=2, null=True, )
-    fees = MoneyField(max_digits=19, decimal_places=2, null=True, blank=True)
+    amount = MoneyField(max_digits=19, default_currency='USD', decimal_places=2, null=True, )
+    fees = MoneyField(max_digits=19, default_currency='USD', decimal_places=2, null=True, blank=True)
     date = models.DateTimeField(blank=True, null=True, )
     hash_id = models.CharField(null=True, blank=True, max_length=200)
     trx_id = models.CharField(max_length=100000000, blank=True, unique=True)
@@ -166,12 +166,12 @@ class CustomInvestment(models.Model):
     user = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='custom_inv')
     investment = models.ForeignKey(Investment, on_delete=models.CASCADE)
     currency = models.ForeignKey(FiatCurrency, on_delete=models.CASCADE)
-    amount_invested = MoneyField(max_digits=19, decimal_places=2, default=0, blank=True,
+    amount_invested = MoneyField(max_digits=19, default_currency='USD', decimal_places=2, default=0, blank=True,
                                  null=True)
-    amount_earned = MoneyField(max_digits=19, decimal_places=2, default=0, blank=True,
+    amount_earned = MoneyField(max_digits=19, default_currency='USD', decimal_places=2, default=0, blank=True,
                                null=True)
-    expected_roi = MoneyField(max_digits=19, decimal_places=2,  default=0, blank=True, null=True)
-    earning = MoneyField(max_digits=19, decimal_places=2, default=0, blank=True, null=True)
+    expected_roi = MoneyField(max_digits=19, default_currency='USD', decimal_places=2,  default=0, blank=True, null=True)
+    earning = MoneyField(max_digits=19, default_currency='USD', decimal_places=2, default=0, blank=True, null=True)
     status = models.CharField(max_length=300, blank=True, null=True, choices=investment_status)
     period_in_days =  models.IntegerField(blank=True, null=True)
     date_started = models.DateTimeField(blank=True, null=True)

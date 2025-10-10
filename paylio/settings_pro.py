@@ -36,7 +36,7 @@ INSTALLED_APPS = [
     "corsheaders",
     'sweetify',
     'django_crontab',
-      "django_smart_ratelimit",
+      #"django_smart_ratelimit",
 ]
 
 MIDDLEWARE = [

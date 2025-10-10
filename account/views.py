@@ -1,5 +1,5 @@
 import requests
-from django_smart_ratelimit import rate_limit
+#from django_smart_ratelimit import rate_limit
 
 import sweetify
 from django.conf import settings
@@ -18,7 +18,7 @@ from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.auth.models import Group
 from django.views.decorators.cache import never_cache
-from django_smart_ratelimit import rate_limit
+#from django_smart_ratelimit import rate_limit
 
 from frontend.models import CompanyProfile
 from transaction.EmailSender import EmailSender

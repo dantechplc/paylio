@@ -12,7 +12,7 @@ SECRET_KEY = 'django-insecure-4%twcf7_z9hgx2ka^(41%-!!c9z0k3!$u#bo9sb=ksmrdfpqh9
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
-ALLOWED_HOSTS = ["141.147.109.101", "zentrobank.com", "www.zentrobank.com"]
+ALLOWED_HOSTS = ["51.21.169.220", "zentrobank.com", "www.zentrobank.com"]
 
 # Application definition
 

@@ -166,3 +166,5 @@ CRONJOBS = [
 #         'LOCATION': 'my_cache_table',
 #     }
 # }
+
+DEFAULT_CURRENCY = "USD"

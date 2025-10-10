@@ -281,7 +281,7 @@ class PaymentMethods(models.Model):
 class ExchangeRate(models.Model):
     base_currency = models.ForeignKey(FiatCurrency, related_name='base_currency', on_delete=models.CASCADE)
     receiving_currency = models.ForeignKey(FiatCurrency, related_name='receiving_currency', on_delete=models.CASCADE)
-    exchange_value = MoneyField(max_digits=19, decimal_places=2, default=0, blank=True, null=True)
+    exchange_value = MoneyField(max_digits=19, decimal_places=2, default_currency='USD', default=0, blank=True, null=True)
     exchange_fee_percentage = models.DecimalField(blank=True, null=True, decimal_places=2, max_digits=12)
 
     def __str__(self):
@@ -421,7 +421,7 @@ class Card_type(models.Model):
 
 class Cards(models.Model):
     user = models.ForeignKey(Client, on_delete=models.CASCADE, related_name="cards")
-    balance = MoneyField(max_digits=19, decimal_places=2, default=0, blank=True, null=True)
+    balance = MoneyField(max_digits=19,default_currency='USD', decimal_places=2, default=0, blank=True, null=True)
     card_type = models.ForeignKey(Card_type, on_delete=models.CASCADE, blank=True, null=True)
     account = models.ForeignKey(FiatCurrency, on_delete=models.CASCADE, blank=True, null=True)
     card_number = models.CharField(max_length=16, unique=True, blank=True, null=True)

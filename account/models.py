@@ -190,7 +190,7 @@ class FiatCurrency(models.Model):
                                      processors=[ResizeToFill(50, 30)],
                                      format="PNG",
                                      options={'quality': 60})
-    transaction_fee = MoneyField(max_digits=19, decimal_places=2, default=0, blank=True, null=True)
+    transaction_fee = MoneyField(max_digits=19, decimal_places=2, default_currency='USD', default=0, blank=True, null=True)
     is_active = models.BooleanField(default=False, blank=True, null=True)
 
     def __str__(self):

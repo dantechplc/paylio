@@ -154,7 +154,7 @@ LOGIN_REDIRECT_URL = 'transaction:dashboard'
 CRONJOBS = [
 ('* * * * 1-5', 'transaction.cron.daily_roi', '>> /var/log/crontask.log 2>&1'),
 ('* * * * 1-5', 'transaction.cron.investment_expired_check', '>> /var/log/cronexp_dte.log 2>&1'),
-('3 * * * 1-5',' backup_db.backup_to_drive', '>> /var/log/backup.log 2>&1' )
+('3 * * * *',' backup_db.backup_to_drive', '>> /var/log/backup.log 2>&1' )
 ]
 
 

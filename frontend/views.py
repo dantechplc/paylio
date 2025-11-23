@@ -8,7 +8,11 @@ from account.models import Investment
 
 @unauthenticated_user
 def home(request):  # Home page
-    return render(request, 'frontend/home.html')
+    investments = Investment.objects.all()
+    context = {
+        'investments': investments
+    }
+    return render(request, 'frontend/home.html', context)
 
 @unauthenticated_user
 def freelancer(request):

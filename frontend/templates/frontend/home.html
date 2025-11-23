@@ -2,6 +2,60 @@
 {% load static %}
 {% block content %}
 {% include "frontend/banner.html" %}
+<!-- Investment Plans start -->
+<section class="investment-plans py-5 bg-light">
+<div class="container">
+<div class="text-center mb-5">
+<h2 class="fw-bold display-6">Start Growing Your Wealth Today</h2>
+<p class="lead text-muted" style="max-width:700px; margin:auto;">Explore our curated investment plans tailored to your financial goals. Open an account and invest with confidence.</p>
+</div>
+
+
+<div class="row g-4">
+{% for investment in investments %}
+<div class="col-md-6 col-lg-4">
+<div class="card shadow-lg border-0 h-100 rounded-4 investment-card text-center p-4">
+<div class="image-wrapper mb-3 mx-auto">
+<img src="{{ investment.image.url }}" class="img-fluid rounded-circle shadow-sm" style="width:120px; height:120px; object-fit:cover;" alt="{{ investment.name }}">
+</div>
+<h5 class="card-title fw-bold fs-5">{{ investment.name }}</h5>
+<p class="text-muted small mb-3">{{ investment.short_description }}</p>
+
+
+<div class="text-start mx-auto" style="max-width: 220px;">
+<p class="mb-1"><strong>Min Amount:</strong> {{ investment.min_amount }}</p>
+<p class="mb-1"><strong>Max Amount:</strong> {{ investment.max_amount }}</p>
+<p class="mb-1"><strong>Daily Rate:</strong> {{ investment.daily_rate }}%</p>
+<p class="mb-1"><strong>Duration:</strong> {{ investment.duration }} days</p>
+<p class="mb-3"><strong>Referral Commission:</strong> {{ investment.referral_commission }}%</p>
+</div>
+
+
+<a href="{% url 'account:register' %}" class="btn btn-primary w-100 rounded-pill py-2 fs-6">Open Account & Invest</a>
+</div>
+</div>
+{% endfor %}
+</div>
+</div>
+</section>
+
+
+<style>
+.investment-card {
+transition: all 0.35s ease;
+}
+.investment-card:hover {
+transform: translateY(-10px) scale(1.02);
+box-shadow: 0 1rem 2rem rgba(0,0,0,0.12) !important;
+}
+.investment-card img {
+transition: 0.4s ease;
+}
+.investment-card:hover img {
+transform: scale(1.08);
+}
+</style>
+<!-- Investment Plans end -->
 <!-- Global Payment start -->
     <section class="global-payment">
         <div class="overlay pt-120 pb-120">
@@ -188,7 +242,7 @@
                                 Get instant  notifications.
                             </li>
                         </ul>
-                    
+
                     </div>
                 </div>
             </div>

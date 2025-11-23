@@ -3,6 +3,7 @@ from django.shortcuts import render
 
 # Create your views here.
 from account.decorators import unauthenticated_user
+from account.models import Investment
 
 
 @unauthenticated_user
@@ -69,7 +70,13 @@ def career(request):
 def help_center(request):
     return render(request, 'frontend/help_center.html')
 
-
+@unauthenticated_user
+def investments(request):
+    investments = Investment.objects.all()
+    context = {
+        'investments': investments
+    }
+    return render(request, 'frontend/investments.html', context)
 
 def error_404_view(request, exception):
     return render(request, 'frontend/404.html')

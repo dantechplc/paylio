@@ -1,48 +1,46 @@
 import datetime
-import os
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
-from google.auth.transport.requests import Request
+from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
+from django.core.mail import send_mail
+from django.conf import settings
 
-SCOPES = ['https://www.googleapis.com/auth/drive.file']
-
-
-def authenticate():
-    creds = None
-    # Check if the token.json file already exists for stored credentials
-    if os.path.exists('token.json'):
-        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
-
-    # If credentials are not valid or don't exist, authenticate the user
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            # Use credentials.json to request new authorization
-            flow = InstalledAppFlow.from_client_secrets_file('credentials.json', SCOPES)
-            creds = flow.run_local_server(port=0)
-        # Save the new credentials to token.json for future use
-        with open('token.json', 'w') as token:
-            token.write(creds.to_json())
-
-    return creds
+# === CONFIG ===
+SERVICE_ACCOUNT_FILE = 'credentials.json'  # Path to your JSON key
+DRIVE_FOLDER_ID = '1EFDKPoY4axt9Iv3lmoXoPkd93tD0cK-N'  # Replace with your Drive folder ID
+BACKUP_EMAIL = 'chukwujidan@gmail.com'
+DB_PATH = 'db.sqlite3'
 
 
 def backup_to_drive(file_path, file_name):
-    creds = authenticate()
-    # Create Google Drive service
+    # Authenticate using the service account
+    creds = service_account.Credentials.from_service_account_file(
+        SERVICE_ACCOUNT_FILE,
+        scopes=['https://www.googleapis.com/auth/drive.file']
+    )
+
     service = build('drive', 'v3', credentials=creds)
 
-    # Define file metadata and upload
-    file_metadata = {'name': file_name}
+    file_metadata = {'name': file_name, 'parents': [DRIVE_FOLDER_ID]}
     media = MediaFileUpload(file_path, mimetype='application/octet-stream')
-    file = service.files().create(body=file_metadata, media_body=media, fields='id').execute()
-    print(f"Backup successful. File ID: {file.get('id')}")
+    uploaded = service.files().create(body=file_metadata, media_body=media, fields='id').execute()
+
+    print(f"✅ Backup successful. File ID: {uploaded.get('id')}")
+
+    # Send an email notification
+    try:
+        send_mail(
+            subject="Paylio Backup Completed ✅",
+            message=f"Backup file '{file_name}' uploaded successfully to Google Drive.",
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[BACKUP_EMAIL],
+            fail_silently=False,
+        )
+        print("📧 Email notification sent.")
+    except Exception as e:
+        print(f"⚠️ Failed to send email: {e}")
 
 
-# Replace with your actual SQLite database path
-db_path = 'db.sqlite3'
-date = datetime.datetime.now().strftime("%Y-%m-%d")
-backup_to_drive(db_path, f'backup_database-{date}.db')
+if __name__ == "__main__":
+    date = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M")
+    backup_to_drive(DB_PATH, f"backup_database-{date}.db")
